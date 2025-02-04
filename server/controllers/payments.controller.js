@@ -179,8 +179,8 @@ const generateXlsx = async (data) => {
     { header: 'Время', key: 'time', width: 11 },
     { header: 'Клиент', key: 'client', width: 16 },
     { header: 'Позиция', key: 'title', width: 25 },
-    { header: 'Количество', key: 'amount', width: 8 },
-    { header: 'Сумма (в рублях)', key: 'sum', width: 8 },
+    { header: 'Количество', key: 'amount', width: 11 },
+    { header: 'Сумма', key: 'sum', width: 11 },
   ];
 
   data.forEach((item) => {
