@@ -2,36 +2,33 @@ import React, { useState } from 'react';
 import axios from 'axios';
 import styles from './App.module.css';
 import { DatePicker, Spin, Button } from 'antd';
-import { LoadingOutlined } from '@ant-design/icons';
+import Icon, { LoadingOutlined } from '@ant-design/icons';
 
 const { RangePicker } = DatePicker;
 
 const App = () => {
-  const [dates, setDates] = useState([]);
-  const [loading, setLoading] = useState(false);
+  const [paymentsFromPeriodDates, setPaymentsFromPeriodDates] = useState([]);
+  const [sbpFromPeriodDates, setSbpFromPeriodDates] = useState([]);
+  const [paymentsFromPeriodLoading, setPaymentsFromPeriodLoading] = useState(false);
+  const [sbpFromPeriodLoading, setSbpFromPeriodLoading] = useState(false);
 
-  // Обработка выбора диапазона дат
-  const handleRangeChange = (values) => {
-    setDates(values || []);
+  const handlePaymentsFromPeriodRangeChange = (values) => {
+    setPaymentsFromPeriodDates(values || []);
   };
 
-  // Функция для скачивания XLSX файла с выбранными параметрами
-  const downloadFile = async () => {
-    if (!dates || dates.length !== 2) {
+  const downloadPaymentsFromPeriod = async () => {
+    if (!paymentsFromPeriodDates || paymentsFromPeriodDates.length !== 2) {
       alert('Пожалуйста, заполните все поля!');
       return;
     }
 
-    // Форматируем выбранные даты в строку (например, 2023-05-15)
-    const startDate = dates[0].format('YYYY-MM-DD');
-    const endDate = dates[1].format('YYYY-MM-DD');
-    // Берем год из первой выбранной даты
-    const year = dates[0].format('YYYY');
+    const startDate = paymentsFromPeriodDates[0].format('YYYY-MM-DD');
+    const endDate = paymentsFromPeriodDates[1].format('YYYY-MM-DD');
+    const year = paymentsFromPeriodDates[0].format('YYYY');
 
     try {
-      setLoading(true);
+      setPaymentsFromPeriodLoading(true);
 
-      // Отправляем POST-запрос с параметрами year, startDate и endDate.
       const response = await axios.post(
         `${process.env.REACT_APP_BACKEND_URL}/api/payments/paymentsFromPeriod`,
         { year, startDate, endDate },
@@ -39,23 +36,73 @@ const App = () => {
       );
       const blob = response.data;
 
-      // Создаем URL для Blob и инициируем скачивание файла
       const url = window.URL.createObjectURL(blob);
       const link = document.createElement('a');
       link.href = url;
-      link.setAttribute('download', `payments_${year}_${startDate}_${endDate}.xlsx`);
+      link.setAttribute(
+        'download',
+        `Платежи_${startDate.split('-')[2]}.${startDate.split('-')[1]}.${startDate.split('-')[0]}-${
+          endDate.split('-')[2]
+        }.${endDate.split('-')[1]}.${endDate.split('-')[0]}.xlsx`
+      );
 
       document.body.appendChild(link);
       link.click();
 
-      // Очистка
       link.parentNode.removeChild(link);
       window.URL.revokeObjectURL(url);
     } catch (error) {
       console.error('Ошибка скачивания файла:', error);
       alert('Произошла ошибка при скачивании файла');
     } finally {
-      setLoading(false);
+      setPaymentsFromPeriodLoading(false);
+    }
+  };
+
+  const handleSbpFromPeriodRangeChange = (values) => {
+    setSbpFromPeriodDates(values || []);
+  };
+
+  const downloadSbpFromPeriod = async () => {
+    if (!sbpFromPeriodDates || sbpFromPeriodDates.length !== 2) {
+      alert('Пожалуйста, заполните все поля!');
+      return;
+    }
+
+    const startDate = sbpFromPeriodDates[0].format('YYYY-MM-DD');
+    const endDate = sbpFromPeriodDates[1].format('YYYY-MM-DD');
+    const year = sbpFromPeriodDates[0].format('YYYY');
+
+    try {
+      setSbpFromPeriodLoading(true);
+
+      const response = await axios.post(
+        `${process.env.REACT_APP_BACKEND_URL}/api/payments/sbpFromPeriod`,
+        { year, startDate, endDate },
+        { responseType: 'blob' }
+      );
+      const blob = response.data;
+
+      const url = window.URL.createObjectURL(blob);
+      const link = document.createElement('a');
+      link.href = url;
+      link.setAttribute(
+        'download',
+        `СБП_${startDate.split('-')[2]}.${startDate.split('-')[1]}.${startDate.split('-')[0]}-${
+          endDate.split('-')[2]
+        }.${endDate.split('-')[1]}.${endDate.split('-')[0]}.xlsx`
+      );
+
+      document.body.appendChild(link);
+      link.click();
+
+      link.parentNode.removeChild(link);
+      window.URL.revokeObjectURL(url);
+    } catch (error) {
+      console.error('Ошибка скачивания файла:', error);
+      alert('Произошла ошибка при скачивании файла');
+    } finally {
+      setSbpFromPeriodLoading(false);
     }
   };
 
@@ -63,12 +110,35 @@ const App = () => {
     <div className={styles.container}>
       <div className={styles.paymentsContainer}>
         <h1 style={{ marginBottom: '20px' }}>Выберите период для загрузки данных об оплатах</h1>
+        <Icon />
         <div style={{ marginBottom: '40px' }}>
-          <RangePicker placeholder={['Дата начала', 'Дата конца']} onChange={handleRangeChange} />
-          <Button onClick={downloadFile} disabled={loading || dates.length !== 2} style={{ marginLeft: '16px' }}>
-            {loading ? 'Загрузка...' : 'Скачать данные'}
+          <RangePicker placeholder={['Дата начала', 'Дата конца']} onChange={handlePaymentsFromPeriodRangeChange} />
+          <Button
+            onClick={downloadPaymentsFromPeriod}
+            disabled={paymentsFromPeriodLoading || paymentsFromPeriodDates.length !== 2}
+            style={{ marginLeft: '16px' }}
+          >
+            {paymentsFromPeriodLoading ? 'Загрузка...' : 'Скачать данные'}
           </Button>
-          {loading && <Spin indicator={<LoadingOutlined spin />} size="small" style={{ marginLeft: '5px' }} />}
+          {paymentsFromPeriodLoading && (
+            <Spin indicator={<LoadingOutlined spin />} size="small" style={{ marginLeft: '5px' }} />
+          )}
+        </div>
+      </div>
+      <div className={styles.paymentsContainer}>
+        <h1 style={{ marginBottom: '20px' }}>Выберите период для загрузки данных об оплатах по СБП</h1>
+        <div style={{ marginBottom: '40px' }}>
+          <RangePicker placeholder={['Дата начала', 'Дата конца']} onChange={handleSbpFromPeriodRangeChange} />
+          <Button
+            onClick={downloadSbpFromPeriod}
+            disabled={sbpFromPeriodLoading || sbpFromPeriodDates.length !== 2}
+            style={{ marginLeft: '16px' }}
+          >
+            {sbpFromPeriodLoading ? 'Загрузка...' : 'Скачать данные'}
+          </Button>
+          {sbpFromPeriodLoading && (
+            <Spin indicator={<LoadingOutlined spin />} size="small" style={{ marginLeft: '5px' }} />
+          )}
         </div>
       </div>
     </div>
