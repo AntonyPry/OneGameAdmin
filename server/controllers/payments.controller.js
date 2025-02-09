@@ -115,9 +115,11 @@ const getPaymentData = async (startDate, endDate, managerBearer) => {
           }`,
           time: payment.timestamp.split(' ')[1],
           client: payment.client?.phone ? `+${payment.client?.phone}` : null,
-          title: payment.payment_items[0].title ? payment.payment_items[0].title : 'Поминутный тариф',
+          nickname: payment.client?.nickname ? payment.client?.nickname : null,
+          title: payment.payment_items[0].title ? payment.payment_items[0].title : 'Пополнение депозита',
           amount: payment.payment_items[0].amount,
           sum: payment.payment_items[0].sum,
+          payment_title: payment.payment.title,
         })),
       ];
       while (resPaymentsData.data.data.eventList.paginatorInfo.lastPage > page) {
@@ -143,9 +145,11 @@ const getPaymentData = async (startDate, endDate, managerBearer) => {
               }.${payment.timestamp.split(' ')[0].split('-')[0]}`,
               time: payment.timestamp.split(' ')[1],
               client: payment.client?.phone ? `+${payment.client?.phone}` : null,
-              title: payment.payment_items[0].title ? payment.payment_items[0].title : 'Поминутный тариф',
+              nickname: payment.client?.nickname ? payment.client?.nickname : null,
+              title: payment.payment_items[0].title ? payment.payment_items[0].title : 'Пополнение депозита',
               amount: payment.payment_items[0].amount,
               sum: payment.payment_items[0].sum,
+              payment_title: payment.payment.title,
             })),
           ];
         }
@@ -180,10 +184,12 @@ const createSmartshellPaymentsDataRequest = (startDate, endDate, page, managerBe
           timestamp
           client {
               phone
+              nickname
           }
           payment {
               id
               value
+              title
           }
           payment_items {
               title
@@ -318,9 +324,11 @@ const generatePaymentsXlsx = async (data) => {
     { header: 'Дата', key: 'date', width: 11 },
     { header: 'Время', key: 'time', width: 11 },
     { header: 'Клиент', key: 'client', width: 16 },
+    { header: 'Ник', key: 'nickname', width: 16 },
     { header: 'Позиция', key: 'title', width: 25 },
     { header: 'Количество', key: 'amount', width: 11 },
     { header: 'Сумма', key: 'sum', width: 11 },
+    { header: 'Происхождение', key: 'payment_title', width: 20 },
   ];
 
   data.forEach((item) => {
