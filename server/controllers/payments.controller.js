@@ -297,7 +297,6 @@ const generatePaymentsXlsx = async (data) => {
   const workbook = new ExcelJS.Workbook();
   const worksheet = workbook.addWorksheet('Payments');
 
-  // Определяем заголовки столбцов
   worksheet.columns = [
     { header: 'ID', key: 'id', width: 11 },
     { header: 'Тип', key: 'type', width: 11 },
@@ -313,7 +312,6 @@ const generatePaymentsXlsx = async (data) => {
     worksheet.addRow(item);
   });
 
-  // Генерируем XLSX в виде буфера
   const buffer = await workbook.xlsx.writeBuffer();
   return buffer;
 };
@@ -322,7 +320,6 @@ const generateSbpXlsx = async (data) => {
   const workbook = new ExcelJS.Workbook();
   const worksheet = workbook.addWorksheet('Payments');
 
-  // Определяем заголовки столбцов
   worksheet.columns = [
     { header: 'ID', key: 'id', width: 11 },
     { header: 'Дата', key: 'date', width: 11 },
@@ -335,7 +332,15 @@ const generateSbpXlsx = async (data) => {
     worksheet.addRow(item);
   });
 
-  // Генерируем XLSX в виде буфера
+  const totalSum = data.reduce((acc, item) => acc + Number(item.sum), 0);
+  worksheet.addRow({
+    id: '',
+    date: '',
+    time: '',
+    client: 'Итого',
+    sum: totalSum,
+  });
+
   const buffer = await workbook.xlsx.writeBuffer();
   return buffer;
 };
