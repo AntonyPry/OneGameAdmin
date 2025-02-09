@@ -96,51 +96,7 @@ const getSmartshellManagerBearer = async (clubId) => {
 const getPaymentData = async (startDate, endDate, managerBearer) => {
   try {
     let page = 1;
-    const dataPayments = {
-      query: `query eventList {
-    eventList(
-        input: {
-            start: "${startDate} 00:00:00"
-            finish: "${endDate} 23:59:59"
-            types: "PAYMENT_CREATED"
-        }
-        first: 1000
-        page: ${page}
-    ) {
-        paginatorInfo {
-            count
-            currentPage
-            lastPage
-        }
-        data {
-            type
-            timestamp
-            client {
-                phone
-            }
-            payment {
-                id
-                value
-            }
-            payment_items {
-                title
-                amount
-                sum
-                entity_type
-            }
-        }
-    }
-}
-`,
-    };
-    const smartshellPaymentsDataRequest = {
-      method: 'post',
-      url: `https://billing.smartshell.gg/api/graphql`,
-      headers: {
-        authorization: `Bearer ${managerBearer}`,
-      },
-      data: dataPayments,
-    };
+    let smartshellPaymentsDataRequest = createSmartshellPaymentsDataRequest(startDate, endDate, page, managerBearer);
 
     let result = [];
     let resPaymentsData = await axios(smartshellPaymentsDataRequest);
@@ -166,6 +122,12 @@ const getPaymentData = async (startDate, endDate, managerBearer) => {
       ];
       while (resPaymentsData.data.data.eventList.paginatorInfo.lastPage > page) {
         page += 1;
+        let smartshellPaymentsDataRequest = createSmartshellPaymentsDataRequest(
+          startDate,
+          endDate,
+          page,
+          managerBearer
+        );
         resPaymentsData = await axios(smartshellPaymentsDataRequest);
         if (resPaymentsData.data.errors) {
           resPaymentsData.data.errors.map((error) => console.log('getClientData ERROR ->', error));
@@ -196,55 +158,59 @@ const getPaymentData = async (startDate, endDate, managerBearer) => {
   }
 };
 
+const createSmartshellPaymentsDataRequest = (startDate, endDate, page, managerBearer) => {
+  let dataPayments = {
+    query: `query eventList {
+  eventList(
+      input: {
+          start: "${startDate} 00:00:00"
+          finish: "${endDate} 23:59:59"
+          types: "PAYMENT_CREATED"
+      }
+      first: 1000
+      page: ${page}
+  ) {
+      paginatorInfo {
+          count
+          currentPage
+          lastPage
+      }
+      data {
+          type
+          timestamp
+          client {
+              phone
+          }
+          payment {
+              id
+              value
+          }
+          payment_items {
+              title
+              amount
+              sum
+              entity_type
+          }
+      }
+  }
+  }
+  `,
+  };
+  return {
+    method: 'post',
+    url: `https://billing.smartshell.gg/api/graphql`,
+    headers: {
+      authorization: `Bearer ${managerBearer}`,
+    },
+    data: dataPayments,
+  };
+};
+
 const getSbpData = async (startDate, endDate, managerBearer) => {
   try {
     let page = 1;
-    const dataPayments = {
-      query: `query eventList {
-    eventList(
-        input: {
-            start: "${startDate} 00:00:00"
-            finish: "${endDate} 23:59:59"
-            types: "DEPOSIT_ADDED_ONLINE"
-        }
-        first: 1000
-        page: ${page}
-    ) {
-        paginatorInfo {
-            count
-            currentPage
-            lastPage
-        }
-        data {
-            type
-            timestamp
-            client {
-                phone
-            }
-            payment {
-                id
-                value
-            }
-            payment_items {
-                title
-                amount
-                sum
-                entity_type
-            }
-        }
-    }
-}
-`,
-    };
-    const smartshellPaymentsDataRequest = {
-      method: 'post',
-      url: `https://billing.smartshell.gg/api/graphql`,
-      headers: {
-        authorization: `Bearer ${managerBearer}`,
-      },
-      data: dataPayments,
-    };
 
+    let smartshellPaymentsDataRequest = createSmartshellSpbDataRequest(startDate, endDate, page, managerBearer);
     let result = [];
     let resPaymentsData = await axios(smartshellPaymentsDataRequest);
 
@@ -266,6 +232,7 @@ const getSbpData = async (startDate, endDate, managerBearer) => {
       ];
       while (resPaymentsData.data.data.eventList.paginatorInfo.lastPage > page) {
         page += 1;
+        let smartshellPaymentsDataRequest = createSmartshellSpbDataRequest(startDate, endDate, page, managerBearer);
         resPaymentsData = await axios(smartshellPaymentsDataRequest);
         if (resPaymentsData.data.errors) {
           resPaymentsData.data.errors.map((error) => console.log('getClientData ERROR ->', error));
@@ -291,6 +258,54 @@ const getSbpData = async (startDate, endDate, managerBearer) => {
     console.log('getClientData ERROR ->', error);
     return { error: true, message: 'Ошибка на стороне сервера' };
   }
+};
+
+const createSmartshellSpbDataRequest = (startDate, endDate, page, managerBearer) => {
+  const dataPayments = {
+    query: `query eventList {
+  eventList(
+      input: {
+          start: "${startDate} 00:00:00"
+          finish: "${endDate} 23:59:59"
+          types: "DEPOSIT_ADDED_ONLINE"
+      }
+      first: 1000
+      page: ${page}
+  ) {
+      paginatorInfo {
+          count
+          currentPage
+          lastPage
+      }
+      data {
+          type
+          timestamp
+          client {
+              phone
+          }
+          payment {
+              id
+              value
+          }
+          payment_items {
+              title
+              amount
+              sum
+              entity_type
+          }
+      }
+  }
+}
+`,
+  };
+  return {
+    method: 'post',
+    url: `https://billing.smartshell.gg/api/graphql`,
+    headers: {
+      authorization: `Bearer ${managerBearer}`,
+    },
+    data: dataPayments,
+  };
 };
 
 const generatePaymentsXlsx = async (data) => {
