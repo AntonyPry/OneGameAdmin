@@ -16,17 +16,32 @@ exports.paymentsFromPeriod = async (req, res) => {
       return res.status(400).send(managerBearer);
     }
 
-    const data = await getPaymentData(startDate, endDate, managerBearer);
-    if (data.error) {
-      console.log(`Ошибка при получении менеджерского токена для клуба ${clubId}:`, data.message);
-      return res.status(400).send(data);
-    } else {
-      const xlsxBuffer = await generatePaymentsXlsx(data.result);
-
-      res.setHeader('Content-Disposition', `attachment; filename=payments_${Date.now}.xlsx`);
-      res.setHeader('Content-Type', 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
-      res.send(xlsxBuffer);
+    const dataBasicPayments = await getPaymentData(startDate, endDate, managerBearer);
+    if (dataBasicPayments.error) {
+      console.log(`Ошибка при получении данных об оплатах для клуба ${clubId}:`, dataBasicPayments.message);
+      return res.status(400).send(dataBasicPayments);
     }
+
+    const dataSbpPayments = await getSbpData(startDate, endDate, managerBearer);
+    if (dataSbpPayments.error) {
+      console.log(`Ошибка при получении пополненй по СБП для клуба ${clubId}:`, dataSbpPayments.message);
+      return res.status(400).send(dataSbpPayments);
+    }
+
+    const dataTariffPerMinutePayments = await getTariffPerMinuteData(startDate, endDate, managerBearer);
+    if (dataTariffPerMinutePayments.error) {
+      console.log(`Ошибка при получении поминутных тарифов для клуба ${clubId}:`, dataTariffPerMinutePayments.message);
+      return res.status(400).send(dataTariffPerMinutePayments);
+    }
+
+    const xlsxBuffer = await generatePaymentsXlsx(
+      [...dataTariffPerMinutePayments.result, ...dataBasicPayments.result, ...dataSbpPayments.result].sort((a, b) =>
+        a.idForSort > b.idForSort ? 1 : -1
+      )
+    );
+    res.setHeader('Content-Disposition', `attachment; filename=payments_${Date.now}.xlsx`);
+    res.setHeader('Content-Type', 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
+    res.send(xlsxBuffer);
     // return res.status(200).send(data.result);
   } catch (error) {
     console.log('paymentsFromPeriod ERROR ->', error);
@@ -108,6 +123,9 @@ const getPaymentData = async (startDate, endDate, managerBearer) => {
       result = [
         ...result,
         ...resPaymentsData.data.data.eventList.data.map((payment) => ({
+          idForSort: parseInt(
+            payment.timestamp.split(' ')[0].split('-').join('') + payment.timestamp.split(' ')[1].split(':').join('')
+          ),
           id: payment.payment.id,
           type: payment.payment_items[0].entity_type,
           date: `${payment.timestamp.split(' ')[0].split('-')[2]}.${payment.timestamp.split(' ')[0].split('-')[1]}.${
@@ -118,7 +136,8 @@ const getPaymentData = async (startDate, endDate, managerBearer) => {
           nickname: payment.client?.nickname ? payment.client?.nickname : null,
           title: payment.payment_items[0].title ? payment.payment_items[0].title : 'Пополнение депозита',
           amount: payment.payment_items[0].amount,
-          sum: payment.payment_items[0].sum,
+          sum: payment.payment_items[0].sum - payment.value1,
+          bonus: payment.value1,
           payment_title: payment.payment.title,
         })),
       ];
@@ -138,6 +157,10 @@ const getPaymentData = async (startDate, endDate, managerBearer) => {
           result = [
             ...result,
             ...resPaymentsData.data.data.eventList.data.map((payment) => ({
+              idForSort: parseInt(
+                payment.timestamp.split(' ')[0].split('-').join('') +
+                  payment.timestamp.split(' ')[1].split(':').join('')
+              ),
               id: payment.payment.id,
               type: payment.payment_items[0].entity_type,
               date: `${payment.timestamp.split(' ')[0].split('-')[2]}.${
@@ -148,7 +171,8 @@ const getPaymentData = async (startDate, endDate, managerBearer) => {
               nickname: payment.client?.nickname ? payment.client?.nickname : null,
               title: payment.payment_items[0].title ? payment.payment_items[0].title : 'Пополнение депозита',
               amount: payment.payment_items[0].amount,
-              sum: payment.payment_items[0].sum,
+              sum: payment.payment_items[0].sum - payment.value1,
+              bonus: payment.value1,
               payment_title: payment.payment.title,
             })),
           ];
@@ -197,6 +221,7 @@ const createSmartshellPaymentsDataRequest = (startDate, endDate, page, managerBe
               sum
               entity_type
           }
+          value1
       }
   }
   }
@@ -227,13 +252,22 @@ const getSbpData = async (startDate, endDate, managerBearer) => {
       result = [
         ...result,
         ...resPaymentsData.data.data.eventList.data.map((payment) => ({
+          idForSort: parseInt(
+            payment.timestamp.split(' ')[0].split('-').join('') + payment.timestamp.split(' ')[1].split(':').join('')
+          ),
           id: payment.payment.id,
+          type: payment.payment_items[0].entity_type,
           date: `${payment.timestamp.split(' ')[0].split('-')[2]}.${payment.timestamp.split(' ')[0].split('-')[1]}.${
             payment.timestamp.split(' ')[0].split('-')[0]
           }`,
           time: payment.timestamp.split(' ')[1],
           client: payment.client?.phone ? `+${payment.client?.phone}` : null,
+          nickname: payment.client?.nickname ? payment.client?.nickname : null,
+          title: 'Пополнение по СБП',
+          amount: payment.payment_items[0].amount,
           sum: payment.payment_items[0].sum,
+          bonus: payment.value1 || 0,
+          payment_title: 'СБП',
         })),
       ];
       while (resPaymentsData.data.data.eventList.paginatorInfo.lastPage > page) {
@@ -247,13 +281,23 @@ const getSbpData = async (startDate, endDate, managerBearer) => {
           result = [
             ...result,
             ...resPaymentsData.data.data.eventList.data.map((payment) => ({
+              idForSort: parseInt(
+                payment.timestamp.split(' ')[0].split('-').join('') +
+                  payment.timestamp.split(' ')[1].split(':').join('')
+              ),
               id: payment.payment.id,
+              type: payment.payment_items[0].entity_type,
               date: `${payment.timestamp.split(' ')[0].split('-')[2]}.${
                 payment.timestamp.split(' ')[0].split('-')[1]
               }.${payment.timestamp.split(' ')[0].split('-')[0]}`,
               time: payment.timestamp.split(' ')[1],
               client: payment.client?.phone ? `+${payment.client?.phone}` : null,
+              nickname: payment.client?.nickname ? payment.client?.nickname : null,
+              title: 'Пополнение по СБП',
+              amount: payment.payment_items[0].amount,
               sum: payment.payment_items[0].sum,
+              bonus: payment.value1 || 0,
+              payment_title: 'СБП',
             })),
           ];
         }
@@ -288,6 +332,7 @@ const createSmartshellSpbDataRequest = (startDate, endDate, page, managerBearer)
           timestamp
           client {
               phone
+              nickname
           }
           payment {
               id
@@ -314,21 +359,169 @@ const createSmartshellSpbDataRequest = (startDate, endDate, page, managerBearer)
   };
 };
 
+const getTariffPerMinuteData = async (startDate, endDate, managerBearer) => {
+  try {
+    let page = 1;
+
+    let smartshellPaymentsDataRequest = createSmartshellTariffPerMinuteDataRequest(
+      startDate,
+      endDate,
+      page,
+      managerBearer
+    );
+    let result = [];
+    let resPaymentsData = await axios(smartshellPaymentsDataRequest);
+
+    if (resPaymentsData.data.errors) {
+      resPaymentsData.data.errors.map((error) => console.log('getClientData ERROR ->', error));
+      return { error: true, message: 'Не удалось получить данные об оплатах' };
+    } else {
+      resPaymentsData.data.data.eventList.data.forEach((payment) => {
+        if (payment.client_session.is_per_minute === true) {
+          result = [
+            ...result,
+            {
+              idForSort: parseInt(
+                payment.timestamp.split(' ')[0].split('-').join('') +
+                  payment.timestamp.split(' ')[1].split(':').join('')
+              ),
+              id: payment.payment?.id || 0,
+              type: 'TARIFF',
+              date: `${payment.timestamp.split(' ')[0].split('-')[2]}.${
+                payment.timestamp.split(' ')[0].split('-')[1]
+              }.${payment.timestamp.split(' ')[0].split('-')[0]}`,
+              time: payment.timestamp.split(' ')[1],
+              client: payment.client?.phone ? `+${payment.client?.phone}` : null,
+              nickname: payment.client?.nickname ? payment.client?.nickname : null,
+              title: 'Поминутный',
+              amount: payment.client_session.elapsed,
+              sum: payment.client_session.total_cost,
+              bonus: payment.value1 || 0,
+              payment_title: 'DEPOSIT',
+            },
+          ];
+        }
+      });
+      while (resPaymentsData.data.data.eventList.paginatorInfo.lastPage > page) {
+        page += 1;
+        let smartshellPaymentsDataRequest = createSmartshellTariffPerMinuteDataRequest(
+          startDate,
+          endDate,
+          page,
+          managerBearer
+        );
+        resPaymentsData = await axios(smartshellPaymentsDataRequest);
+        if (resPaymentsData.data.errors) {
+          resPaymentsData.data.errors.map((error) => console.log('getClientData ERROR ->', error));
+          return { error: true, message: 'Не удалось получить данные об оплатах' };
+        } else {
+          resPaymentsData.data.data.eventList.data.forEach((payment) => {
+            if (payment.client_session.is_per_minute === true) {
+              result = [
+                ...result,
+                {
+                  idForSort: parseInt(
+                    payment.timestamp.split(' ')[0].split('-').join('') +
+                      payment.timestamp.split(' ')[1].split(':').join('')
+                  ),
+                  id: payment.payment?.id || 0,
+                  type: 'TARIFF',
+                  date: `${payment.timestamp.split(' ')[0].split('-')[2]}.${
+                    payment.timestamp.split(' ')[0].split('-')[1]
+                  }.${payment.timestamp.split(' ')[0].split('-')[0]}`,
+                  time: payment.timestamp.split(' ')[1],
+                  client: payment.client?.phone ? `+${payment.client?.phone}` : null,
+                  nickname: payment.client?.nickname ? payment.client?.nickname : null,
+                  title: 'Поминутный',
+                  amount: payment.client_session.elapsed,
+                  sum: Math.floor(payment?.client_session?.total_cost) || 0,
+                  bonus: payment.value1 || 0,
+                  payment_title: 'DEPOSIT',
+                },
+              ];
+            }
+          });
+        }
+      }
+      return { result };
+    }
+  } catch (error) {
+    console.log('getClientData ERROR ->', error);
+    return { error: true, message: 'Ошибка на стороне сервера' };
+  }
+};
+
+const createSmartshellTariffPerMinuteDataRequest = (startDate, endDate, page, managerBearer) => {
+  const dataPayments = {
+    query: `query eventList {
+      eventList(
+          input: {
+              start: "${startDate} 00:00:00"
+              finish: "${endDate} 23:59:59"
+              types: "CLIENT_SESSION_FINISHED"
+          }
+          first: 1000
+          page: ${page}
+      ) {
+            paginatorInfo {
+                count
+                currentPage
+                lastPage
+            }
+            data {
+                timestamp
+                client {
+                    phone
+                    nickname
+                }
+                payment {
+                    id
+                    value
+                    title
+                }
+                payment_items {
+                    title
+                    amount
+                    sum
+                    entity_type
+                }
+                description
+                client_session {
+                    is_per_minute
+                    total_cost
+                    elapsed
+                }
+            }
+        }
+    }
+    `,
+  };
+  return {
+    method: 'post',
+    url: `https://billing.smartshell.gg/api/graphql`,
+    headers: {
+      authorization: `Bearer ${managerBearer}`,
+    },
+    data: dataPayments,
+  };
+};
+
 const generatePaymentsXlsx = async (data) => {
   const workbook = new ExcelJS.Workbook();
   const worksheet = workbook.addWorksheet('Payments');
 
   worksheet.columns = [
-    { header: 'ID', key: 'id', width: 11 },
-    { header: 'Тип', key: 'type', width: 11 },
+    { header: 'ID', key: 'id', width: 9 },
+    { header: 'Тип', key: 'type', width: 7 },
     { header: 'Дата', key: 'date', width: 11 },
-    { header: 'Время', key: 'time', width: 11 },
-    { header: 'Клиент', key: 'client', width: 16 },
+    { header: 'Время', key: 'time', width: 9 },
+    { header: 'Клиент', key: 'client', width: 13 },
     { header: 'Ник', key: 'nickname', width: 16 },
-    { header: 'Позиция', key: 'title', width: 25 },
-    { header: 'Количество', key: 'amount', width: 11 },
-    { header: 'Сумма', key: 'sum', width: 11 },
-    { header: 'Происхождение', key: 'payment_title', width: 20 },
+    { header: 'Позиция', key: 'title', width: 32 },
+    { header: 'Кол-во', key: 'amount', width: 7 },
+    { header: 'Сумма', key: 'sum', width: 6 },
+    { header: 'Бонус', key: 'bonus', width: 6 },
+    { header: 'Источник', key: 'payment_title', width: 10 },
   ];
 
   data.forEach((item) => {
