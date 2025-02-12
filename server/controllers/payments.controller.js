@@ -543,8 +543,8 @@ const getBonusData = async (startDate, endDate, managerBearer) => {
           nickname: payment.client?.nickname ? payment.client?.nickname : null,
           title: 'Начисление смарт-бонусов',
           amount: payment.payment_items[0].amount,
-          sum: payment.payment_items[0].sum,
-          bonus: 0,
+          sum: 0,
+          bonus: payment.payment_items[0].sum,
           payment_title: payment.payment.title,
         })),
       ];
@@ -573,8 +573,8 @@ const getBonusData = async (startDate, endDate, managerBearer) => {
               nickname: payment.client?.nickname ? payment.client?.nickname : null,
               title: 'Начисление смарт-бонусов',
               amount: payment.payment_items[0].amount,
-              sum: payment.payment_items[0].sum,
-              bonus: '0',
+              sum: 0,
+              bonus: payment.payment_items[0].sum,
               payment_title: payment.payment.title,
             })),
           ];
