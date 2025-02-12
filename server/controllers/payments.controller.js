@@ -656,7 +656,7 @@ const generatePaymentsXlsx = async (data) => {
     { header: 'Ник', key: 'nickname', width: 16 },
     { header: 'Позиция', key: 'title', width: 32 },
     { header: 'Кол-во', key: 'amount', width: 7 },
-    { header: 'Сумма', key: 'sum', width: 6 },
+    { header: 'Сумма', key: 'sum', width: 10 },
     { header: 'Бонус', key: 'bonus', width: 6 },
     { header: 'Источник', key: 'payment_title', width: 10 },
   ];
