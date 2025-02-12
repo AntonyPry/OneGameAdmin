@@ -34,10 +34,19 @@ exports.paymentsFromPeriod = async (req, res) => {
       return res.status(400).send(dataTariffPerMinutePayments);
     }
 
+    const dataBonusPayments = await getBonusData(startDate, endDate, managerBearer);
+    if (getBonusData.error) {
+      console.log(`Ошибка при получении начисления бонусов для клуба ${clubId}:`, getBonusData.message);
+      return res.status(400).send(getBonusData);
+    }
+
     const xlsxBuffer = await generatePaymentsXlsx(
-      [...dataTariffPerMinutePayments.result, ...dataBasicPayments.result, ...dataSbpPayments.result].sort((a, b) =>
-        a.idForSort > b.idForSort ? 1 : -1
-      )
+      [
+        ...dataBasicPayments.result,
+        ...dataSbpPayments.result,
+        ...dataTariffPerMinutePayments.result,
+        ...dataBonusPayments.result,
+      ].sort((a, b) => (a.idForSort > b.idForSort ? 1 : -1))
     );
     res.setHeader('Content-Disposition', `attachment; filename=payments_${Date.now}.xlsx`);
     res.setHeader('Content-Type', 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
@@ -136,8 +145,8 @@ const getPaymentData = async (startDate, endDate, managerBearer) => {
           nickname: payment.client?.nickname ? payment.client?.nickname : null,
           title: payment.payment_items[0].title ? payment.payment_items[0].title : 'Пополнение депозита',
           amount: payment.payment_items[0].amount,
-          sum: payment.payment_items[0].sum - payment.value1,
-          bonus: payment.value1,
+          sum: Math.floor(payment.payment_items[0].sum - payment.value1),
+          bonus: Math.floor(payment.value1),
           payment_title: payment.payment.title,
         })),
       ];
@@ -171,8 +180,8 @@ const getPaymentData = async (startDate, endDate, managerBearer) => {
               nickname: payment.client?.nickname ? payment.client?.nickname : null,
               title: payment.payment_items[0].title ? payment.payment_items[0].title : 'Пополнение депозита',
               amount: payment.payment_items[0].amount,
-              sum: payment.payment_items[0].sum - payment.value1,
-              bonus: payment.value1,
+              sum: Math.floor(payment.payment_items[0].sum - payment.value1),
+              bonus: Math.floor(payment.value1),
               payment_title: payment.payment.title,
             })),
           ];
@@ -265,8 +274,8 @@ const getSbpData = async (startDate, endDate, managerBearer) => {
           nickname: payment.client?.nickname ? payment.client?.nickname : null,
           title: 'Пополнение по СБП',
           amount: payment.payment_items[0].amount,
-          sum: payment.payment_items[0].sum,
-          bonus: payment.value1 || 0,
+          sum: Math.floor(payment.payment_items[0].sum),
+          bonus: Math.floor(payment.value1) || 0,
           payment_title: 'СБП',
         })),
       ];
@@ -295,8 +304,8 @@ const getSbpData = async (startDate, endDate, managerBearer) => {
               nickname: payment.client?.nickname ? payment.client?.nickname : null,
               title: 'Пополнение по СБП',
               amount: payment.payment_items[0].amount,
-              sum: payment.payment_items[0].sum,
-              bonus: payment.value1 || 0,
+              sum: Math.floor(payment.payment_items[0].sum),
+              bonus: Math.floor(payment.value1) || 0,
               payment_title: 'СБП',
             })),
           ];
@@ -395,8 +404,8 @@ const getTariffPerMinuteData = async (startDate, endDate, managerBearer) => {
               nickname: payment.client?.nickname ? payment.client?.nickname : null,
               title: 'Поминутный',
               amount: payment.client_session.elapsed,
-              sum: payment.client_session.total_cost,
-              bonus: payment.value1 || 0,
+              sum: Math.floor(payment?.client_session?.total_cost) || 0,
+              bonus: Math.floor(payment.value1) || 0,
               payment_title: 'DEPOSIT',
             },
           ];
@@ -435,7 +444,7 @@ const getTariffPerMinuteData = async (startDate, endDate, managerBearer) => {
                   title: 'Поминутный',
                   amount: payment.client_session.elapsed,
                   sum: Math.floor(payment?.client_session?.total_cost) || 0,
-                  bonus: payment.value1 || 0,
+                  bonus: Math.floor(payment.value1) || 0,
                   payment_title: 'DEPOSIT',
                 },
               ];
@@ -459,6 +468,134 @@ const createSmartshellTariffPerMinuteDataRequest = (startDate, endDate, page, ma
               start: "${startDate} 00:00:00"
               finish: "${endDate} 23:59:59"
               types: "CLIENT_SESSION_FINISHED"
+          }
+          first: 1000
+          page: ${page}
+      ) {
+            paginatorInfo {
+                count
+                currentPage
+                lastPage
+            }
+            data {
+                timestamp
+                client {
+                    phone
+                    nickname
+                }
+                payment {
+                    id
+                    value
+                    title
+                }
+                payment_items {
+                    title
+                    amount
+                    sum
+                    entity_type
+                }
+                description
+                client_session {
+                    is_per_minute
+                    total_cost
+                    elapsed
+                }
+            }
+        }
+    }
+    `,
+  };
+  return {
+    method: 'post',
+    url: `https://billing.smartshell.gg/api/graphql`,
+    headers: {
+      authorization: `Bearer ${managerBearer}`,
+    },
+    data: dataPayments,
+  };
+};
+
+const getBonusData = async (startDate, endDate, managerBearer) => {
+  try {
+    let page = 1;
+
+    let smartshellPaymentsDataRequest = createSmartshellBonusDataRequest(startDate, endDate, page, managerBearer);
+    let result = [];
+    let resPaymentsData = await axios(smartshellPaymentsDataRequest);
+
+    if (resPaymentsData.data.errors) {
+      resPaymentsData.data.errors.map((error) => console.log('getClientData ERROR ->', error));
+      return { error: true, message: 'Не удалось получить данные об оплатах' };
+    } else {
+      result = [
+        ...result,
+        ...resPaymentsData.data.data.eventList.data.map((payment) => ({
+          idForSort: parseInt(
+            payment.timestamp.split(' ')[0].split('-').join('') + payment.timestamp.split(' ')[1].split(':').join('')
+          ),
+          id: payment.payment.id,
+          type: 'DEPOSIT',
+          date: `${payment.timestamp.split(' ')[0].split('-')[2]}.${payment.timestamp.split(' ')[0].split('-')[1]}.${
+            payment.timestamp.split(' ')[0].split('-')[0]
+          }`,
+          time: payment.timestamp.split(' ')[1],
+          client: payment.client?.phone ? `+${payment.client?.phone}` : null,
+          nickname: payment.client?.nickname ? payment.client?.nickname : null,
+          title: 'Начисление смарт-бонусов',
+          amount: payment.payment_items[0].amount,
+          sum: payment.payment_items[0].sum,
+          bonus: 0,
+          payment_title: payment.payment.title,
+        })),
+      ];
+      while (resPaymentsData.data.data.eventList.paginatorInfo.lastPage > page) {
+        page += 1;
+        let smartshellPaymentsDataRequest = createSmartshellBonusDataRequest(startDate, endDate, page, managerBearer);
+        resPaymentsData = await axios(smartshellPaymentsDataRequest);
+        if (resPaymentsData.data.errors) {
+          resPaymentsData.data.errors.map((error) => console.log('getClientData ERROR ->', error));
+          return { error: true, message: 'Не удалось получить данные об оплатах' };
+        } else {
+          result = [
+            ...result,
+            ...resPaymentsData.data.data.eventList.data.map((payment) => ({
+              idForSort: parseInt(
+                payment.timestamp.split(' ')[0].split('-').join('') +
+                  payment.timestamp.split(' ')[1].split(':').join('')
+              ),
+              id: payment.payment.id,
+              type: 'DEPOSIT',
+              date: `${payment.timestamp.split(' ')[0].split('-')[2]}.${
+                payment.timestamp.split(' ')[0].split('-')[1]
+              }.${payment.timestamp.split(' ')[0].split('-')[0]}`,
+              time: payment.timestamp.split(' ')[1],
+              client: payment.client?.phone ? `+${payment.client?.phone}` : null,
+              nickname: payment.client?.nickname ? payment.client?.nickname : null,
+              title: 'Начисление смарт-бонусов',
+              amount: payment.payment_items[0].amount,
+              sum: payment.payment_items[0].sum,
+              bonus: '0',
+              payment_title: payment.payment.title,
+            })),
+          ];
+        }
+      }
+      return { result };
+    }
+  } catch (error) {
+    console.log('getClientData ERROR ->', error);
+    return { error: true, message: 'Ошибка на стороне сервера' };
+  }
+};
+
+const createSmartshellBonusDataRequest = (startDate, endDate, page, managerBearer) => {
+  const dataPayments = {
+    query: `query eventList {
+      eventList(
+          input: {
+              start: "${startDate} 00:00:00"
+              finish: "${endDate} 23:59:59"
+              types: "BONUS_PAYMENT_CREATED"
           }
           first: 1000
           page: ${page}
