@@ -129,27 +129,32 @@ const getPaymentData = async (startDate, endDate, managerBearer) => {
       resPaymentsData.data.errors.map((error) => console.log('getClientData ERROR ->', error));
       return { error: true, message: 'Не удалось получить данные об оплатах' };
     } else {
-      result = [
-        ...result,
-        ...resPaymentsData.data.data.eventList.data.map((payment) => ({
-          idForSort: parseInt(
-            payment.timestamp.split(' ')[0].split('-').join('') + payment.timestamp.split(' ')[1].split(':').join('')
-          ),
-          id: payment.payment.id,
-          type: payment.payment_items[0].entity_type,
-          date: `${payment.timestamp.split(' ')[0].split('-')[2]}.${payment.timestamp.split(' ')[0].split('-')[1]}.${
-            payment.timestamp.split(' ')[0].split('-')[0]
-          }`,
-          time: payment.timestamp.split(' ')[1],
-          client: payment.client?.phone ? `+${payment.client?.phone}` : null,
-          nickname: payment.client?.nickname ? payment.client?.nickname : null,
-          title: payment.payment_items[0].title ? payment.payment_items[0].title : 'Пополнение депозита',
-          amount: payment.payment_items[0].amount,
-          sum: Math.floor(payment.payment_items[0].sum - payment.value1),
-          bonus: Math.floor(payment.value1),
-          payment_title: payment.payment.title,
-        })),
-      ];
+      resPaymentsData.data.data.eventList.data.forEach((payment) => {
+        for (let i = 0; i < payment.payment_items.length; i++) {
+          result = [
+            ...result,
+            {
+              idForSort: parseInt(
+                payment.timestamp.split(' ')[0].split('-').join('') +
+                  payment.timestamp.split(' ')[1].split(':').join('')
+              ),
+              id: payment.payment.id,
+              type: payment.payment_items[i].entity_type,
+              date: `${payment.timestamp.split(' ')[0].split('-')[2]}.${
+                payment.timestamp.split(' ')[0].split('-')[1]
+              }.${payment.timestamp.split(' ')[0].split('-')[0]}`,
+              time: payment.timestamp.split(' ')[1],
+              client: payment.client?.phone ? `+${payment.client?.phone}` : null,
+              nickname: payment.client?.nickname ? payment.client?.nickname : null,
+              title: payment.payment_items[i].title ? payment.payment_items[i].title : 'Пополнение депозита',
+              amount: payment.payment_items[i].amount,
+              sum: Math.floor(payment.payment_items[i].sum - payment.value1),
+              bonus: Math.floor(payment.value1),
+              payment_title: payment.payment.title,
+            },
+          ];
+        }
+      });
       while (resPaymentsData.data.data.eventList.paginatorInfo.lastPage > page) {
         page += 1;
         let smartshellPaymentsDataRequest = createSmartshellPaymentsDataRequest(
@@ -163,28 +168,32 @@ const getPaymentData = async (startDate, endDate, managerBearer) => {
           resPaymentsData.data.errors.map((error) => console.log('getClientData ERROR ->', error));
           return { error: true, message: 'Не удалось получить данные об оплатах' };
         } else {
-          result = [
-            ...result,
-            ...resPaymentsData.data.data.eventList.data.map((payment) => ({
-              idForSort: parseInt(
-                payment.timestamp.split(' ')[0].split('-').join('') +
-                  payment.timestamp.split(' ')[1].split(':').join('')
-              ),
-              id: payment.payment.id,
-              type: payment.payment_items[0].entity_type,
-              date: `${payment.timestamp.split(' ')[0].split('-')[2]}.${
-                payment.timestamp.split(' ')[0].split('-')[1]
-              }.${payment.timestamp.split(' ')[0].split('-')[0]}`,
-              time: payment.timestamp.split(' ')[1],
-              client: payment.client?.phone ? `+${payment.client?.phone}` : null,
-              nickname: payment.client?.nickname ? payment.client?.nickname : null,
-              title: payment.payment_items[0].title ? payment.payment_items[0].title : 'Пополнение депозита',
-              amount: payment.payment_items[0].amount,
-              sum: Math.floor(payment.payment_items[0].sum - payment.value1),
-              bonus: Math.floor(payment.value1),
-              payment_title: payment.payment.title,
-            })),
-          ];
+          resPaymentsData.data.data.eventList.data.forEach((payment) => {
+            for (let i = 0; i < payment.payment_items.length; i++) {
+              result = [
+                ...result,
+                {
+                  idForSort: parseInt(
+                    payment.timestamp.split(' ')[0].split('-').join('') +
+                      payment.timestamp.split(' ')[1].split(':').join('')
+                  ),
+                  id: payment.payment.id,
+                  type: payment.payment_items[i].entity_type,
+                  date: `${payment.timestamp.split(' ')[0].split('-')[2]}.${
+                    payment.timestamp.split(' ')[0].split('-')[1]
+                  }.${payment.timestamp.split(' ')[0].split('-')[0]}`,
+                  time: payment.timestamp.split(' ')[1],
+                  client: payment.client?.phone ? `+${payment.client?.phone}` : null,
+                  nickname: payment.client?.nickname ? payment.client?.nickname : null,
+                  title: payment.payment_items[i].title ? payment.payment_items[i].title : 'Пополнение депозита',
+                  amount: payment.payment_items[i].amount,
+                  sum: Math.floor(payment.payment_items[i].sum - payment.value1),
+                  bonus: Math.floor(payment.value1),
+                  payment_title: payment.payment.title,
+                },
+              ];
+            }
+          });
         }
       }
       return { result };
