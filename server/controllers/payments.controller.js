@@ -191,7 +191,7 @@ const getPaymentData = async (startDate, endDate, managerBearer) => {
                   sum: Math.floor(payment.payment_items[i].sum - payment.value1),
                   bonus: Math.floor(payment.value1),
                   payment_title: payment.payment.title,
-                  operator: `${payment.operator.first_name} ${payment.operator.last_name}`,
+                  operator: `${payment.operator?.first_name} ${payment.operator?.last_name}`,
                 },
               ];
             }
@@ -322,7 +322,7 @@ const getSbpData = async (startDate, endDate, managerBearer) => {
               sum: Math.floor(payment.payment_items[0].sum),
               bonus: Math.floor(payment.value1) || 0,
               payment_title: 'СБП',
-              operator: `${payment.operator.first_name} ${payment.operator.last_name}`,
+              operator: `${payment.operator?.first_name} ${payment.operator?.last_name}`,
             })),
           ];
         }
@@ -467,7 +467,7 @@ const getTariffPerMinuteData = async (startDate, endDate, managerBearer) => {
                   sum: Math.floor(payment?.client_session?.total_cost) || 0,
                   bonus: Math.floor(payment.value1) || 0,
                   payment_title: 'DEPOSIT',
-                  operator: `${payment.operator.first_name} ${payment.operator.last_name}`,
+                  operator: `${payment.operator?.first_name} ${payment.operator?.last_name}`,
                 },
               ];
             }
@@ -572,7 +572,7 @@ const getBonusData = async (startDate, endDate, managerBearer) => {
           sum: 0,
           bonus: payment.payment_items[0].sum,
           payment_title: payment.payment.title,
-          operator: `${payment.operator.first_name} ${payment.operator.last_name}`,
+          operator: `${payment.operator?.first_name} ${payment.operator?.last_name}`,
         })),
       ];
       while (resPaymentsData.data.data.eventList.paginatorInfo.lastPage > page) {
@@ -603,7 +603,7 @@ const getBonusData = async (startDate, endDate, managerBearer) => {
               sum: 0,
               bonus: payment.payment_items[0].sum,
               payment_title: payment.payment.title,
-              operator: `${payment.operator.first_name} ${payment.operator.last_name}`,
+              operator: `${payment.operator?.first_name} ${payment.operator?.last_name}`,
             })),
           ];
         }
