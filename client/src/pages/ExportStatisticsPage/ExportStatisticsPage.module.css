@@ -1,0 +1,24 @@
+.container {
+  width: 100%;
+  max-width: 1000px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+  padding-top: 0;
+  color: rgb(40, 40, 40);
+  background-color: white;
+  margin: 0 auto;
+}
+
+.paymentsContainer {
+  margin: 50px 16px 0;
+  text-align: center;
+  color: rgb(40, 40, 40);
+  border-radius: 20px;
+  padding: 20px 80px;
+  background-color: white;
+  -webkit-box-shadow: 0px 0px 50px 0px rgba(34, 60, 80, 0.2);
+  -moz-box-shadow: 0px 0px 50px 0px rgba(34, 60, 80, 0.2);
+  box-shadow: 0px 0px 50px 0px rgba(34, 60, 80, 0.2);
+}

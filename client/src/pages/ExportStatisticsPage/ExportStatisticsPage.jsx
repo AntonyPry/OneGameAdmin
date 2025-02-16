@@ -1,12 +1,13 @@
+// pages/ExportStatisticsPage/ExportStatisticsPage.jsx
 import React, { useState } from 'react';
 import axios from 'axios';
-import styles from './App.module.css';
 import { DatePicker, Spin, Button } from 'antd';
-import Icon, { LoadingOutlined } from '@ant-design/icons';
+import { LoadingOutlined } from '@ant-design/icons';
+import styles from './ExportStatisticsPage.module.css';
 
 const { RangePicker } = DatePicker;
 
-const App = () => {
+const ExportStatisticsPage = () => {
   const [paymentsFromPeriodDates, setPaymentsFromPeriodDates] = useState([]);
   const [sbpFromPeriodDates, setSbpFromPeriodDates] = useState([]);
   const [paymentsFromPeriodLoading, setPaymentsFromPeriodLoading] = useState(false);
@@ -110,7 +111,6 @@ const App = () => {
     <div className={styles.container}>
       <div className={styles.paymentsContainer}>
         <h1 style={{ marginBottom: '20px' }}>Выберите период для загрузки данных об оплатах</h1>
-        <Icon />
         <div style={{ marginBottom: '40px' }}>
           <RangePicker placeholder={['Дата начала', 'Дата конца']} onChange={handlePaymentsFromPeriodRangeChange} />
           <Button
@@ -125,6 +125,7 @@ const App = () => {
           )}
         </div>
       </div>
+
       <div className={styles.paymentsContainer}>
         <h1 style={{ marginBottom: '20px' }}>Выберите период для загрузки данных об оплатах по СБП</h1>
         <div style={{ marginBottom: '40px' }}>
@@ -145,4 +146,4 @@ const App = () => {
   );
 };
 
-export default App;
+export default ExportStatisticsPage;
