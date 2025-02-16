@@ -151,6 +151,7 @@ const getPaymentData = async (startDate, endDate, managerBearer) => {
               sum: Math.floor(payment.payment_items[i].sum - payment.value1),
               bonus: Math.floor(payment.value1),
               payment_title: payment.payment.title,
+              operator: `${payment.operator?.first_name} ${payment.operator?.last_name}`,
             },
           ];
         }
@@ -190,6 +191,7 @@ const getPaymentData = async (startDate, endDate, managerBearer) => {
                   sum: Math.floor(payment.payment_items[i].sum - payment.value1),
                   bonus: Math.floor(payment.value1),
                   payment_title: payment.payment.title,
+                  operator: `${payment.operator.first_name} ${payment.operator.last_name}`,
                 },
               ];
             }
@@ -240,6 +242,10 @@ const createSmartshellPaymentsDataRequest = (startDate, endDate, page, managerBe
               entity_type
           }
           value1
+          operator {
+              first_name
+              last_name
+          }
       }
   }
   }
@@ -316,6 +322,7 @@ const getSbpData = async (startDate, endDate, managerBearer) => {
               sum: Math.floor(payment.payment_items[0].sum),
               bonus: Math.floor(payment.value1) || 0,
               payment_title: 'СБП',
+              operator: `${payment.operator.first_name} ${payment.operator.last_name}`,
             })),
           ];
         }
@@ -361,6 +368,10 @@ const createSmartshellSpbDataRequest = (startDate, endDate, page, managerBearer)
               amount
               sum
               entity_type
+          }
+          operator {
+              first_name
+              last_name
           }
       }
   }
@@ -416,6 +427,7 @@ const getTariffPerMinuteData = async (startDate, endDate, managerBearer) => {
               sum: Math.floor(payment?.client_session?.total_cost) || 0,
               bonus: Math.floor(payment.value1) || 0,
               payment_title: 'DEPOSIT',
+              operator: `${payment.operator?.first_name} ${payment.operator?.last_name}`,
             },
           ];
         }
@@ -455,6 +467,7 @@ const getTariffPerMinuteData = async (startDate, endDate, managerBearer) => {
                   sum: Math.floor(payment?.client_session?.total_cost) || 0,
                   bonus: Math.floor(payment.value1) || 0,
                   payment_title: 'DEPOSIT',
+                  operator: `${payment.operator.first_name} ${payment.operator.last_name}`,
                 },
               ];
             }
@@ -509,6 +522,10 @@ const createSmartshellTariffPerMinuteDataRequest = (startDate, endDate, page, ma
                     total_cost
                     elapsed
                 }
+                operator {
+                  first_name
+                  last_name
+                }
             }
         }
     }
@@ -555,6 +572,7 @@ const getBonusData = async (startDate, endDate, managerBearer) => {
           sum: 0,
           bonus: payment.payment_items[0].sum,
           payment_title: payment.payment.title,
+          operator: `${payment.operator.first_name} ${payment.operator.last_name}`,
         })),
       ];
       while (resPaymentsData.data.data.eventList.paginatorInfo.lastPage > page) {
@@ -585,6 +603,7 @@ const getBonusData = async (startDate, endDate, managerBearer) => {
               sum: 0,
               bonus: payment.payment_items[0].sum,
               payment_title: payment.payment.title,
+              operator: `${payment.operator.first_name} ${payment.operator.last_name}`,
             })),
           ];
         }
@@ -637,6 +656,10 @@ const createSmartshellBonusDataRequest = (startDate, endDate, page, managerBeare
                     total_cost
                     elapsed
                 }
+                operator {
+                  first_name
+                  last_name
+                }
             }
         }
     }
@@ -668,6 +691,7 @@ const generatePaymentsXlsx = async (data) => {
     { header: 'Сумма', key: 'sum', width: 10 },
     { header: 'Бонус', key: 'bonus', width: 6 },
     { header: 'Источник', key: 'payment_title', width: 10 },
+    { header: 'Сотрудник', key: 'operator', width: 25 },
   ];
 
   data.forEach((item) => {
