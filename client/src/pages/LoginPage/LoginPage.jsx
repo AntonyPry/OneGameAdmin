@@ -15,8 +15,6 @@ const LoginPage = () => {
     try {
       setLoading(true);
 
-      // Пример запроса на сервер:
-      // Предположим, что наш сервер на эндпоинте /api/auth/checkPassword
       // принимает { password }, и возвращает { valid: true/false }
       const response = await axios.post(`${process.env.REACT_APP_BACKEND_URL}/api/auth/checkPassword`, { password });
 

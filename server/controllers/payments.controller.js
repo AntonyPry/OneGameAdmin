@@ -40,12 +40,19 @@ exports.paymentsFromPeriod = async (req, res) => {
       return res.status(400).send(getBonusData);
     }
 
+    const paymentRefundData = await getPaymentRefundData(startDate, endDate, managerBearer);
+    if (paymentRefundData.error) {
+      console.log(`Ошибка при получении отмененных платежей ${clubId}:`, paymentRefundData.message);
+      return res.status(400).send(paymentRefundData);
+    }
+
     const xlsxBuffer = await generatePaymentsXlsx(
       [
         ...dataBasicPayments.result,
         ...dataSbpPayments.result,
         ...dataTariffPerMinutePayments.result,
         ...dataBonusPayments.result,
+        ...paymentRefundData.result,
       ].sort((a, b) => (a.idForSort > b.idForSort ? 1 : -1))
     );
     res.setHeader('Content-Disposition', `attachment; filename=payments_${Date.now}.xlsx`);
@@ -675,6 +682,155 @@ const createSmartshellBonusDataRequest = (startDate, endDate, page, managerBeare
   };
 };
 
+const getPaymentRefundData = async (startDate, endDate, managerBearer) => {
+  try {
+    let page = 1;
+    let smartshellPaymentsDataRequest = createSmartshellPaymentRefundDataRequest(
+      startDate,
+      endDate,
+      page,
+      managerBearer
+    );
+
+    let result = [];
+    let resPaymentsData = await axios(smartshellPaymentsDataRequest);
+
+    if (resPaymentsData.data.errors) {
+      resPaymentsData.data.errors.map((error) => console.log('getPaymentRefundData ERROR ->', error));
+      return { error: true, message: 'Не удалось получить данные об оплатах' };
+    } else {
+      resPaymentsData.data.data.eventList.data.forEach((payment) => {
+        for (let i = 0; i < payment.payment_items.length; i++) {
+          result = [
+            ...result,
+            {
+              idForSort: parseInt(
+                payment.timestamp.split(' ')[0].split('-').join('') +
+                  payment.timestamp.split(' ')[1].split(':').join('')
+              ),
+              id: payment.payment.id,
+              type: payment.payment_items[i].entity_type,
+              date: `${payment.timestamp.split(' ')[0].split('-')[2]}.${
+                payment.timestamp.split(' ')[0].split('-')[1]
+              }.${payment.timestamp.split(' ')[0].split('-')[0]}`,
+              time: payment.timestamp.split(' ')[1],
+              client: payment.client?.phone ? `+${payment.client?.phone}` : null,
+              nickname: payment.client?.nickname ? payment.client?.nickname : null,
+              title: payment.payment_items[i].title ? payment.payment_items[i].title : 'Отмена',
+              amount: payment.payment_items[i].amount,
+              sum: -Math.floor(payment.payment_items[i].sum - payment.value1),
+              bonus: Math.floor(payment.value1),
+              payment_title: payment.payment.title,
+              operator: `${payment.operator?.first_name} ${payment.operator?.last_name}`,
+            },
+          ];
+        }
+      });
+      while (resPaymentsData.data.data.eventList.paginatorInfo.lastPage > page) {
+        page += 1;
+        let smartshellPaymentsDataRequest = createSmartshellPaymentRefundDataRequest(
+          startDate,
+          endDate,
+          page,
+          managerBearer
+        );
+        resPaymentsData = await axios(smartshellPaymentsDataRequest);
+        if (resPaymentsData.data.errors) {
+          resPaymentsData.data.errors.map((error) => console.log('getPaymentRefundData ERROR ->', error));
+          return { error: true, message: 'Не удалось получить данные об оплатах' };
+        } else {
+          resPaymentsData.data.data.eventList.data.forEach((payment) => {
+            for (let i = 0; i < payment.payment_items.length; i++) {
+              result = [
+                ...result,
+                {
+                  idForSort: parseInt(
+                    payment.timestamp.split(' ')[0].split('-').join('') +
+                      payment.timestamp.split(' ')[1].split(':').join('')
+                  ),
+                  id: payment.payment.id,
+                  type: payment.payment_items[i].entity_type,
+                  date: `${payment.timestamp.split(' ')[0].split('-')[2]}.${
+                    payment.timestamp.split(' ')[0].split('-')[1]
+                  }.${payment.timestamp.split(' ')[0].split('-')[0]}`,
+                  time: payment.timestamp.split(' ')[1],
+                  client: payment.client?.phone ? `+${payment.client?.phone}` : null,
+                  nickname: payment.client?.nickname ? payment.client?.nickname : null,
+                  title: payment.payment_items[i].title ? payment.payment_items[i].title : 'Отмена',
+                  amount: payment.payment_items[i].amount,
+                  sum: -Math.floor(payment.payment_items[i].sum - payment.value1),
+                  bonus: Math.floor(payment.value1),
+                  payment_title: payment.payment.title,
+                  operator: `${payment.operator?.first_name} ${payment.operator?.last_name}`,
+                },
+              ];
+            }
+          });
+        }
+      }
+      return { result };
+    }
+  } catch (error) {
+    console.log('getPaymentRefundData ERROR ->', error);
+    return { error: true, message: 'Ошибка на стороне сервера' };
+  }
+};
+
+const createSmartshellPaymentRefundDataRequest = (startDate, endDate, page, managerBearer) => {
+  let dataPayments = {
+    query: `query eventList {
+  eventList(
+      input: {
+          start: "${startDate} 00:00:00"
+          finish: "${endDate} 23:59:59"
+          types: "PAYMENT_REFUND"
+      }
+      first: 1000
+      page: ${page}
+  ) {
+      paginatorInfo {
+          count
+          currentPage
+          lastPage
+      }
+      data {
+          type
+          timestamp
+          client {
+              phone
+              nickname
+          }
+          payment {
+              id
+              value
+              title
+          }
+          payment_items {
+              title
+              amount
+              sum
+              entity_type
+          }
+          value1
+          operator {
+              first_name
+              last_name
+          }
+      }
+  }
+  }
+  `,
+  };
+  return {
+    method: 'post',
+    url: `https://billing.smartshell.gg/api/graphql`,
+    headers: {
+      authorization: `Bearer ${managerBearer}`,
+    },
+    data: dataPayments,
+  };
+};
+
 const generatePaymentsXlsx = async (data) => {
   const workbook = new ExcelJS.Workbook();
   const worksheet = workbook.addWorksheet('Payments');
@@ -696,6 +852,27 @@ const generatePaymentsXlsx = async (data) => {
 
   data.forEach((item) => {
     worksheet.addRow(item);
+  });
+
+  let totalSum = 0;
+
+  data.forEach((item) => {
+    if (!(item.type === 'TARIFF' && item.payment_title === 'DEPOSIT')) totalSum += Number(item.sum);
+  });
+
+  worksheet.addRow({
+    id: '',
+    type: '',
+    date: '',
+    time: '',
+    client: '',
+    nickname: '',
+    title: '',
+    amount: 'Итого',
+    sum: totalSum,
+    bonus: '',
+    payment_title: '',
+    operator: '',
   });
 
   const buffer = await workbook.xlsx.writeBuffer();
