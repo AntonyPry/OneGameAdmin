@@ -697,7 +697,7 @@ const getPaymentRefundData = async (startDate, endDate, managerBearer) => {
 
     if (resPaymentsData.data.errors) {
       resPaymentsData.data.errors.map((error) => console.log('getPaymentRefundData ERROR ->', error));
-      return { error: true, message: 'Не удалось получить данные об оплатах' };
+      return { error: true, message: 'Не удалось получить данные об отменах' };
     } else {
       resPaymentsData.data.data.eventList.data.forEach((payment) => {
         for (let i = 0; i < payment.payment_items.length; i++) {
@@ -718,8 +718,14 @@ const getPaymentRefundData = async (startDate, endDate, managerBearer) => {
               nickname: payment.client?.nickname ? payment.client?.nickname : null,
               title: payment.payment_items[i].title ? payment.payment_items[i].title : 'Отмена',
               amount: payment.payment_items[i].amount,
-              sum: -Math.floor(payment.payment_items[i].sum - payment.value1),
-              bonus: Math.floor(payment.value1),
+              sum:
+                payment.payment.title === 'BONUS'
+                  ? Math.floor(payment.value1)
+                  : -Math.floor(payment.payment_items[i].sum - payment.value1),
+              bonus:
+                payment.payment.title === 'BONUS'
+                  ? -Math.floor(payment.payment_items[i].sum - payment.value1)
+                  : Math.floor(payment.value1),
               payment_title: payment.payment.title,
               operator: `${payment.operator?.first_name} ${payment.operator?.last_name}`,
             },
@@ -737,7 +743,7 @@ const getPaymentRefundData = async (startDate, endDate, managerBearer) => {
         resPaymentsData = await axios(smartshellPaymentsDataRequest);
         if (resPaymentsData.data.errors) {
           resPaymentsData.data.errors.map((error) => console.log('getPaymentRefundData ERROR ->', error));
-          return { error: true, message: 'Не удалось получить данные об оплатах' };
+          return { error: true, message: 'Не удалось получить данные об отменах' };
         } else {
           resPaymentsData.data.data.eventList.data.forEach((payment) => {
             for (let i = 0; i < payment.payment_items.length; i++) {
