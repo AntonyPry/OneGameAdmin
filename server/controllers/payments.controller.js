@@ -186,7 +186,7 @@ const getPaymentData = async (startDate, endDate, managerBearer) => {
                       payment.timestamp.split(' ')[1].split(':').join('')
                   ),
                   id: payment.payment.id,
-                  type: payment.payment_items[i].entity_type,
+                  type: payment.payment_items[i].entity_type ? payment.payment_items[i].entity_type : 'TARIFF',
                   date: `${payment.timestamp.split(' ')[0].split('-')[2]}.${
                     payment.timestamp.split(' ')[0].split('-')[1]
                   }.${payment.timestamp.split(' ')[0].split('-')[0]}`,
