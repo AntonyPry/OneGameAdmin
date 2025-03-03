@@ -699,7 +699,7 @@ const getPaymentRefundData = async (startDate, endDate, managerBearer) => {
       resPaymentsData.data.errors.map((error) => console.log('getPaymentRefundData ERROR ->', error));
       return { error: true, message: 'Не удалось получить данные об отменах' };
     } else {
-      resPaymentsData.data.data.eventList.data.forEach((payment) => {
+      for (const payment of resPaymentsData.data.data.eventList.data) {
         for (let i = 0; i < payment.payment_items.length; i++) {
           result = [
             ...result,
@@ -708,7 +708,7 @@ const getPaymentRefundData = async (startDate, endDate, managerBearer) => {
                 payment.timestamp.split(' ')[0].split('-').join('') +
                   payment.timestamp.split(' ')[1].split(':').join('')
               ),
-              id: payment.payment.id,
+              id: 0,
               type: payment.payment_items[i].entity_type,
               date: `${payment.timestamp.split(' ')[0].split('-')[2]}.${
                 payment.timestamp.split(' ')[0].split('-')[1]
@@ -716,7 +716,7 @@ const getPaymentRefundData = async (startDate, endDate, managerBearer) => {
               time: payment.timestamp.split(' ')[1],
               client: payment.client?.phone ? `+${payment.client?.phone}` : null,
               nickname: payment.client?.nickname ? payment.client?.nickname : null,
-              title: payment.payment_items[i].title ? payment.payment_items[i].title : 'Отмена',
+              title: 'Отмена ' + (await getPaymentById(endDate, payment.payment.id, i, managerBearer)),
               amount: payment.payment_items[i].amount,
               sum:
                 payment.payment.title === 'BONUS'
@@ -731,7 +731,7 @@ const getPaymentRefundData = async (startDate, endDate, managerBearer) => {
             },
           ];
         }
-      });
+      }
       while (resPaymentsData.data.data.eventList.paginatorInfo.lastPage > page) {
         page += 1;
         let smartshellPaymentsDataRequest = createSmartshellPaymentRefundDataRequest(
@@ -745,7 +745,7 @@ const getPaymentRefundData = async (startDate, endDate, managerBearer) => {
           resPaymentsData.data.errors.map((error) => console.log('getPaymentRefundData ERROR ->', error));
           return { error: true, message: 'Не удалось получить данные об отменах' };
         } else {
-          resPaymentsData.data.data.eventList.data.forEach((payment) => {
+          for (const payment of resPaymentsData.data.data.eventList.data) {
             for (let i = 0; i < payment.payment_items.length; i++) {
               result = [
                 ...result,
@@ -754,7 +754,7 @@ const getPaymentRefundData = async (startDate, endDate, managerBearer) => {
                     payment.timestamp.split(' ')[0].split('-').join('') +
                       payment.timestamp.split(' ')[1].split(':').join('')
                   ),
-                  id: payment.payment.id,
+                  id: 0,
                   type: payment.payment_items[i].entity_type,
                   date: `${payment.timestamp.split(' ')[0].split('-')[2]}.${
                     payment.timestamp.split(' ')[0].split('-')[1]
@@ -762,16 +762,22 @@ const getPaymentRefundData = async (startDate, endDate, managerBearer) => {
                   time: payment.timestamp.split(' ')[1],
                   client: payment.client?.phone ? `+${payment.client?.phone}` : null,
                   nickname: payment.client?.nickname ? payment.client?.nickname : null,
-                  title: payment.payment_items[i].title ? payment.payment_items[i].title : 'Отмена',
+                  title: 'Отмена ' + (await getPaymentById(endDate, payment.payment.id, i, managerBearer)),
                   amount: payment.payment_items[i].amount,
-                  sum: -Math.floor(payment.payment_items[i].sum - payment.value1),
-                  bonus: Math.floor(payment.value1),
+                  sum:
+                    payment.payment.title === 'BONUS'
+                      ? Math.floor(payment.value1)
+                      : -Math.floor(payment.payment_items[i].sum - payment.value1),
+                  bonus:
+                    payment.payment.title === 'BONUS'
+                      ? -Math.floor(payment.payment_items[i].sum - payment.value1)
+                      : Math.floor(payment.value1),
                   payment_title: payment.payment.title,
                   operator: `${payment.operator?.first_name} ${payment.operator?.last_name}`,
                 },
               ];
             }
-          });
+          }
         }
       }
       return { result };
@@ -825,6 +831,53 @@ const createSmartshellPaymentRefundDataRequest = (startDate, endDate, page, mana
       }
   }
   }
+  `,
+  };
+  return {
+    method: 'post',
+    url: `https://billing.smartshell.gg/api/graphql`,
+    headers: {
+      authorization: `Bearer ${managerBearer}`,
+    },
+    data: dataPayments,
+  };
+};
+
+const getPaymentById = async (endDate, id, paymentItemsIndex, managerBearer) => {
+  try {
+    let smartshellPaymentsDataRequest = createSmartshellPaymentByIdRequest(endDate, id, managerBearer);
+    let resPaymentsData = await axios(smartshellPaymentsDataRequest);
+
+    if (resPaymentsData.data.errors) {
+      resPaymentsData.data.errors.map((error) => console.log('getPaymentById ERROR ->', error));
+      return { error: true, message: 'Не удалось получить данные об отмененном платеже' };
+    } else {
+      return resPaymentsData.data.data.eventList.data[0]?.payment_items[paymentItemsIndex].title || 'бонусы';
+    }
+  } catch (error) {
+    console.log('getPaymentById ERROR ->', error);
+    return { error: true, message: 'Ошибка на стороне сервера' };
+  }
+};
+
+const createSmartshellPaymentByIdRequest = (endDate, id, managerBearer) => {
+  let dataPayments = {
+    query: `query eventList {
+  eventList(
+      input: {
+          start: "2024-12-01 00:00:00"
+          finish: "${endDate} 23:59:59"
+          types: "PAYMENT_CREATED"
+          q: "${id}"
+  }
+  ) {
+        data {
+            payment_items {
+                title
+            }
+        }
+    }
+}
   `,
   };
   return {
