@@ -2,6 +2,7 @@
 const dotenv = require('dotenv');
 const axios = require('axios');
 const ExcelJS = require('exceljs');
+const FAKE_PAYMENTS = require('../consts/fakePayments');
 
 dotenv.config();
 
@@ -146,14 +147,13 @@ const getPaymentData = async (startDate, endDate, managerBearer) => {
                   payment.timestamp.split(' ')[1].split(':').join('')
               ),
               id: payment.payment.id,
-              type:
-                Math.floor(payment.payment_items[i].sum - payment.value1) === 0
-                  ? 'FAKE'
-                  : payment?.payment_items[i]?.title?.includes('PS')
-                  ? 'PS'
-                  : payment.payment_items[i].entity_type
-                  ? payment.payment_items[i].entity_type
-                  : 'TARIFF',
+              type: FAKE_PAYMENTS.includes(payment.payment.id.toString())
+                ? 'FAKE'
+                : payment?.payment_items[i]?.title?.includes('PS')
+                ? 'PS'
+                : payment.payment_items[i].entity_type
+                ? payment.payment_items[i].entity_type
+                : 'TARIFF',
               date: `${payment.timestamp.split(' ')[0].split('-')[2]}.${
                 payment.timestamp.split(' ')[0].split('-')[1]
               }.${payment.timestamp.split(' ')[0].split('-')[0]}`,
@@ -193,14 +193,13 @@ const getPaymentData = async (startDate, endDate, managerBearer) => {
                       payment.timestamp.split(' ')[1].split(':').join('')
                   ),
                   id: payment.payment.id,
-                  type:
-                    Math.floor(payment.payment_items[i].sum - payment.value1) === 0
-                      ? 'FAKE'
-                      : payment?.payment_items[i]?.title?.includes('PS')
-                      ? 'PS'
-                      : payment.payment_items[i].entity_type
-                      ? payment.payment_items[i].entity_type
-                      : 'TARIFF',
+                  type: FAKE_PAYMENTS.includes(payment.payment.id.toString())
+                    ? 'FAKE'
+                    : payment?.payment_items[i]?.title?.includes('PS')
+                    ? 'PS'
+                    : payment.payment_items[i].entity_type
+                    ? payment.payment_items[i].entity_type
+                    : 'TARIFF',
                   date: `${payment.timestamp.split(' ')[0].split('-')[2]}.${
                     payment.timestamp.split(' ')[0].split('-')[1]
                   }.${payment.timestamp.split(' ')[0].split('-')[0]}`,
