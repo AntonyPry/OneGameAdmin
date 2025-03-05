@@ -2,7 +2,7 @@
 const dotenv = require('dotenv');
 const axios = require('axios');
 const ExcelJS = require('exceljs');
-const FAKE_PAYMENTS = require('../consts/fakePayments');
+const { FAKE_PAYMENTS } = require('../consts/fakePayments');
 
 dotenv.config();
 
