@@ -150,7 +150,7 @@ const getPaymentData = async (startDate, endDate, managerBearer) => {
                 Math.floor(payment.payment_items[i].sum - payment.value1) === 0
                   ? 'FAKE'
                   : payment?.payment_items[i]?.title?.includes('PS')
-                  ? 'PS5'
+                  ? 'PS'
                   : payment.payment_items[i].entity_type
                   ? payment.payment_items[i].entity_type
                   : 'TARIFF',
@@ -197,7 +197,7 @@ const getPaymentData = async (startDate, endDate, managerBearer) => {
                     Math.floor(payment.payment_items[i].sum - payment.value1) === 0
                       ? 'FAKE'
                       : payment?.payment_items[i]?.title?.includes('PS')
-                      ? 'PS5'
+                      ? 'PS'
                       : payment.payment_items[i].entity_type
                       ? payment.payment_items[i].entity_type
                       : 'TARIFF',
@@ -301,7 +301,7 @@ const getSbpData = async (startDate, endDate, managerBearer) => {
             payment.timestamp.split(' ')[0].split('-').join('') + payment.timestamp.split(' ')[1].split(':').join('')
           ),
           id: payment.payment.id,
-          type: payment.payment_items[0].entity_type,
+          type: 'TARIFF',
           date: `${payment.timestamp.split(' ')[0].split('-')[2]}.${payment.timestamp.split(' ')[0].split('-')[1]}.${
             payment.timestamp.split(' ')[0].split('-')[0]
           }`,
@@ -331,7 +331,7 @@ const getSbpData = async (startDate, endDate, managerBearer) => {
                   payment.timestamp.split(' ')[1].split(':').join('')
               ),
               id: payment.payment.id,
-              type: payment.payment_items[0].entity_type,
+              type: 'TARIFF',
               date: `${payment.timestamp.split(' ')[0].split('-')[2]}.${
                 payment.timestamp.split(' ')[0].split('-')[1]
               }.${payment.timestamp.split(' ')[0].split('-')[0]}`,
