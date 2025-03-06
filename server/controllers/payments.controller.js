@@ -4,8 +4,6 @@ const axios = require('axios');
 const ExcelJS = require('exceljs');
 const { FAKE_PAYMENTS } = require('../consts/fakePayments');
 
-console.log(FAKE_PAYMENTS);
-
 dotenv.config();
 
 exports.paymentsFromPeriod = async (req, res) => {
