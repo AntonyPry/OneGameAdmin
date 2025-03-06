@@ -38,7 +38,7 @@ const HomePage = () => {
         </Col>
 
         <Col xs={24} md={12}>
-          <Link to="/dashboard" className={`${styles.activeLink} ${accessLevel !== 'full' && styles.disabledLink}`}>
+          <Link to="/dashboard" className={`${styles.activeLink} ${styles.disabledLink}`}>
             <div
               className={`${styles.cardContent} ${styles.disabledCard}`}
               style={{ backgroundColor: 'rgb(216, 226, 255)' }}
