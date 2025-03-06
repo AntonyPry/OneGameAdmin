@@ -16,7 +16,6 @@ const App = () => {
         {/* Страница логина открыта для всех */}
         <Route path="/login" element={<LoginPage />} />
 
-        {/* Главная страница: список карточек */}
         <Route
           path="/"
           element={
@@ -26,31 +25,28 @@ const App = () => {
           }
         />
 
-        {/* Раздел со статистикой (ваш текущий функционал) */}
         <Route
           path="/export"
           element={
-            <ProtectedRoute>
+            <ProtectedRoute requiredAccess="full">
               <ExportStatisticsPage />
             </ProtectedRoute>
           }
         />
 
-        {/* Заглушка для дашборда */}
         <Route
           path="/dashboard"
           element={
-            <ProtectedRoute>
+            <ProtectedRoute requiredAccess="full">
               <DashboardPage />
             </ProtectedRoute>
           }
         />
 
-        {/* Заглушка для панели администратора */}
         <Route
           path="/admin"
           element={
-            <ProtectedRoute>
+            <ProtectedRoute requiredAccess="admin">
               <AdminPage />
             </ProtectedRoute>
           }

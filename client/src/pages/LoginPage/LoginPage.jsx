@@ -15,13 +15,13 @@ const LoginPage = () => {
     try {
       setLoading(true);
 
-      // принимает { password }, и возвращает { valid: true/false }
       const response = await axios.post(`${process.env.REACT_APP_BACKEND_URL}/api/auth/checkPassword`, { password });
 
-      const { valid } = response.data;
+      const { valid, accessLevel } = response.data;
 
       if (valid) {
         sessionStorage.setItem('validPassword', 'true');
+        sessionStorage.setItem('accessLevel', accessLevel);
         navigate('/');
       } else {
         message.error('Неверный пароль!');

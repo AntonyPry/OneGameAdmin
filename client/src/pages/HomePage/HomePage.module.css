@@ -19,6 +19,7 @@
 
 .cardName {
   font-size: min(8vw, 30px);
+  margin-bottom: 0px;
 }
 
 .icon {
@@ -32,6 +33,10 @@
 .activeLink {
   text-decoration: none;
   color: inherit;
+}
+
+.disabledLink {
+  pointer-events: none;
 }
 
 .disabledCard {

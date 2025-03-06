@@ -1,18 +1,20 @@
 // components/ProtectedRoute.jsx
-import React, { useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
+import React from 'react';
+import { Navigate } from 'react-router-dom';
 
-const ProtectedRoute = ({ children }) => {
-  const navigate = useNavigate();
+const ProtectedRoute = ({ children, requiredAccess }) => {
+  const isValid = sessionStorage.getItem('validPassword') === 'true';
+  const accessLevel = sessionStorage.getItem('accessLevel');
 
-  useEffect(() => {
-    const isValid = sessionStorage.getItem('validPassword');
-    if (!isValid) {
-      navigate('/login');
-    }
-  }, [navigate]);
+  if (!isValid) {
+    return <Navigate to="/login" replace />;
+  }
 
-  return <>{children}</>;
+  if (requiredAccess && accessLevel !== requiredAccess && accessLevel !== 'full') {
+    return <Navigate to="/" replace />;
+  }
+
+  return children;
 };
 
 export default ProtectedRoute;
