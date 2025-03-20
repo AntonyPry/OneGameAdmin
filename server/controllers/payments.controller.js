@@ -3,8 +3,13 @@ const dotenv = require('dotenv');
 const axios = require('axios');
 const ExcelJS = require('exceljs');
 const { FAKE_PAYMENTS } = require('../consts/fakePayments');
+const https = require('https');
 
 dotenv.config();
+
+const agent = new https.Agent({
+  rejectUnauthorized: false, // Отключает проверку сертификата
+});
 
 exports.paymentsFromPeriod = async (req, res) => {
   try {
@@ -111,6 +116,7 @@ const getSmartshellManagerBearer = async (clubId) => {
       method: 'post',
       url: `https://billing.smartshell.gg/api/graphql`,
       data: dataManagerLogin,
+      httpsAgent: agent,
     });
 
     if (res.data.errors) {
@@ -278,6 +284,7 @@ const createSmartshellPaymentsDataRequest = (startDate, endDate, page, managerBe
       authorization: `Bearer ${managerBearer}`,
     },
     data: dataPayments,
+    httpsAgent: agent,
   };
 };
 
@@ -405,6 +412,7 @@ const createSmartshellSpbDataRequest = (startDate, endDate, page, managerBearer)
       authorization: `Bearer ${managerBearer}`,
     },
     data: dataPayments,
+    httpsAgent: agent,
   };
 };
 
@@ -558,6 +566,7 @@ const createSmartshellTariffPerMinuteDataRequest = (startDate, endDate, page, ma
       authorization: `Bearer ${managerBearer}`,
     },
     data: dataPayments,
+    httpsAgent: agent,
   };
 };
 
@@ -692,6 +701,7 @@ const createSmartshellBonusDataRequest = (startDate, endDate, page, managerBeare
       authorization: `Bearer ${managerBearer}`,
     },
     data: dataPayments,
+    httpsAgent: agent,
   };
 };
 
@@ -853,6 +863,7 @@ const createSmartshellPaymentRefundDataRequest = (startDate, endDate, page, mana
       authorization: `Bearer ${managerBearer}`,
     },
     data: dataPayments,
+    httpsAgent: agent,
   };
 };
 
@@ -900,6 +911,7 @@ const createSmartshellPaymentByIdRequest = (endDate, id, managerBearer) => {
       authorization: `Bearer ${managerBearer}`,
     },
     data: dataPayments,
+    httpsAgent: agent,
   };
 };
 
