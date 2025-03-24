@@ -1,18 +1,75 @@
 // pages/AdminPage/AdminPage.jsx
-import React from 'react';
-import { Card, Divider, Statistic } from 'antd';
+import React, { useEffect } from 'react';
+import { Divider, Statistic } from 'antd';
 import styles from './AdminPage.module.css';
+import axios from 'axios';
 
 const AdminPage = () => {
+  // Функция для форматирования даты в "YYYY-MM-DD HH:mm:ss"
+  const formatDate = (date) => {
+    const pad = (num) => String(num).padStart(2, '0');
+    return `${date.getFullYear()}-${pad(date.getMonth() + 1)}-${pad(date.getDate())} ${pad(date.getHours())}:${pad(
+      date.getMinutes()
+    )}:${pad(date.getSeconds())}`;
+  };
+
+  useEffect(() => {
+    const intervalId = setInterval(async () => {
+      try {
+        const now = new Date();
+        let startDate, endDate;
+        const currentHour = now.getHours();
+
+        if (currentHour >= 9 && currentHour < 21) {
+          // Дневной период: с 09:00 до 21:00 текущего дня
+          const start = new Date(now);
+          start.setHours(9, 0, 0, 0);
+          const end = new Date(now);
+          end.setHours(21, 0, 0, 0);
+          startDate = formatDate(start);
+          endDate = formatDate(end);
+        } else {
+          // Ночной период: с 21:00 до 09:00
+          if (currentHour >= 21) {
+            // Если текущее время между 21:00 и 23:59, то период: сегодня 21:00 - завтрашнее 09:00
+            const start = new Date(now);
+            start.setHours(21, 0, 0, 0);
+            const end = new Date(now);
+            end.setDate(end.getDate() + 1);
+            end.setHours(9, 0, 0, 0);
+            startDate = formatDate(start);
+            endDate = formatDate(end);
+          } else {
+            // Если текущее время между 00:00 и 08:59, то период: вчера 21:00 - сегодня 09:00
+            const start = new Date(now);
+            start.setDate(start.getDate() - 1);
+            start.setHours(21, 0, 0, 0);
+            const end = new Date(now);
+            end.setHours(9, 0, 0, 0);
+            startDate = formatDate(start);
+            endDate = formatDate(end);
+          }
+        }
+
+        // Выполнение запроса к бэкенду с параметрами startDate и endDate
+        const response = await axios.get(
+          `${process.env.REACT_APP_BACKEND_URL}/api/admin/currentStats?startDate=${startDate}&endDate=${endDate}`
+        );
+        console.log(response.data);
+      } catch (error) {
+        console.error('adminStats ERROR ->', error);
+      }
+    }, 10000); // интервал 10000 мс (10 секунд); замените на 60000 для 1 минуты
+
+    return () => clearInterval(intervalId);
+  }, []);
+
   return (
     <div className={styles.container}>
       <div style={{ display: 'flex', gap: '32px' }}>
-        {/* Левая колонка: карточки 1 и 3 */}
         <div style={{ flex: 1, display: 'flex', flexDirection: 'column', gap: '32px' }}>
-          {/* Карточка 1 */}
           <div className={styles.cardContent} style={{ backgroundColor: 'rgb(255, 255, 255)', position: 'relative' }}>
             <h3 className={styles.cardName}>Продай еще, чтобы выполнить план:</h3>
-            {/* Сетка на 2 столбца */}
             <div
               style={{
                 marginTop: 16,
