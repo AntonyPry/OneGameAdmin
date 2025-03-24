@@ -1,4 +1,4 @@
-export const FAKE_PAYMENTS = [
+const FAKE_PAYMENTS = [
   '71590963',
   '71591084',
   '71591235',
@@ -442,3 +442,7 @@ export const FAKE_PAYMENTS = [
   '71642675',
   '71643150',
 ];
+
+module.exports = {
+  FAKE_PAYMENTS,
+};
