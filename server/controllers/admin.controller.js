@@ -3,6 +3,8 @@ const dotenv = require('dotenv');
 const axios = require('axios');
 const https = require('https');
 const { FAKE_PAYMENTS } = require('../consts/fakePayments');
+const { FOOD, CHOCOLATE, DRINKS } = require('../consts/paymentTitles');
+const { ADMIN_MONTH_PLAN } = require('../consts/adminMonthPlan');
 
 dotenv.config();
 
@@ -14,6 +16,9 @@ exports.currentStats = async (req, res) => {
   try {
     let { startDate, endDate, clubId } = req.query;
     if (!clubId) clubId = 6816;
+
+    const smena = startDate.split(' ')[1].split(':')[0] === '09' ? 'day' : 'night';
+    const planStatsObject = ADMIN_MONTH_PLAN[endDate.split(' ')[0]][smena];
 
     const managerBearer = await getSmartshellManagerBearer(clubId);
     if (managerBearer.error) {
@@ -51,23 +56,57 @@ exports.currentStats = async (req, res) => {
       return res.status(400).send(paymentRefundData);
     }
 
-    console.log([
+    const resultsArray = [
       ...dataBasicPayments.result,
       ...dataSbpPayments.result,
       ...dataTariffPerMinutePayments.result,
       ...dataBonusPayments.result,
       ...paymentRefundData.result,
-    ]);
+    ];
 
-    return res
-      .status(200)
-      .send([
-        ...dataBasicPayments.result,
-        ...dataSbpPayments.result,
-        ...dataTariffPerMinutePayments.result,
-        ...dataBonusPayments.result,
-        ...paymentRefundData.result,
-      ]);
+    const currentStatsObject = {
+      totalRevenue: 0, // общая выручка
+      foodRevenue: 0, // выручка за всю еду без шоколада
+      chocolateRevenue: 0, // выручка за шоколад
+      drinksRevenue: 0, // выручка за напитки
+      PSRevenue: 0, // выручка за PS5
+      PCRevenue: 0, // выручка за ПК
+    };
+
+    for (let i = 0; i < resultsArray.length; i++) {
+      const { type, title, sum, payment_title } = resultsArray[i];
+      if (
+        (type === 'TARIFF' && title === 'Пополнение по СБП' && payment_title === 'СБП') ||
+        (type === 'TARIFF' && payment_title === 'CARD') ||
+        (type === 'TARIFF' && payment_title === 'CASH') ||
+        type === 'GOOD' ||
+        type === 'SERVICE' ||
+        type === 'PS'
+      ) {
+        currentStatsObject.totalRevenue += sum;
+      }
+      if (FOOD.includes(title) || FOOD.map((el) => 'Отмена ' + el).includes(title)) {
+        currentStatsObject.foodRevenue += sum;
+      }
+      if (CHOCOLATE.includes(title) || CHOCOLATE.map((el) => 'Отмена ' + el).includes(title)) {
+        currentStatsObject.chocolateRevenue += sum;
+      }
+      if (DRINKS.includes(title) || DRINKS.map((el) => 'Отмена ' + el).includes(title)) {
+        currentStatsObject.drinksRevenue += sum;
+      }
+      if (type === 'PS') {
+        currentStatsObject.PSRevenue += sum;
+      }
+      if (
+        (type === 'TARIFF' && title === 'Пополнение по СБП' && payment_title === 'СБП') ||
+        (type === 'TARIFF' && payment_title === 'CARD') ||
+        (type === 'TARIFF' && payment_title === 'CASH')
+      ) {
+        currentStatsObject.PCRevenue += sum;
+      }
+    }
+
+    return res.status(200).send({ currentStatsObject, planStatsObject });
   } catch (error) {
     console.log('currentStats ERROR ->', error);
     return res.status(500).send({ error: true, message: error.message });

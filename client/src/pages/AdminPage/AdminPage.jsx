@@ -1,10 +1,28 @@
 // pages/AdminPage/AdminPage.jsx
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Divider, Statistic } from 'antd';
 import styles from './AdminPage.module.css';
 import axios from 'axios';
 
 const AdminPage = () => {
+  const [currentStatsObject, setCurrentStatsObject] = useState({
+    totalRevenue: 0, // общая выручка
+    foodRevenue: 0, // выручка за всю еду без шоколада
+    chocolateRevenue: 0, // выручка за шоколад
+    drinksRevenue: 0, // выручка за напитки
+    PSRevenue: 0, // выручка за PS5
+    PCRevenue: 0, // выручка за ПК
+  });
+
+  const [planStatsObject, setPlanStatsObject] = useState({
+    totalRevenue: 0, // общая выручка
+    foodRevenue: 0, // выручка за всю еду без шоколада
+    chocolateRevenue: 0, // выручка за шоколад
+    drinksRevenue: 0, // выручка за напитки
+    PSRevenue: 0, // выручка за PS5
+    PCRevenue: 0, // выручка за ПК
+  });
+
   // Функция для форматирования даты в "YYYY-MM-DD HH:mm:ss"
   const formatDate = (date) => {
     const pad = (num) => String(num).padStart(2, '0');
@@ -13,53 +31,65 @@ const AdminPage = () => {
     )}:${pad(date.getSeconds())}`;
   };
 
-  useEffect(() => {
-    const intervalId = setInterval(async () => {
-      try {
-        const now = new Date();
-        let startDate, endDate;
-        const currentHour = now.getHours();
+  const getAdminStatsData = async () => {
+    try {
+      const now = new Date();
+      let startDate, endDate;
+      const currentHour = now.getHours();
 
-        if (currentHour >= 9 && currentHour < 21) {
-          // Дневной период: с 09:00 до 21:00 текущего дня
+      if (currentHour >= 9 && currentHour < 21) {
+        // Дневной период: с 09:00 до 21:00 текущего дня
+        const start = new Date(now);
+        start.setHours(9, 0, 0, 0);
+        const end = new Date(now);
+        end.setHours(21, 0, 0, 0);
+        startDate = formatDate(start);
+        endDate = formatDate(end);
+      } else {
+        // Ночной период: с 21:00 до 09:00
+        if (currentHour >= 21) {
+          // Если текущее время между 21:00 и 23:59, то период: сегодня 21:00 - завтрашнее 09:00
           const start = new Date(now);
-          start.setHours(9, 0, 0, 0);
+          start.setHours(21, 0, 0, 0);
           const end = new Date(now);
-          end.setHours(21, 0, 0, 0);
+          end.setDate(end.getDate() + 1);
+          end.setHours(9, 0, 0, 0);
           startDate = formatDate(start);
           endDate = formatDate(end);
         } else {
-          // Ночной период: с 21:00 до 09:00
-          if (currentHour >= 21) {
-            // Если текущее время между 21:00 и 23:59, то период: сегодня 21:00 - завтрашнее 09:00
-            const start = new Date(now);
-            start.setHours(21, 0, 0, 0);
-            const end = new Date(now);
-            end.setDate(end.getDate() + 1);
-            end.setHours(9, 0, 0, 0);
-            startDate = formatDate(start);
-            endDate = formatDate(end);
-          } else {
-            // Если текущее время между 00:00 и 08:59, то период: вчера 21:00 - сегодня 09:00
-            const start = new Date(now);
-            start.setDate(start.getDate() - 1);
-            start.setHours(21, 0, 0, 0);
-            const end = new Date(now);
-            end.setHours(9, 0, 0, 0);
-            startDate = formatDate(start);
-            endDate = formatDate(end);
-          }
+          // Если текущее время между 00:00 и 08:59, то период: вчера 21:00 - сегодня 09:00
+          const start = new Date(now);
+          start.setDate(start.getDate() - 1);
+          start.setHours(21, 0, 0, 0);
+          const end = new Date(now);
+          end.setHours(9, 0, 0, 0);
+          startDate = formatDate(start);
+          endDate = formatDate(end);
         }
-
-        // Выполнение запроса к бэкенду с параметрами startDate и endDate
-        const response = await axios.get(
-          `${process.env.REACT_APP_BACKEND_URL}/api/admin/currentStats?startDate=${startDate}&endDate=${endDate}`
-        );
-        console.log(response.data);
-      } catch (error) {
-        console.error('adminStats ERROR ->', error);
       }
-    }, 10000); // интервал 10000 мс (10 секунд); замените на 60000 для 1 минуты
+
+      // Выполнение запроса к бэкенду с параметрами startDate и endDate
+      const response = await axios.get(
+        `${process.env.REACT_APP_BACKEND_URL}/api/admin/currentStats?startDate=${startDate}&endDate=${endDate}`
+      );
+      console.log({
+        currentStatsObject: response.data.currentStatsObject,
+        planStatsObject: response.data.planStatsObject,
+      });
+      if (response?.data) {
+        setCurrentStatsObject(response.data.currentStatsObject);
+        setPlanStatsObject(response.data.planStatsObject);
+      }
+    } catch (error) {
+      console.error('adminStats ERROR ->', error);
+    }
+  };
+
+  useEffect(() => {
+    getAdminStatsData();
+    const intervalId = setInterval(async () => {
+      getAdminStatsData();
+    }, 60000); // интервал 10000 мс (10 секунд); замените на 60000 для 1 минуты
 
     return () => clearInterval(intervalId);
   }, []);
@@ -78,12 +108,24 @@ const AdminPage = () => {
                 gap: '16px',
               }}
             >
-              <Statistic title="френч-доги" value={25} valueStyle={{ fontSize: '24px', fontWeight: 'bold' }} />
-              <Statistic title="часов в PS" value={8} valueStyle={{ fontSize: '24px', fontWeight: 'bold' }} />
-              <Statistic title="часов в ПК" value={5} valueStyle={{ fontSize: '24px', fontWeight: 'bold' }} />
               <Statistic
-                title="Напитков по ? рублей"
-                value={12}
+                title="еда (без шоколада)"
+                value={planStatsObject.foodRevenue - currentStatsObject.foodRevenue}
+                valueStyle={{ fontSize: '24px', fontWeight: 'bold' }}
+              />
+              <Statistic
+                title="Напитки"
+                value={planStatsObject.drinksRevenue - currentStatsObject.drinksRevenue}
+                valueStyle={{ fontSize: '24px', fontWeight: 'bold' }}
+              />
+              <Statistic
+                title="PS5"
+                value={planStatsObject.PSRevenue - currentStatsObject.PSRevenue}
+                valueStyle={{ fontSize: '24px', fontWeight: 'bold' }}
+              />
+              <Statistic
+                title="ПК"
+                value={planStatsObject.PCRevenue - currentStatsObject.PCRevenue}
                 valueStyle={{ fontSize: '24px', fontWeight: 'bold' }}
               />
             </div>
@@ -98,31 +140,55 @@ const AdminPage = () => {
                 <h4 style={{ margin: 0, marginBottom: '8px' }}>Выручка:</h4>
                 <div style={{ display: 'flex', gap: '16px' }}>
                   <div style={{ flex: '0 0 33%' }}>
-                    <Statistic title="Факт" value={20000} valueStyle={{ fontSize: '20px', fontWeight: 'bold' }} />
+                    <Statistic
+                      title="Факт"
+                      value={currentStatsObject.totalRevenue}
+                      valueStyle={{ fontSize: '20px', fontWeight: 'bold' }}
+                    />
                   </div>
                   <div style={{ flex: '0 0 33%' }}>
-                    <Statistic title="План" value={25000} valueStyle={{ fontSize: '20px', fontWeight: 'bold' }} />
+                    <Statistic
+                      title="План"
+                      value={planStatsObject.totalRevenue}
+                      valueStyle={{ fontSize: '20px', fontWeight: 'bold' }}
+                    />
                   </div>
                   <div style={{ flex: '0 0 33%' }}>
-                    <Statistic title="Выполнение" value="80%" valueStyle={{ fontSize: '20px', fontWeight: 'bold' }} />
+                    <Statistic
+                      title="Выполнение"
+                      value={`${Math.floor((currentStatsObject.totalRevenue / planStatsObject.totalRevenue) * 100)}%`}
+                      valueStyle={{ fontSize: '20px', fontWeight: 'bold' }}
+                    />
                   </div>
                 </div>
               </div>
 
               <Divider style={{ backgroundColor: '#ccc', margin: '12px 0' }} />
 
-              {/* Раздел "Еда" */}
+              {/* Раздел "Еда (без шоколада)" */}
               <div>
-                <h4 style={{ marginBottom: '8px' }}>Еда:</h4>
+                <h4 style={{ marginBottom: '8px' }}>Еда (без шоколада):</h4>
                 <div style={{ display: 'flex', gap: '16px' }}>
                   <div style={{ flex: '0 0 33%' }}>
-                    <Statistic title="Факт" value={5000} valueStyle={{ fontSize: '20px', fontWeight: 'bold' }} />
+                    <Statistic
+                      title="Факт"
+                      value={currentStatsObject.foodRevenue}
+                      valueStyle={{ fontSize: '20px', fontWeight: 'bold' }}
+                    />
                   </div>
                   <div style={{ flex: '0 0 33%' }}>
-                    <Statistic title="План" value={6000} valueStyle={{ fontSize: '20px', fontWeight: 'bold' }} />
+                    <Statistic
+                      title="План"
+                      value={planStatsObject.foodRevenue}
+                      valueStyle={{ fontSize: '20px', fontWeight: 'bold' }}
+                    />
                   </div>
                   <div style={{ flex: '0 0 33%' }}>
-                    <Statistic title="Выполнение" value="83%" valueStyle={{ fontSize: '20px', fontWeight: 'bold' }} />
+                    <Statistic
+                      title="Выполнение"
+                      value={`${Math.floor((currentStatsObject.foodRevenue / planStatsObject.foodRevenue) * 100)}%`}
+                      valueStyle={{ fontSize: '20px', fontWeight: 'bold' }}
+                    />
                   </div>
                 </div>
               </div>
@@ -134,13 +200,25 @@ const AdminPage = () => {
                 <h4 style={{ marginBottom: '8px' }}>Напитки:</h4>
                 <div style={{ display: 'flex', gap: '16px' }}>
                   <div style={{ flex: '0 0 33%' }}>
-                    <Statistic title="Факт" value={3500} valueStyle={{ fontSize: '20px', fontWeight: 'bold' }} />
+                    <Statistic
+                      title="Факт"
+                      value={currentStatsObject.drinksRevenue}
+                      valueStyle={{ fontSize: '20px', fontWeight: 'bold' }}
+                    />
                   </div>
                   <div style={{ flex: '0 0 33%' }}>
-                    <Statistic title="План" value={1500} valueStyle={{ fontSize: '20px', fontWeight: 'bold' }} />
+                    <Statistic
+                      title="План"
+                      value={planStatsObject.drinksRevenue}
+                      valueStyle={{ fontSize: '20px', fontWeight: 'bold' }}
+                    />
                   </div>
                   <div style={{ flex: '0 0 33%' }}>
-                    <Statistic title="Выполнение" value="86%" valueStyle={{ fontSize: '20px', fontWeight: 'bold' }} />
+                    <Statistic
+                      title="Выполнение"
+                      value={`${Math.floor((currentStatsObject.drinksRevenue / planStatsObject.drinksRevenue) * 100)}%`}
+                      valueStyle={{ fontSize: '20px', fontWeight: 'bold' }}
+                    />
                   </div>
                 </div>
               </div>
@@ -152,29 +230,27 @@ const AdminPage = () => {
                 <h4 style={{ marginBottom: '8px' }}>Шоколад:</h4>
                 <div style={{ display: 'flex', gap: '16px' }}>
                   <div style={{ flex: '0 0 33%' }}>
-                    <Statistic title="Факт" value={3500} valueStyle={{ fontSize: '20px', fontWeight: 'bold' }} />
+                    <Statistic
+                      title="Факт"
+                      value={currentStatsObject.chocolateRevenue}
+                      valueStyle={{ fontSize: '20px', fontWeight: 'bold' }}
+                    />
                   </div>
                   <div style={{ flex: '0 0 33%' }}>
-                    <Statistic title="План" value={1500} valueStyle={{ fontSize: '20px', fontWeight: 'bold' }} />
+                    <Statistic
+                      title="План"
+                      value={planStatsObject.chocolateRevenue}
+                      valueStyle={{ fontSize: '20px', fontWeight: 'bold' }}
+                    />
                   </div>
                   <div style={{ flex: '0 0 33%' }}>
-                    <Statistic title="Выполнение" value="86%" valueStyle={{ fontSize: '20px', fontWeight: 'bold' }} />
-                  </div>
-                </div>
-              </div>
-
-              {/* Раздел "Френч-доги и сендвичи" */}
-              <div>
-                <h4 style={{ marginBottom: '8px' }}>Френч-доги и сендвичи:</h4>
-                <div style={{ display: 'flex', gap: '16px' }}>
-                  <div style={{ flex: '0 0 33%' }}>
-                    <Statistic title="Факт" value={3500} valueStyle={{ fontSize: '20px', fontWeight: 'bold' }} />
-                  </div>
-                  <div style={{ flex: '0 0 33%' }}>
-                    <Statistic title="План" value={1500} valueStyle={{ fontSize: '20px', fontWeight: 'bold' }} />
-                  </div>
-                  <div style={{ flex: '0 0 33%' }}>
-                    <Statistic title="Выполнение" value="86%" valueStyle={{ fontSize: '20px', fontWeight: 'bold' }} />
+                    <Statistic
+                      title="Выполнение"
+                      value={`${Math.floor(
+                        (currentStatsObject.chocolateRevenue / planStatsObject.chocolateRevenue) * 100
+                      )}%`}
+                      valueStyle={{ fontSize: '20px', fontWeight: 'bold' }}
+                    />
                   </div>
                 </div>
               </div>
@@ -184,13 +260,25 @@ const AdminPage = () => {
                 <h4 style={{ marginBottom: '8px' }}>PS5:</h4>
                 <div style={{ display: 'flex', gap: '16px' }}>
                   <div style={{ flex: '0 0 33%' }}>
-                    <Statistic title="Факт" value={3500} valueStyle={{ fontSize: '20px', fontWeight: 'bold' }} />
+                    <Statistic
+                      title="Факт"
+                      value={currentStatsObject.PSRevenue}
+                      valueStyle={{ fontSize: '20px', fontWeight: 'bold' }}
+                    />
                   </div>
                   <div style={{ flex: '0 0 33%' }}>
-                    <Statistic title="План" value={1500} valueStyle={{ fontSize: '20px', fontWeight: 'bold' }} />
+                    <Statistic
+                      title="План"
+                      value={planStatsObject.PSRevenue}
+                      valueStyle={{ fontSize: '20px', fontWeight: 'bold' }}
+                    />
                   </div>
                   <div style={{ flex: '0 0 33%' }}>
-                    <Statistic title="Выполнение" value="86%" valueStyle={{ fontSize: '20px', fontWeight: 'bold' }} />
+                    <Statistic
+                      title="Выполнение"
+                      value={`${Math.floor((currentStatsObject.PSRevenue / planStatsObject.PSRevenue) * 100)}%`}
+                      valueStyle={{ fontSize: '20px', fontWeight: 'bold' }}
+                    />
                   </div>
                 </div>
               </div>
@@ -202,16 +290,24 @@ const AdminPage = () => {
                   <div style={{ flex: '0 0 33%' }}>
                     <Statistic
                       title="Факт"
-                      value={3500}
+                      value={currentStatsObject.PCRevenue}
                       titleStyle={{ margin: 0 }}
                       valueStyle={{ fontSize: '20px', fontWeight: 'bold' }}
                     />
                   </div>
                   <div style={{ flex: '0 0 33%' }}>
-                    <Statistic title="План" value={1500} valueStyle={{ fontSize: '20px', fontWeight: 'bold' }} />
+                    <Statistic
+                      title="План"
+                      value={planStatsObject.PCRevenue}
+                      valueStyle={{ fontSize: '20px', fontWeight: 'bold' }}
+                    />
                   </div>
                   <div style={{ flex: '0 0 33%' }}>
-                    <Statistic title="Выполнение" value="86%" valueStyle={{ fontSize: '20px', fontWeight: 'bold' }} />
+                    <Statistic
+                      title="Выполнение"
+                      value={`${Math.floor((currentStatsObject.PCRevenue / planStatsObject.PCRevenue) * 100)}%`}
+                      valueStyle={{ fontSize: '20px', fontWeight: 'bold' }}
+                    />
                   </div>
                 </div>
               </div>
