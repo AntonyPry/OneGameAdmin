@@ -119,22 +119,38 @@ const AdminPage = () => {
             >
               <Statistic
                 title="еда (без шоколада)"
-                value={planStatsObject.foodRevenue - currentStatsObject.foodRevenue}
+                value={
+                  planStatsObject.foodRevenue - currentStatsObject.foodRevenue > 0
+                    ? planStatsObject.foodRevenue - currentStatsObject.foodRevenue
+                    : '✅'
+                }
                 valueStyle={{ fontSize: '24px', fontWeight: 'bold' }}
               />
               <Statistic
                 title="Напитки"
-                value={planStatsObject.drinksRevenue - currentStatsObject.drinksRevenue}
+                value={
+                  planStatsObject.drinksRevenue - currentStatsObject.drinksRevenue > 0
+                    ? planStatsObject.drinksRevenue - currentStatsObject.drinksRevenue
+                    : '✅'
+                }
                 valueStyle={{ fontSize: '24px', fontWeight: 'bold' }}
               />
               <Statistic
                 title="PS5 + услуги + автосимулятор"
-                value={planStatsObject.PsServiceAutosimRevenue - currentStatsObject.PsServiceAutosimRevenue}
+                value={
+                  planStatsObject.PsServiceAutosimRevenue - currentStatsObject.PsServiceAutosimRevenue > 0
+                    ? planStatsObject.PsServiceAutosimRevenue - currentStatsObject.PsServiceAutosimRevenue
+                    : '✅'
+                }
                 valueStyle={{ fontSize: '24px', fontWeight: 'bold' }}
               />
               <Statistic
                 title="ПК"
-                value={planStatsObject.PCRevenue - currentStatsObject.PCRevenue}
+                value={
+                  planStatsObject.PCRevenue - currentStatsObject.PCRevenue > 0
+                    ? planStatsObject.PCRevenue - currentStatsObject.PCRevenue
+                    : '✅'
+                }
                 valueStyle={{ fontSize: '24px', fontWeight: 'bold' }}
               />
             </div>
