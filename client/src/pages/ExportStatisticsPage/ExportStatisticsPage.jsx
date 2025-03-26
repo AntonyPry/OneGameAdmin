@@ -25,14 +25,13 @@ const ExportStatisticsPage = () => {
 
     const startDate = paymentsFromPeriodDates[0].format('YYYY-MM-DD');
     const endDate = paymentsFromPeriodDates[1].format('YYYY-MM-DD');
-    const year = paymentsFromPeriodDates[0].format('YYYY');
 
     try {
       setPaymentsFromPeriodLoading(true);
 
       const response = await axios.post(
         `${process.env.REACT_APP_BACKEND_URL}/api/payments/paymentsFromPeriod`,
-        { year, startDate, endDate },
+        { startDate: `${startDate} 00:00:00`, endDate: `${endDate} 23:59:59` },
         { responseType: 'blob' }
       );
       const blob = response.data;
@@ -72,14 +71,13 @@ const ExportStatisticsPage = () => {
 
     const startDate = sbpFromPeriodDates[0].format('YYYY-MM-DD');
     const endDate = sbpFromPeriodDates[1].format('YYYY-MM-DD');
-    const year = sbpFromPeriodDates[0].format('YYYY');
 
     try {
       setSbpFromPeriodLoading(true);
 
       const response = await axios.post(
         `${process.env.REACT_APP_BACKEND_URL}/api/payments/sbpFromPeriod`,
-        { year, startDate, endDate },
+        { startDate: `${startDate} 00:00:00`, endDate: `${endDate} 23:59:59` },
         { responseType: 'blob' }
       );
       const blob = response.data;

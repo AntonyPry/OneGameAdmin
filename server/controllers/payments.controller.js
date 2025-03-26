@@ -11,67 +11,76 @@ const agent = new https.Agent({
   rejectUnauthorized: false, // Отключает проверку сертификата
 });
 
-exports.paymentsFromPeriod = async (req, res) => {
-  try {
-    let { startDate, endDate, clubId } = req.body;
-    if (!clubId) clubId = 6816;
+const paymentsFromPeriod = async (req, res) => {
+  let { startDate, endDate, clubId } = req.body;
+  if (!clubId) clubId = 6816;
 
+  const resultsArray = await getResultsArray(startDate, endDate, clubId);
+  if (resultsArray.error) {
+    console.log(`Ошибка при получении данных для клуба ${clubId}:`, resultsArray.message);
+    return res.status(400).send(resultsArray);
+  }
+
+  const xlsxBuffer = await generatePaymentsXlsx(resultsArray.sort((a, b) => (a.idForSort > b.idForSort ? 1 : -1)));
+  res.setHeader('Content-Disposition', `attachment; filename=payments_${Date.now}.xlsx`);
+  res.setHeader('Content-Type', 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
+  res.send(xlsxBuffer);
+};
+
+const getResultsArray = async (startDate, endDate, clubId) => {
+  try {
     const managerBearer = await getSmartshellManagerBearer(clubId);
     if (managerBearer.error) {
       console.log(`Ошибка при получении менеджерского токена для клуба ${clubId}:`, managerBearer.message);
-      return res.status(400).send(managerBearer);
+      return managerBearer;
     }
 
     const dataBasicPayments = await getPaymentData(startDate, endDate, managerBearer);
     if (dataBasicPayments.error) {
       console.log(`Ошибка при получении данных об оплатах для клуба ${clubId}:`, dataBasicPayments.message);
-      return res.status(400).send(dataBasicPayments);
+      return dataBasicPayments;
     }
 
     const dataSbpPayments = await getSbpData(startDate, endDate, managerBearer);
     if (dataSbpPayments.error) {
       console.log(`Ошибка при получении пополненй по СБП для клуба ${clubId}:`, dataSbpPayments.message);
-      return res.status(400).send(dataSbpPayments);
+      return dataSbpPayments;
     }
 
     const dataTariffPerMinutePayments = await getTariffPerMinuteData(startDate, endDate, managerBearer);
     if (dataTariffPerMinutePayments.error) {
       console.log(`Ошибка при получении поминутных тарифов для клуба ${clubId}:`, dataTariffPerMinutePayments.message);
-      return res.status(400).send(dataTariffPerMinutePayments);
+      return dataTariffPerMinutePayments;
     }
 
     const dataBonusPayments = await getBonusData(startDate, endDate, managerBearer);
     if (getBonusData.error) {
       console.log(`Ошибка при получении начисления бонусов для клуба ${clubId}:`, getBonusData.message);
-      return res.status(400).send(getBonusData);
+      return getBonusData;
     }
 
     const paymentRefundData = await getPaymentRefundData(startDate, endDate, managerBearer);
     if (paymentRefundData.error) {
       console.log(`Ошибка при получении отмененных платежей ${clubId}:`, paymentRefundData.message);
-      return res.status(400).send(paymentRefundData);
+      return paymentRefundData;
     }
 
-    const xlsxBuffer = await generatePaymentsXlsx(
-      [
-        ...dataBasicPayments.result,
-        ...dataSbpPayments.result,
-        ...dataTariffPerMinutePayments.result,
-        ...dataBonusPayments.result,
-        ...paymentRefundData.result,
-      ].sort((a, b) => (a.idForSort > b.idForSort ? 1 : -1))
-    );
-    res.setHeader('Content-Disposition', `attachment; filename=payments_${Date.now}.xlsx`);
-    res.setHeader('Content-Type', 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
-    res.send(xlsxBuffer);
-    // return res.status(200).send(data.result);
+    const resultsArray = [
+      ...dataBasicPayments?.result,
+      ...dataSbpPayments?.result,
+      ...dataTariffPerMinutePayments?.result,
+      ...dataBonusPayments?.result,
+      ...paymentRefundData?.result,
+    ];
+
+    return resultsArray;
   } catch (error) {
-    console.log('paymentsFromPeriod ERROR ->', error);
-    return res.status(500).send({ error: true, message: error.message });
+    console.log('getResultsArray ERROR ->', error);
+    return { error: true, message: error.message };
   }
 };
 
-exports.sbpFromPeriod = async (req, res) => {
+const sbpFromPeriod = async (req, res) => {
   try {
     let { startDate, endDate, clubId } = req.body;
     if (!clubId) clubId = 6816;
@@ -237,8 +246,8 @@ const createSmartshellPaymentsDataRequest = (startDate, endDate, page, managerBe
     query: `query eventList {
   eventList(
       input: {
-          start: "${startDate} 00:00:00"
-          finish: "${endDate} 23:59:59"
+          start: "${startDate}"
+          finish: "${endDate}"
           types: "PAYMENT_CREATED"
       }
       first: 1000
@@ -367,8 +376,8 @@ const createSmartshellSpbDataRequest = (startDate, endDate, page, managerBearer)
     query: `query eventList {
   eventList(
       input: {
-          start: "${startDate} 00:00:00"
-          finish: "${endDate} 23:59:59"
+          start: "${startDate}"
+          finish: "${endDate}"
           types: "DEPOSIT_ADDED_ONLINE"
       }
       first: 1000
@@ -515,8 +524,8 @@ const createSmartshellTariffPerMinuteDataRequest = (startDate, endDate, page, ma
     query: `query eventList {
       eventList(
           input: {
-              start: "${startDate} 00:00:00"
-              finish: "${endDate} 23:59:59"
+              start: "${startDate}"
+              finish: "${endDate}"
               types: "CLIENT_SESSION_FINISHED"
           }
           first: 1000
@@ -650,8 +659,8 @@ const createSmartshellBonusDataRequest = (startDate, endDate, page, managerBeare
     query: `query eventList {
       eventList(
           input: {
-              start: "${startDate} 00:00:00"
-              finish: "${endDate} 23:59:59"
+              start: "${startDate}"
+              finish: "${endDate}"
               types: "BONUS_PAYMENT_CREATED"
           }
           first: 1000
@@ -816,8 +825,8 @@ const createSmartshellPaymentRefundDataRequest = (startDate, endDate, page, mana
     query: `query eventList {
   eventList(
       input: {
-          start: "${startDate} 00:00:00"
-          finish: "${endDate} 23:59:59"
+          start: "${startDate}"
+          finish: "${endDate}"
           types: "PAYMENT_REFUND"
       }
       first: 1000
@@ -889,8 +898,8 @@ const createSmartshellPaymentByIdRequest = (endDate, id, managerBearer) => {
     query: `query eventList {
   eventList(
       input: {
-          start: "2024-12-01 00:00:00"
-          finish: "${endDate} 23:59:59"
+          start: "2024-12-01"
+          finish: "${endDate}"
           types: "PAYMENT_CREATED"
           q: "${id}"
   }
@@ -990,4 +999,10 @@ const generateSbpXlsx = async (data) => {
 
   const buffer = await workbook.xlsx.writeBuffer();
   return buffer;
+};
+
+module.exports = {
+  paymentsFromPeriod,
+  getResultsArray,
+  sbpFromPeriod,
 };

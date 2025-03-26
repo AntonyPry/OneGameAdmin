@@ -1,6 +1,6 @@
 // pages/AdminPage/AdminPage.jsx
 import React, { useEffect, useState } from 'react';
-import { Divider, Statistic } from 'antd';
+import { Divider, Popover, Statistic } from 'antd';
 import styles from './AdminPage.module.css';
 import axios from 'axios';
 
@@ -10,7 +10,7 @@ const AdminPage = () => {
     foodRevenue: 0, // выручка за всю еду без шоколада
     chocolateRevenue: 0, // выручка за шоколад
     drinksRevenue: 0, // выручка за напитки
-    PSRevenue: 0, // выручка за PS5
+    PsServiceAutosimRevenue: 0, // выручка за PS5 + услуги + автосимулятор
     PCRevenue: 0, // выручка за ПК
   });
 
@@ -19,8 +19,15 @@ const AdminPage = () => {
     foodRevenue: 0, // выручка за всю еду без шоколада
     chocolateRevenue: 0, // выручка за шоколад
     drinksRevenue: 0, // выручка за напитки
-    PSRevenue: 0, // выручка за PS5
+    PsServiceAutosimRevenue: 0, // выручка за PS5 + услуги + автосимулятор
     PCRevenue: 0, // выручка за ПК
+  });
+
+  const [currentAwardsObject, setCurrentAwardsObject] = useState({
+    baseSalary: 0, // гарантированный оклад
+    goodsBonus: 0, // премия за товары
+    psBonus: 0, // премия за PS5 + услуги + автосимулятор
+    totalAward: 0, // суммарное вознаграждение + фиксированное за доп обязанности
   });
 
   // Функция для форматирования даты в "YYYY-MM-DD HH:mm:ss"
@@ -75,10 +82,12 @@ const AdminPage = () => {
       console.log({
         currentStatsObject: response.data.currentStatsObject,
         planStatsObject: response.data.planStatsObject,
+        currentAwardsObject: response.data.currentAwardsObject,
       });
       if (response?.data) {
         setCurrentStatsObject(response.data.currentStatsObject);
         setPlanStatsObject(response.data.planStatsObject);
+        setCurrentAwardsObject(response.data.currentAwardsObject);
       }
     } catch (error) {
       console.error('adminStats ERROR ->', error);
@@ -119,8 +128,8 @@ const AdminPage = () => {
                 valueStyle={{ fontSize: '24px', fontWeight: 'bold' }}
               />
               <Statistic
-                title="PS5"
-                value={planStatsObject.PSRevenue - currentStatsObject.PSRevenue}
+                title="PS5 + услуги + автосимулятор"
+                value={planStatsObject.PsServiceAutosimRevenue - currentStatsObject.PsServiceAutosimRevenue}
                 valueStyle={{ fontSize: '24px', fontWeight: 'bold' }}
               />
               <Statistic
@@ -255,28 +264,30 @@ const AdminPage = () => {
                 </div>
               </div>
 
-              {/* Раздел "PS5" */}
+              {/* Раздел "PS5 + услуги + автосимулятор" */}
               <div>
-                <h4 style={{ marginBottom: '8px' }}>PS5:</h4>
+                <h4 style={{ marginBottom: '8px' }}>PS5 + услуги + автосимулятор:</h4>
                 <div style={{ display: 'flex', gap: '16px' }}>
                   <div style={{ flex: '0 0 33%' }}>
                     <Statistic
                       title="Факт"
-                      value={currentStatsObject.PSRevenue}
+                      value={currentStatsObject.PsServiceAutosimRevenue}
                       valueStyle={{ fontSize: '20px', fontWeight: 'bold' }}
                     />
                   </div>
                   <div style={{ flex: '0 0 33%' }}>
                     <Statistic
                       title="План"
-                      value={planStatsObject.PSRevenue}
+                      value={planStatsObject.PsServiceAutosimRevenue}
                       valueStyle={{ fontSize: '20px', fontWeight: 'bold' }}
                     />
                   </div>
                   <div style={{ flex: '0 0 33%' }}>
                     <Statistic
                       title="Выполнение"
-                      value={`${Math.floor((currentStatsObject.PSRevenue / planStatsObject.PSRevenue) * 100)}%`}
+                      value={`${Math.floor(
+                        (currentStatsObject.PsServiceAutosimRevenue / planStatsObject.PsServiceAutosimRevenue) * 100
+                      )}%`}
                       valueStyle={{ fontSize: '20px', fontWeight: 'bold' }}
                     />
                   </div>
@@ -321,23 +332,43 @@ const AdminPage = () => {
           <div className={styles.cardContent} style={{ backgroundColor: 'rgb(255, 255, 255)', position: 'relative' }}>
             <h3 className={styles.cardName}>Текущая премия:</h3>
             <div style={{ marginTop: 16, display: 'flex', flexDirection: 'column' }}>
-              <Statistic title="База" value={1000} valueStyle={{ fontSize: '24px', fontWeight: 'bold' }} />
-              <Divider style={{ backgroundColor: '#ccc', margin: '12px 0' }} />
               <Statistic
-                title="За выполнение плана"
-                value={500}
+                title="База"
+                formatter={() => (
+                  <>
+                    {currentAwardsObject.baseSalary}
+                    <Popover
+                      content={null}
+                      trigger="hover"
+                      placement="bottom"
+                      title="+500 при выполнении всех обязательств:"
+                    >
+                      <span style={{ marginLeft: 4, cursor: 'pointer' }}>+500</span>
+                    </Popover>
+                  </>
+                )}
                 valueStyle={{ fontSize: '24px', fontWeight: 'bold' }}
               />
               <Divider style={{ backgroundColor: '#ccc', margin: '12px 0' }} />
               <Statistic
-                title="За выполнение плана по еде"
-                value={300}
+                title="За выполнение плана по товарам"
+                value={currentAwardsObject.goodsBonus}
+                valueStyle={{ fontSize: '24px', fontWeight: 'bold' }}
+              />
+              <Divider style={{ backgroundColor: '#ccc', margin: '12px 0' }} />
+              <Statistic
+                title="За выполнение плана по PS, услугам и автосимуляторам"
+                value={currentAwardsObject.psBonus}
                 valueStyle={{ fontSize: '24px', fontWeight: 'bold' }}
               />
 
               <Divider style={{ backgroundColor: '#ccc', margin: '12px 0' }} />
 
-              <Statistic title="Суммарно" value={1800} valueStyle={{ fontSize: '26px', fontWeight: 'bold' }} />
+              <Statistic
+                title="Суммарно"
+                value={currentAwardsObject.totalAward}
+                valueStyle={{ fontSize: '26px', fontWeight: 'bold' }}
+              />
             </div>
           </div>
 
