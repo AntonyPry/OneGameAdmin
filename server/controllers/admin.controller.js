@@ -14,7 +14,7 @@ const currentStats = async (req, res) => {
     const smena = startDate.split(' ')[1].split(':')[0] === '09' ? 'day' : 'night';
     const planStatsObject = ADMIN_MONTH_PLAN[endDate.split(' ')[0]][smena];
 
-    const resultsArray = getResultsArray(startDate, endDate, clubId);
+    const resultsArray = await getResultsArray(startDate, endDate, clubId);
 
     const currentStatsObject = {
       totalRevenue: 0, // общая выручка
