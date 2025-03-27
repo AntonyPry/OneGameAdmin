@@ -113,7 +113,7 @@ const getSmartshellManagerBearer = async (clubId) => {
   const dataManagerLogin = {
     query: `mutation Login {
           login(
-              input: { login: "79115288454", password: "sahroQ-jugquv-4xymti", company_id: ${clubId} }
+              input: { login: "79216855543", password: "Toshka3g39!", company_id: ${clubId} }
           ) {
               access_token
           }
