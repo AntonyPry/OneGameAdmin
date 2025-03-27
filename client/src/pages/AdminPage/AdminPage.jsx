@@ -1,8 +1,10 @@
 // pages/AdminPage/AdminPage.jsx
 import React, { useEffect, useState } from 'react';
 import { Divider, Popover, Statistic } from 'antd';
+import { InfoCircleOutlined } from '@ant-design/icons';
 import styles from './AdminPage.module.css';
 import axios from 'axios';
+import Standarts_for_admins from './Standarts_for_admins';
 
 const AdminPage = () => {
   const [currentStatsObject, setCurrentStatsObject] = useState({
@@ -30,6 +32,9 @@ const AdminPage = () => {
     totalAward: 0, // суммарное вознаграждение + фиксированное за доп обязанности
   });
 
+  // Состояние для модального окна
+  const [modalOpen, setModalOpen] = useState(false);
+
   // Функция для форматирования даты в "YYYY-MM-DD HH:mm:ss"
   const formatDate = (date) => {
     const pad = (num) => String(num).padStart(2, '0');
@@ -55,7 +60,7 @@ const AdminPage = () => {
       } else {
         // Ночной период: с 21:00 до 09:00
         if (currentHour >= 21) {
-          // Если текущее время между 21:00 и 23:59, то период: сегодня 21:00 - завтрашнее 09:00
+          // Если текущее время между 21:00 и 23:59
           const start = new Date(now);
           start.setHours(21, 0, 0, 0);
           const end = new Date(now);
@@ -64,7 +69,7 @@ const AdminPage = () => {
           startDate = formatDate(start);
           endDate = formatDate(end);
         } else {
-          // Если текущее время между 00:00 и 08:59, то период: вчера 21:00 - сегодня 09:00
+          // Если текущее время между 00:00 и 08:59
           const start = new Date(now);
           start.setDate(start.getDate() - 1);
           start.setHours(21, 0, 0, 0);
@@ -96,9 +101,9 @@ const AdminPage = () => {
 
   useEffect(() => {
     getAdminStatsData();
-    const intervalId = setInterval(async () => {
+    const intervalId = setInterval(() => {
       getAdminStatsData();
-    }, 60000); // интервал 10000 мс (10 секунд); замените на 60000 для 1 минуты
+    }, 60000); // интервал 1 минута
 
     return () => clearInterval(intervalId);
   }, []);
@@ -156,11 +161,9 @@ const AdminPage = () => {
             </div>
           </div>
 
-          {/* Карточка 3 */}
           <div className={styles.cardContent} style={{ backgroundColor: 'rgb(255, 255, 255)', position: 'relative' }}>
             <h3 className={styles.cardName}>Статистика</h3>
             <div style={{ marginTop: 16 }}>
-              {/* Раздел "Выручка" */}
               <div>
                 <h4 style={{ margin: 0, marginBottom: '8px' }}>Выручка:</h4>
                 <div style={{ display: 'flex', gap: '16px' }}>
@@ -190,7 +193,6 @@ const AdminPage = () => {
 
               <Divider style={{ backgroundColor: '#ccc', margin: '12px 0' }} />
 
-              {/* Раздел "Еда (без шоколада)" */}
               <div>
                 <h4 style={{ marginBottom: '8px' }}>Еда (без шоколада):</h4>
                 <div style={{ display: 'flex', gap: '16px' }}>
@@ -220,7 +222,6 @@ const AdminPage = () => {
 
               <Divider style={{ backgroundColor: '#ccc', margin: '12px 0' }} />
 
-              {/* Раздел "Напитки" */}
               <div>
                 <h4 style={{ marginBottom: '8px' }}>Напитки:</h4>
                 <div style={{ display: 'flex', gap: '16px' }}>
@@ -250,7 +251,6 @@ const AdminPage = () => {
 
               <Divider style={{ backgroundColor: '#ccc', margin: '12px 0' }} />
 
-              {/* Раздел "Шоколад" */}
               <div>
                 <h4 style={{ marginBottom: '8px' }}>Шоколад:</h4>
                 <div style={{ display: 'flex', gap: '16px' }}>
@@ -280,7 +280,6 @@ const AdminPage = () => {
                 </div>
               </div>
 
-              {/* Раздел "PS5 + услуги + автосимулятор" */}
               <div>
                 <h4 style={{ marginBottom: '8px' }}>PS5 + услуги + автосимулятор:</h4>
                 <div style={{ display: 'flex', gap: '16px' }}>
@@ -310,7 +309,6 @@ const AdminPage = () => {
                 </div>
               </div>
 
-              {/* Раздел "ПК" */}
               <div>
                 <h4 style={{ marginBottom: '8px' }}>ПК:</h4>
                 <div style={{ display: 'flex', gap: '16px' }}>
@@ -353,11 +351,18 @@ const AdminPage = () => {
                 formatter={() => (
                   <>
                     {`${currentAwardsObject.baseSalary}₽`}
+                    <span style={{ marginLeft: 4 }}>+500₽</span>
                     <Popover
                       content={
                         <span>
                           +500₽ при выполнении всех{' '}
-                          <a href="/Standarts_for_admins.rtf" rel="noopener noreferrer">
+                          <a
+                            href="#"
+                            onClick={(e) => {
+                              e.preventDefault();
+                              setModalOpen(true);
+                            }}
+                          >
                             обязательств
                           </a>
                         </span>
@@ -366,7 +371,7 @@ const AdminPage = () => {
                       placement="bottom"
                       title=""
                     >
-                      <span style={{ marginLeft: 4, cursor: 'pointer' }}>+500₽</span>
+                      <InfoCircleOutlined style={{ marginLeft: 8, cursor: 'pointer', fontSize: '16px' }} />
                     </Popover>
                   </>
                 )}
@@ -384,9 +389,7 @@ const AdminPage = () => {
                 value={`${currentAwardsObject.psBonus}₽`}
                 valueStyle={{ fontSize: '24px', fontWeight: 'bold' }}
               />
-
               <Divider style={{ backgroundColor: '#ccc', margin: '12px 0' }} />
-
               <Statistic
                 title="Суммарно"
                 value={`${currentAwardsObject.totalAward}₽`}
@@ -408,6 +411,7 @@ const AdminPage = () => {
           </div>
         </div>
       </div>
+      <Standarts_for_admins modalOpen={modalOpen} setModalOpen={setModalOpen} />
     </div>
   );
 };
