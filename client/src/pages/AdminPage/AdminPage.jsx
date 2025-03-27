@@ -121,7 +121,7 @@ const AdminPage = () => {
                 title="еда (без шоколада)"
                 value={
                   planStatsObject.foodRevenue - currentStatsObject.foodRevenue > 0
-                    ? planStatsObject.foodRevenue - currentStatsObject.foodRevenue
+                    ? `${planStatsObject.foodRevenue - currentStatsObject.foodRevenue}₽`
                     : '✅'
                 }
                 valueStyle={{ fontSize: '24px', fontWeight: 'bold' }}
@@ -130,7 +130,7 @@ const AdminPage = () => {
                 title="Напитки"
                 value={
                   planStatsObject.drinksRevenue - currentStatsObject.drinksRevenue > 0
-                    ? planStatsObject.drinksRevenue - currentStatsObject.drinksRevenue
+                    ? `${planStatsObject.drinksRevenue - currentStatsObject.drinksRevenue}₽`
                     : '✅'
                 }
                 valueStyle={{ fontSize: '24px', fontWeight: 'bold' }}
@@ -139,7 +139,7 @@ const AdminPage = () => {
                 title="PS5 + услуги + автосимулятор"
                 value={
                   planStatsObject.PsServiceAutosimRevenue - currentStatsObject.PsServiceAutosimRevenue > 0
-                    ? planStatsObject.PsServiceAutosimRevenue - currentStatsObject.PsServiceAutosimRevenue
+                    ? `${planStatsObject.PsServiceAutosimRevenue - currentStatsObject.PsServiceAutosimRevenue}₽`
                     : '✅'
                 }
                 valueStyle={{ fontSize: '24px', fontWeight: 'bold' }}
@@ -148,7 +148,7 @@ const AdminPage = () => {
                 title="ПК"
                 value={
                   planStatsObject.PCRevenue - currentStatsObject.PCRevenue > 0
-                    ? planStatsObject.PCRevenue - currentStatsObject.PCRevenue
+                    ? `${planStatsObject.PCRevenue - currentStatsObject.PCRevenue}₽`
                     : '✅'
                 }
                 valueStyle={{ fontSize: '24px', fontWeight: 'bold' }}
@@ -167,14 +167,14 @@ const AdminPage = () => {
                   <div style={{ flex: '0 0 33%' }}>
                     <Statistic
                       title="Факт"
-                      value={currentStatsObject.totalRevenue}
+                      value={`${currentStatsObject.totalRevenue}₽`}
                       valueStyle={{ fontSize: '20px', fontWeight: 'bold' }}
                     />
                   </div>
                   <div style={{ flex: '0 0 33%' }}>
                     <Statistic
                       title="План"
-                      value={planStatsObject.totalRevenue}
+                      value={`${planStatsObject.totalRevenue}₽`}
                       valueStyle={{ fontSize: '20px', fontWeight: 'bold' }}
                     />
                   </div>
@@ -197,14 +197,14 @@ const AdminPage = () => {
                   <div style={{ flex: '0 0 33%' }}>
                     <Statistic
                       title="Факт"
-                      value={currentStatsObject.foodRevenue}
+                      value={`${currentStatsObject.foodRevenue}₽`}
                       valueStyle={{ fontSize: '20px', fontWeight: 'bold' }}
                     />
                   </div>
                   <div style={{ flex: '0 0 33%' }}>
                     <Statistic
                       title="План"
-                      value={planStatsObject.foodRevenue}
+                      value={`${planStatsObject.foodRevenue}₽`}
                       valueStyle={{ fontSize: '20px', fontWeight: 'bold' }}
                     />
                   </div>
@@ -227,14 +227,14 @@ const AdminPage = () => {
                   <div style={{ flex: '0 0 33%' }}>
                     <Statistic
                       title="Факт"
-                      value={currentStatsObject.drinksRevenue}
+                      value={`${currentStatsObject.drinksRevenue}₽`}
                       valueStyle={{ fontSize: '20px', fontWeight: 'bold' }}
                     />
                   </div>
                   <div style={{ flex: '0 0 33%' }}>
                     <Statistic
                       title="План"
-                      value={planStatsObject.drinksRevenue}
+                      value={`${planStatsObject.drinksRevenue}₽`}
                       valueStyle={{ fontSize: '20px', fontWeight: 'bold' }}
                     />
                   </div>
@@ -257,14 +257,14 @@ const AdminPage = () => {
                   <div style={{ flex: '0 0 33%' }}>
                     <Statistic
                       title="Факт"
-                      value={currentStatsObject.chocolateRevenue}
+                      value={`${currentStatsObject.chocolateRevenue}₽`}
                       valueStyle={{ fontSize: '20px', fontWeight: 'bold' }}
                     />
                   </div>
                   <div style={{ flex: '0 0 33%' }}>
                     <Statistic
                       title="План"
-                      value={planStatsObject.chocolateRevenue}
+                      value={`${planStatsObject.chocolateRevenue}₽`}
                       valueStyle={{ fontSize: '20px', fontWeight: 'bold' }}
                     />
                   </div>
@@ -287,14 +287,14 @@ const AdminPage = () => {
                   <div style={{ flex: '0 0 33%' }}>
                     <Statistic
                       title="Факт"
-                      value={currentStatsObject.PsServiceAutosimRevenue}
+                      value={`${currentStatsObject.PsServiceAutosimRevenue}₽`}
                       valueStyle={{ fontSize: '20px', fontWeight: 'bold' }}
                     />
                   </div>
                   <div style={{ flex: '0 0 33%' }}>
                     <Statistic
                       title="План"
-                      value={planStatsObject.PsServiceAutosimRevenue}
+                      value={`${planStatsObject.PsServiceAutosimRevenue}₽`}
                       valueStyle={{ fontSize: '20px', fontWeight: 'bold' }}
                     />
                   </div>
@@ -317,7 +317,7 @@ const AdminPage = () => {
                   <div style={{ flex: '0 0 33%' }}>
                     <Statistic
                       title="Факт"
-                      value={currentStatsObject.PCRevenue}
+                      value={`${currentStatsObject.PCRevenue}₽`}
                       titleStyle={{ margin: 0 }}
                       valueStyle={{ fontSize: '20px', fontWeight: 'bold' }}
                     />
@@ -325,7 +325,7 @@ const AdminPage = () => {
                   <div style={{ flex: '0 0 33%' }}>
                     <Statistic
                       title="План"
-                      value={planStatsObject.PCRevenue}
+                      value={`${planStatsObject.PCRevenue}₽`}
                       valueStyle={{ fontSize: '20px', fontWeight: 'bold' }}
                     />
                   </div>
@@ -352,14 +352,21 @@ const AdminPage = () => {
                 title="База"
                 formatter={() => (
                   <>
-                    {currentAwardsObject.baseSalary}
+                    {`${currentAwardsObject.baseSalary}₽`}
                     <Popover
-                      content={null}
+                      content={
+                        <span>
+                          +500₽ при выполнении всех{' '}
+                          <a href="/Standarts_for_admins.rtf" rel="noopener noreferrer">
+                            обязательств
+                          </a>
+                        </span>
+                      }
                       trigger="hover"
                       placement="bottom"
-                      title="+500 при выполнении всех обязательств:"
+                      title=""
                     >
-                      <span style={{ marginLeft: 4, cursor: 'pointer' }}>+500</span>
+                      <span style={{ marginLeft: 4, cursor: 'pointer' }}>+500₽</span>
                     </Popover>
                   </>
                 )}
@@ -368,13 +375,13 @@ const AdminPage = () => {
               <Divider style={{ backgroundColor: '#ccc', margin: '12px 0' }} />
               <Statistic
                 title="За выполнение плана по товарам"
-                value={currentAwardsObject.goodsBonus}
+                value={`${currentAwardsObject.goodsBonus}₽`}
                 valueStyle={{ fontSize: '24px', fontWeight: 'bold' }}
               />
               <Divider style={{ backgroundColor: '#ccc', margin: '12px 0' }} />
               <Statistic
                 title="За выполнение плана по PS, услугам и автосимуляторам"
-                value={currentAwardsObject.psBonus}
+                value={`${currentAwardsObject.psBonus}₽`}
                 valueStyle={{ fontSize: '24px', fontWeight: 'bold' }}
               />
 
@@ -382,7 +389,7 @@ const AdminPage = () => {
 
               <Statistic
                 title="Суммарно"
-                value={currentAwardsObject.totalAward}
+                value={`${currentAwardsObject.totalAward}₽`}
                 valueStyle={{ fontSize: '26px', fontWeight: 'bold' }}
               />
             </div>

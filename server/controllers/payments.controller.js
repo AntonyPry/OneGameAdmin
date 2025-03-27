@@ -166,6 +166,8 @@ const getPaymentData = async (startDate, endDate, managerBearer) => {
                 ? 'FAKE'
                 : payment?.payment_items[i]?.title?.includes('PS')
                 ? 'PS'
+                : payment?.payment_items[i]?.title?.includes('Кресло')
+                ? 'RACEZONE'
                 : payment.payment_items[i].entity_type
                 ? payment.payment_items[i].entity_type
                 : 'TARIFF',
@@ -212,6 +214,8 @@ const getPaymentData = async (startDate, endDate, managerBearer) => {
                     ? 'FAKE'
                     : payment?.payment_items[i]?.title?.includes('PS')
                     ? 'PS'
+                    : payment?.payment_items[i]?.title?.includes('Кресло')
+                    ? 'RACEZONE'
                     : payment.payment_items[i].entity_type
                     ? payment.payment_items[i].entity_type
                     : 'TARIFF',
