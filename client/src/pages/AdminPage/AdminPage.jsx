@@ -32,6 +32,15 @@ const AdminPage = () => {
     totalAward: 0, // суммарное вознаграждение + фиксированное за доп обязанности
   });
 
+  const [currentWorkshift, setCurrentWorkshift] = useState({
+    comment: '',
+    created_at: 0,
+    worker: {
+      last_name: '',
+      first_name: '',
+    },
+  });
+
   // Состояние для модального окна
   const [modalOpen, setModalOpen] = useState(false);
 
@@ -41,6 +50,36 @@ const AdminPage = () => {
     return `${date.getFullYear()}-${pad(date.getMonth() + 1)}-${pad(date.getDate())} ${pad(date.getHours())}:${pad(
       date.getMinutes()
     )}:${pad(date.getSeconds())}`;
+  };
+
+  const getWorkshiftDuration = () => {
+    if (!currentWorkshift.created_at) return '';
+
+    // created_at уже в МСК
+    const createdAtDate = new Date(currentWorkshift.created_at.replace(' ', 'T') + '+03:00');
+    const now = new Date(); // текущее время
+
+    const diffInMs = now - createdAtDate; // корректно сравниваем
+    const diffInMinutes = Math.floor(diffInMs / 1000 / 60);
+    const hours = Math.floor(diffInMinutes / 60);
+    const minutes = diffInMinutes % 60;
+
+    return `${hours} ч ${minutes} мин`;
+  };
+
+  const getShiftType = () => {
+    if (!currentWorkshift.created_at) return '';
+
+    const createdAt = new Date(currentWorkshift.created_at.replace(' ', 'T') + '+03:00');
+    const hours = createdAt.getHours();
+
+    if (hours >= 6 && hours < 12) {
+      return 'День';
+    } else if (hours >= 18 && hours < 24) {
+      return 'Ночь';
+    } else {
+      return '—'; // Неопределённое время (например, если смена началась в 13:00)
+    }
   };
 
   const getAdminStatsData = async () => {
@@ -88,11 +127,13 @@ const AdminPage = () => {
         currentStatsObject: response.data.currentStatsObject,
         planStatsObject: response.data.planStatsObject,
         currentAwardsObject: response.data.currentAwardsObject,
+        currentWorkshift: response.data.currentWorkshift,
       });
       if (response?.data) {
         setCurrentStatsObject(response.data.currentStatsObject);
         setPlanStatsObject(response.data.planStatsObject);
         setCurrentAwardsObject(response.data.currentAwardsObject);
+        setCurrentWorkshift(response.data.currentWorkshift);
       }
     } catch (error) {
       console.error('adminStats ERROR ->', error);
@@ -123,19 +164,16 @@ const AdminPage = () => {
               }}
             >
               <Statistic
-                title="еда (без шоколада)"
+                title="Еда + напитки"
                 value={
-                  planStatsObject.foodRevenue - currentStatsObject.foodRevenue > 0
+                  planStatsObject.foodRevenue +
+                    planStatsObject.drinksRevenue +
+                    planStatsObject.chocolateRevenue -
+                    currentStatsObject.foodRevenue -
+                    currentStatsObject.drinksRevenue -
+                    currentStatsObject.chocolateRevenue >
+                  0
                     ? `${planStatsObject.foodRevenue - currentStatsObject.foodRevenue}₽`
-                    : '✅'
-                }
-                valueStyle={{ fontSize: '24px', fontWeight: 'bold' }}
-              />
-              <Statistic
-                title="Напитки"
-                value={
-                  planStatsObject.drinksRevenue - currentStatsObject.drinksRevenue > 0
-                    ? `${planStatsObject.drinksRevenue - currentStatsObject.drinksRevenue}₽`
                     : '✅'
                 }
                 valueStyle={{ fontSize: '24px', fontWeight: 'bold' }}
@@ -194,33 +232,47 @@ const AdminPage = () => {
               <Divider style={{ backgroundColor: '#ccc', margin: '12px 0' }} />
 
               <div>
-                <h4 style={{ marginBottom: '8px' }}>Еда (без шоколада):</h4>
+                <h4 style={{ marginBottom: '8px' }}>Еда + напитки:</h4>
                 <div style={{ display: 'flex', gap: '16px' }}>
                   <div style={{ flex: '0 0 33%' }}>
                     <Statistic
                       title="Факт"
-                      value={`${currentStatsObject.foodRevenue}₽`}
+                      value={`${
+                        currentStatsObject.foodRevenue +
+                        currentStatsObject.drinksRevenue +
+                        currentStatsObject.chocolateRevenue
+                      }₽`}
                       valueStyle={{ fontSize: '20px', fontWeight: 'bold' }}
                     />
                   </div>
                   <div style={{ flex: '0 0 33%' }}>
                     <Statistic
                       title="План"
-                      value={`${planStatsObject.foodRevenue}₽`}
+                      value={`${
+                        planStatsObject.foodRevenue + planStatsObject.drinksRevenue + planStatsObject.chocolateRevenue
+                      }₽`}
                       valueStyle={{ fontSize: '20px', fontWeight: 'bold' }}
                     />
                   </div>
                   <div style={{ flex: '0 0 33%' }}>
                     <Statistic
                       title="Выполнение"
-                      value={`${Math.floor((currentStatsObject.foodRevenue / planStatsObject.foodRevenue) * 100)}%`}
+                      value={`${Math.floor(
+                        ((currentStatsObject.foodRevenue +
+                          currentStatsObject.drinksRevenue +
+                          currentStatsObject.chocolateRevenue) /
+                          (planStatsObject.foodRevenue +
+                            planStatsObject.drinksRevenue +
+                            planStatsObject.chocolateRevenue)) *
+                          100
+                      )}%`}
                       valueStyle={{ fontSize: '20px', fontWeight: 'bold' }}
                     />
                   </div>
                 </div>
               </div>
 
-              <Divider style={{ backgroundColor: '#ccc', margin: '12px 0' }} />
+              {/* <Divider style={{ backgroundColor: '#ccc', margin: '12px 0' }} />
 
               <div>
                 <h4 style={{ marginBottom: '8px' }}>Напитки:</h4>
@@ -278,7 +330,7 @@ const AdminPage = () => {
                     />
                   </div>
                 </div>
-              </div>
+              </div> */}
 
               <div>
                 <h4 style={{ marginBottom: '8px' }}>PS5 + услуги + автосимулятор:</h4>
@@ -385,7 +437,7 @@ const AdminPage = () => {
               />
               <Divider style={{ backgroundColor: '#ccc', margin: '12px 0' }} />
               <Statistic
-                title="За выполнение плана по PS, услугам и автосимуляторам"
+                title="За выполнение плана по PS, услугам и автосимулятору"
                 value={`${currentAwardsObject.psBonus}₽`}
                 valueStyle={{ fontSize: '24px', fontWeight: 'bold' }}
               />
@@ -399,15 +451,37 @@ const AdminPage = () => {
           </div>
 
           {/* Карточка 4 (пустая) */}
-          <div
-            className={styles.cardContent}
-            style={{
-              backgroundColor: 'rgb(255, 255, 255)',
-              position: 'relative',
-              minHeight: '300px',
-            }}
-          >
-            {/* Пустая карточка */}
+          <div className={styles.cardContent} style={{ backgroundColor: 'rgb(255, 255, 255)', position: 'relative' }}>
+            <h3 className={styles.cardName}>Смена</h3>
+            <div>
+              <h4 style={{ marginBottom: '8px' }}>
+                Админ: {currentWorkshift.worker.first_name + ' ' + currentWorkshift.worker.last_name}
+              </h4>
+              <div style={{ display: 'flex', gap: '16px' }}>
+                <div style={{ flex: '0 0 33%' }}>
+                  <Statistic
+                    title="Смена"
+                    value={`${getShiftType()}`}
+                    titleStyle={{ margin: 0 }}
+                    valueStyle={{ fontSize: '20px', fontWeight: 'bold' }}
+                  />
+                </div>
+                <div style={{ flex: '0 0 33%' }}>
+                  <Statistic
+                    title="Начало"
+                    value={`${currentWorkshift.created_at.split(' ')[1]}`}
+                    valueStyle={{ fontSize: '20px', fontWeight: 'bold' }}
+                  />
+                </div>
+                <div style={{ flex: '0 0 33%' }}>
+                  <Statistic
+                    title="Продолжительность"
+                    value={`${getWorkshiftDuration()}`}
+                    valueStyle={{ fontSize: '20px', fontWeight: 'bold' }}
+                  />
+                </div>
+              </div>
+            </div>
           </div>
         </div>
       </div>

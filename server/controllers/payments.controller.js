@@ -93,7 +93,7 @@ const sbpFromPeriod = async (req, res) => {
 
     const data = await getSbpData(startDate, endDate, managerBearer);
     if (data.error) {
-      console.log(`Ошибка при получении менеджерского токена для клуба ${clubId}:`, data.message);
+      console.log(`Ошибка при получении даннх по СБП токена для клуба ${clubId}:`, data.message);
       return res.status(400).send(data);
     } else {
       const xlsxBuffer = await generateSbpXlsx(data.result);
@@ -1006,6 +1006,7 @@ const generateSbpXlsx = async (data) => {
 };
 
 module.exports = {
+  getSmartshellManagerBearer,
   paymentsFromPeriod,
   getResultsArray,
   sbpFromPeriod,

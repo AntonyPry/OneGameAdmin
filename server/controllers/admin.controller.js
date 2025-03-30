@@ -1,10 +1,13 @@
-// controllers/payments.controller.js
-const dotenv = require('dotenv');
+// controllers/admin.controller.js
+const axios = require('axios');
+const https = require('https');
 const { FOOD, CHOCOLATE, DRINKS } = require('../consts/paymentTitles');
 const { ADMIN_MONTH_PLAN } = require('../consts/adminMonthPlan');
-const { getResultsArray } = require('./payments.controller');
+const { getResultsArray, getSmartshellManagerBearer } = require('./payments.controller');
 
-dotenv.config();
+const agent = new https.Agent({
+  rejectUnauthorized: false, // Отключает проверку сертификата
+});
 
 const currentStats = async (req, res) => {
   try {
@@ -60,7 +63,9 @@ const currentStats = async (req, res) => {
 
     const currentAwardsObject = getCurrentAwardsObject(endDate, smena, currentStatsObject, planStatsObject);
 
-    return res.status(200).send({ currentStatsObject, planStatsObject, currentAwardsObject });
+    const currentWorkshift = await getActiveWorkshiftStartDate(clubId);
+
+    return res.status(200).send({ currentStatsObject, planStatsObject, currentAwardsObject, currentWorkshift });
   } catch (error) {
     console.log('currentStats ERROR ->', error);
     return res.status(500).send({ error: true, message: error.message });
@@ -107,6 +112,49 @@ const getCurrentAwardsObject = (endDate, smena, currentStatsObject, planStatsObj
   };
 
   return currentAwardsObject;
+};
+
+const getActiveWorkshiftStartDate = async (clubId) => {
+  const managerBearer = await getSmartshellManagerBearer(clubId);
+  if (managerBearer.error) {
+    console.log(`Ошибка при получении менеджерского токена для клуба ${clubId}:`, managerBearer.message);
+    return res.status(400).send(managerBearer);
+  }
+
+  const dataActiveWorkshift = {
+    query: `query ActiveWorkShift {
+                activeWorkShift {
+                    comment
+                    created_at
+                    worker {
+                      last_name
+                      first_name
+                  }
+                }
+            }`,
+  };
+
+  try {
+    const res = await axios({
+      method: 'post',
+      url: `https://billing.smartshell.gg/api/graphql`,
+      data: dataActiveWorkshift,
+      headers: {
+        authorization: `Bearer ${managerBearer}`,
+      },
+      httpsAgent: agent,
+    });
+
+    if (res.data.errors) {
+      res.data.errors.map((error) => console.log('getActiveWorkshiftStartDate ERROR ->', error.message));
+      return { error: true, message: 'Не удалось получить данные от smartshell' };
+    } else {
+      return res.data.data.activeWorkShift;
+    }
+  } catch (error) {
+    console.log('getActiveWorkshiftStartDate ERROR ->', error.message);
+    return { error: true, message: 'Ошибка на стороне сервера' };
+  }
 };
 
 module.exports = {
