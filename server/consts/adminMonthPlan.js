@@ -117,6 +117,60 @@ const ADMIN_MONTH_PLAN = {
       totalRevenue: 26704, // общая выручка
     },
   },
+  '2025-04-01': {
+    night: {
+      PCRevenue: 10314, // выручка за ПК
+      PsServiceAutosimRevenue: 1547, // выручка за PS5 + услуги + автосимулятор
+      foodRevenue: 1500, // выручка за всю еду без шоколада
+      chocolateRevenue: 450, // выручка за шоколад
+      drinksRevenue: 1820, // выручка за напитки
+      totalRevenue: 15631, // общая выручка
+    },
+    day: {
+      PCRevenue: 17664, // выручка за ПК
+      PsServiceAutosimRevenue: 2650, // выручка за PS5 + услуги + автосимулятор
+      foodRevenue: 2500, // выручка за всю еду без шоколада
+      chocolateRevenue: 810, // выручка за шоколад
+      drinksRevenue: 3080, // выручка за напитки
+      totalRevenue: 26704, // общая выручка
+    },
+  },
+  '2025-04-02': {
+    night: {
+      PCRevenue: 10314, // выручка за ПК
+      PsServiceAutosimRevenue: 1547, // выручка за PS5 + услуги + автосимулятор
+      foodRevenue: 1500, // выручка за всю еду без шоколада
+      chocolateRevenue: 450, // выручка за шоколад
+      drinksRevenue: 1820, // выручка за напитки
+      totalRevenue: 15631, // общая выручка
+    },
+    day: {
+      PCRevenue: 17664, // выручка за ПК
+      PsServiceAutosimRevenue: 2650, // выручка за PS5 + услуги + автосимулятор
+      foodRevenue: 2500, // выручка за всю еду без шоколада
+      chocolateRevenue: 810, // выручка за шоколад
+      drinksRevenue: 3080, // выручка за напитки
+      totalRevenue: 26704, // общая выручка
+    },
+  },
+  '2025-04-03': {
+    night: {
+      PCRevenue: 10314, // выручка за ПК
+      PsServiceAutosimRevenue: 1547, // выручка за PS5 + услуги + автосимулятор
+      foodRevenue: 1500, // выручка за всю еду без шоколада
+      chocolateRevenue: 450, // выручка за шоколад
+      drinksRevenue: 1820, // выручка за напитки
+      totalRevenue: 15631, // общая выручка
+    },
+    day: {
+      PCRevenue: 17664, // выручка за ПК
+      PsServiceAutosimRevenue: 2650, // выручка за PS5 + услуги + автосимулятор
+      foodRevenue: 2500, // выручка за всю еду без шоколада
+      chocolateRevenue: 810, // выручка за шоколад
+      drinksRevenue: 3080, // выручка за напитки
+      totalRevenue: 26704, // общая выручка
+    },
+  },
 };
 
 module.exports = {

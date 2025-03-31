@@ -1,10 +1,23 @@
 // pages/AdminPage/AdminPage.jsx
 import React, { useEffect, useState } from 'react';
-import { Divider, Popover, Statistic } from 'antd';
+import { Button, Divider, Popover, Statistic } from 'antd';
 import { InfoCircleOutlined } from '@ant-design/icons';
 import styles from './AdminPage.module.css';
 import axios from 'axios';
 import Standarts_for_admins from './Standarts_for_admins';
+import ManagerModal from './ManagerModal';
+import AwardsForProducts from './AwardsForProducts';
+
+const responsibilityMap = {
+  clubCleanliness: 'чистота клуба',
+  kitchenCleanliness: 'чистота кухни',
+  quickVkAnswers: 'ответы вк',
+  quickPhoneAnswers: 'ответы телефон',
+  workspaceCleanliness: 'чистота рабочего места',
+  noStrangersNearTheWorkspace: 'посторонние за стойкой',
+  clubClimateControl: 'климат-контроль',
+  refrigeratorOccupancy: 'холодильник не заполнен',
+};
 
 const AdminPage = () => {
   const [currentStatsObject, setCurrentStatsObject] = useState({
@@ -42,7 +55,9 @@ const AdminPage = () => {
   });
 
   // Состояние для модального окна
-  const [modalOpen, setModalOpen] = useState(false);
+  const [standarts_for_adminsModalOpen, setStandarts_for_adminsModalOpen] = useState(false);
+  const [awardsForProductsModalOpen, setAwardsForProductsModalOpen] = useState(false);
+  const [isManagerModalOpen, setIsManagerModalOpen] = useState(false);
 
   // Функция для форматирования даты в "YYYY-MM-DD HH:mm:ss"
   const formatDate = (date) => {
@@ -78,45 +93,30 @@ const AdminPage = () => {
     } else if (hours >= 18 && hours < 24) {
       return 'Ночь';
     } else {
-      return '—'; // Неопределённое время (например, если смена началась в 13:00)
+      return '—';
     }
   };
 
   const getAdminStatsData = async () => {
     try {
+      const activeWorkshift = await axios.get(`${process.env.REACT_APP_BACKEND_URL}/api/admin/getActiveWorkshift`);
+      setCurrentWorkshift(activeWorkshift.data.currentWorkshift);
       const now = new Date();
-      let startDate, endDate;
-      const currentHour = now.getHours();
+      let startDate = activeWorkshift.data.currentWorkshift.created_at,
+        endDate;
 
-      if (currentHour >= 9 && currentHour < 21) {
-        // Дневной период: с 09:00 до 21:00 текущего дня
-        const start = new Date(now);
-        start.setHours(9, 0, 0, 0);
+      const createdAt = new Date(activeWorkshift.data.currentWorkshift.created_at.replace(' ', 'T') + '+03:00');
+      const hours = createdAt.getHours();
+
+      if (hours >= 6 && hours < 12) {
         const end = new Date(now);
         end.setHours(21, 0, 0, 0);
-        startDate = formatDate(start);
         endDate = formatDate(end);
-      } else {
-        // Ночной период: с 21:00 до 09:00
-        if (currentHour >= 21) {
-          // Если текущее время между 21:00 и 23:59
-          const start = new Date(now);
-          start.setHours(21, 0, 0, 0);
-          const end = new Date(now);
-          end.setDate(end.getDate() + 1);
-          end.setHours(9, 0, 0, 0);
-          startDate = formatDate(start);
-          endDate = formatDate(end);
-        } else {
-          // Если текущее время между 00:00 и 08:59
-          const start = new Date(now);
-          start.setDate(start.getDate() - 1);
-          start.setHours(21, 0, 0, 0);
-          const end = new Date(now);
-          end.setHours(9, 0, 0, 0);
-          startDate = formatDate(start);
-          endDate = formatDate(end);
-        }
+      } else if (hours >= 18 && hours < 24) {
+        const end = new Date(now);
+        end.setDate(createdAt.getDate() + 1);
+        end.setHours(9, 0, 0, 0);
+        endDate = formatDate(end);
       }
 
       // Выполнение запроса к бэкенду с параметрами startDate и endDate
@@ -127,16 +127,14 @@ const AdminPage = () => {
         currentStatsObject: response.data.currentStatsObject,
         planStatsObject: response.data.planStatsObject,
         currentAwardsObject: response.data.currentAwardsObject,
-        currentWorkshift: response.data.currentWorkshift,
       });
       if (response?.data) {
         setCurrentStatsObject(response.data.currentStatsObject);
         setPlanStatsObject(response.data.planStatsObject);
         setCurrentAwardsObject(response.data.currentAwardsObject);
-        setCurrentWorkshift(response.data.currentWorkshift);
       }
     } catch (error) {
-      console.error('adminStats ERROR ->', error);
+      console.log('adminStats ERROR ->', error);
     }
   };
 
@@ -403,7 +401,21 @@ const AdminPage = () => {
                 formatter={() => (
                   <>
                     {`${currentAwardsObject.baseSalary}₽`}
-                    <span style={{ marginLeft: 4 }}>+500₽</span>
+                    <span
+                      style={{
+                        marginLeft: 4,
+                        color:
+                          currentAwardsObject?.responsibilitiesCheck?.status === 'ok'
+                            ? 'green'
+                            : currentAwardsObject?.responsibilitiesCheck?.status === 'fail'
+                            ? 'red'
+                            : 'gray',
+                        textDecoration:
+                          currentAwardsObject?.responsibilitiesCheck?.status === 'fail' ? 'line-through' : 'none',
+                      }}
+                    >
+                      +500₽
+                    </span>
                     <Popover
                       content={
                         <span>
@@ -412,10 +424,50 @@ const AdminPage = () => {
                             href="#"
                             onClick={(e) => {
                               e.preventDefault();
-                              setModalOpen(true);
+                              setStandarts_for_adminsModalOpen(true);
                             }}
                           >
                             обязательств
+                          </a>
+                        </span>
+                      }
+                      trigger="hover"
+                      placement="bottom"
+                      title=""
+                    >
+                      <InfoCircleOutlined style={{ marginLeft: 8, cursor: 'pointer', fontSize: '16px' }} />
+                    </Popover>
+                    {currentAwardsObject?.responsibilitiesCheck?.status === 'fail' &&
+                      currentAwardsObject?.responsibilitiesCheck?.notPassed?.length > 0 && (
+                        <div style={{ fontSize: '12px', color: 'red', marginTop: 4 }}>
+                          Нарушения:{' '}
+                          {currentAwardsObject?.responsibilitiesCheck?.notPassed
+                            .map((key) => responsibilityMap[key] || key)
+                            .join(', ')}
+                        </div>
+                      )}
+                  </>
+                )}
+                valueStyle={{ fontSize: '24px', fontWeight: 'bold' }}
+              />
+              <Divider style={{ backgroundColor: '#ccc', margin: '12px 0' }} />
+              <Statistic
+                title="За выполнение плана по товарам"
+                formatter={() => (
+                  <>
+                    {`${currentAwardsObject.goodsBonus}₽`}
+                    <Popover
+                      content={
+                        <span>
+                          при выполнении{' '}
+                          <a
+                            href="#"
+                            onClick={(e) => {
+                              e.preventDefault();
+                              setAwardsForProductsModalOpen(true);
+                            }}
+                          >
+                            условий
                           </a>
                         </span>
                       }
@@ -431,14 +483,33 @@ const AdminPage = () => {
               />
               <Divider style={{ backgroundColor: '#ccc', margin: '12px 0' }} />
               <Statistic
-                title="За выполнение плана по товарам"
-                value={`${currentAwardsObject.goodsBonus}₽`}
-                valueStyle={{ fontSize: '24px', fontWeight: 'bold' }}
-              />
-              <Divider style={{ backgroundColor: '#ccc', margin: '12px 0' }} />
-              <Statistic
                 title="За выполнение плана по PS, услугам и автосимулятору"
-                value={`${currentAwardsObject.psBonus}₽`}
+                formatter={() => (
+                  <>
+                    {`${currentAwardsObject.psBonus}₽`}
+                    {/* <Popover
+                      content={
+                        <span>
+                          при выполнении{' '}
+                          <a
+                            href="#"
+                            onClick={(e) => {
+                              e.preventDefault();
+                              setStandarts_for_adminsModalOpen(true);
+                            }}
+                          >
+                            условий
+                          </a>
+                        </span>
+                      }
+                      trigger="hover"
+                      placement="bottom"
+                      title=""
+                    >
+                      <InfoCircleOutlined style={{ marginLeft: 8, cursor: 'pointer', fontSize: '16px' }} />
+                    </Popover> */}
+                  </>
+                )}
                 valueStyle={{ fontSize: '24px', fontWeight: 'bold' }}
               />
               <Divider style={{ backgroundColor: '#ccc', margin: '12px 0' }} />
@@ -448,6 +519,16 @@ const AdminPage = () => {
                 valueStyle={{ fontSize: '26px', fontWeight: 'bold' }}
               />
             </div>
+            <Button
+              style={{ width: '250px', alignSelf: 'flex-end' }}
+              disabled={currentAwardsObject?.responsibilitiesCheck?.alreadyChecked}
+              onClick={(e) => {
+                e.preventDefault();
+                setIsManagerModalOpen(true);
+              }}
+            >
+              Подтвердить выполнение
+            </Button>
           </div>
 
           {/* Карточка 4 (пустая) */}
@@ -469,7 +550,7 @@ const AdminPage = () => {
                 <div style={{ flex: '0 0 33%' }}>
                   <Statistic
                     title="Начало"
-                    value={`${currentWorkshift.created_at.split(' ')[1]}`}
+                    value={`${currentWorkshift?.created_at ? currentWorkshift.created_at.split(' ')[1] : '-'}`}
                     valueStyle={{ fontSize: '20px', fontWeight: 'bold' }}
                   />
                 </div>
@@ -485,7 +566,9 @@ const AdminPage = () => {
           </div>
         </div>
       </div>
-      <Standarts_for_admins modalOpen={modalOpen} setModalOpen={setModalOpen} />
+      <Standarts_for_admins modalOpen={standarts_for_adminsModalOpen} setModalOpen={setStandarts_for_adminsModalOpen} />
+      <AwardsForProducts modalOpen={awardsForProductsModalOpen} setModalOpen={setAwardsForProductsModalOpen} />
+      <ManagerModal modalOpen={isManagerModalOpen} setModalOpen={setIsManagerModalOpen} />
     </div>
   );
 };

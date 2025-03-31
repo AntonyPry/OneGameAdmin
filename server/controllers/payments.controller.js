@@ -109,7 +109,7 @@ const sbpFromPeriod = async (req, res) => {
   }
 };
 
-const getSmartshellManagerBearer = async (clubId) => {
+const getSmartshellManagerBearer = async (clubId = 6816) => {
   const dataManagerLogin = {
     query: `mutation Login {
           login(
