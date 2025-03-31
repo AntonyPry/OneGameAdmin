@@ -34,10 +34,6 @@ const AwardsForProducts = ({ modalOpen, setModalOpen }) => {
               Продано еды на 11000 ₽ (в пн-чт) — <strong>премия 2200 ₽</strong>
             </li>
           </ul>
-
-          <p style={{ marginTop: '20px' }}>
-            Учитывается только та категория товаров, по которой установлен план (например, еда или напитки).
-          </p>
         </div>
       </Modal>
     </div>
