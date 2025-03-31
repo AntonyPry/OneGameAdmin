@@ -521,7 +521,6 @@ const AdminPage = () => {
             </div>
             <Button
               style={{ width: '250px', alignSelf: 'flex-end' }}
-              disabled={currentAwardsObject?.responsibilitiesCheck?.alreadyChecked}
               onClick={(e) => {
                 e.preventDefault();
                 setIsManagerModalOpen(true);
