@@ -113,7 +113,7 @@ const AdminPage = () => {
         end.setHours(21, 0, 0, 0);
         endDate = formatDate(end);
       } else if (hours >= 18 && hours < 24) {
-        const end = new Date(now);
+        const end = new Date(createdAt);
         end.setDate(createdAt.getDate() + 1);
         end.setHours(9, 0, 0, 0);
         endDate = formatDate(end);

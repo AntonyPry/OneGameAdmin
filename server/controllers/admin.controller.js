@@ -14,7 +14,7 @@ const currentStats = async (req, res) => {
     let { startDate, endDate, clubId } = req.query;
     if (!clubId) clubId = 6816;
 
-    const smena = startDate.split(' ')[1].split(':')[0] === '09' ? 'day' : 'night';
+    const smena = endDate.split(' ')[1].split(':')[0] === '09' ? 'night' : 'day';
     const planStatsObject = ADMIN_MONTH_PLAN[endDate.split(' ')[0]][smena];
 
     const resultsArray = await getResultsArray(startDate, endDate, clubId);
