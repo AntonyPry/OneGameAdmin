@@ -179,7 +179,7 @@ const getPaymentData = async (startDate, endDate, managerBearer) => {
               nickname: payment.client?.nickname ? payment.client?.nickname : null,
               title: payment.payment_items[i].title ? payment.payment_items[i].title : 'Пополнение депозита',
               amount: payment.payment_items[i].amount,
-              sum: Math.floor(payment.payment_items[i].sum - payment.value1),
+              sum: Math.floor(payment.payment_items[i].sum),
               bonus: Math.floor(payment.value1),
               payment_title: payment.payment.title,
               operator: `${payment.operator?.first_name} ${payment.operator?.last_name}`,
@@ -227,7 +227,7 @@ const getPaymentData = async (startDate, endDate, managerBearer) => {
                   nickname: payment.client?.nickname ? payment.client?.nickname : null,
                   title: payment.payment_items[i].title ? payment.payment_items[i].title : 'Пополнение депозита',
                   amount: payment.payment_items[i].amount,
-                  sum: Math.floor(payment.payment_items[i].sum - payment.value1),
+                  sum: Math.floor(payment.payment_items[i].sum),
                   bonus: Math.floor(payment.value1),
                   payment_title: payment.payment.title,
                   operator: `${payment.operator?.first_name} ${payment.operator?.last_name}`,
@@ -737,6 +737,7 @@ const getPaymentRefundData = async (startDate, endDate, managerBearer) => {
     } else {
       for (const payment of resPaymentsData.data.data.eventList.data) {
         for (let i = 0; i < payment.payment_items.length; i++) {
+          console.log(payment);
           result = [
             ...result,
             {
@@ -757,10 +758,10 @@ const getPaymentRefundData = async (startDate, endDate, managerBearer) => {
               sum:
                 payment.payment.title === 'BONUS'
                   ? Math.floor(payment.value1)
-                  : -Math.floor(payment.payment_items[i].sum - payment.value1),
+                  : -Math.floor(payment.payment_items[i].sum),
               bonus:
                 payment.payment.title === 'BONUS'
-                  ? -Math.floor(payment.payment_items[i].sum - payment.value1)
+                  ? -Math.floor(payment.payment_items[i].sum)
                   : Math.floor(payment.value1),
               payment_title: payment.payment.title,
               operator: `${payment.operator?.first_name} ${payment.operator?.last_name}`,
@@ -798,15 +799,15 @@ const getPaymentRefundData = async (startDate, endDate, managerBearer) => {
                   time: payment.timestamp.split(' ')[1],
                   client: payment.client?.phone ? `+${payment.client?.phone}` : null,
                   nickname: payment.client?.nickname ? payment.client?.nickname : null,
-                  title: 'Отмена ' + (await getPaymentById(endDate, payment.payment.id, i, managerBearer)),
+                  title: 'Отмена ' + (await getPaymentById(payment.timestamp, payment.payment.id, i, managerBearer)),
                   amount: payment.payment_items[i].amount,
                   sum:
                     payment.payment.title === 'BONUS'
                       ? Math.floor(payment.value1)
-                      : -Math.floor(payment.payment_items[i].sum - payment.value1),
+                      : -Math.floor(payment.payment_items[i].sum),
                   bonus:
                     payment.payment.title === 'BONUS'
-                      ? -Math.floor(payment.payment_items[i].sum - payment.value1)
+                      ? -Math.floor(payment.payment_items[i].sum)
                       : Math.floor(payment.value1),
                   payment_title: payment.payment.title,
                   operator: `${payment.operator?.first_name} ${payment.operator?.last_name}`,
@@ -902,10 +903,9 @@ const createSmartshellPaymentByIdRequest = (endDate, id, managerBearer) => {
     query: `query eventList {
   eventList(
       input: {
-          start: "2024-12-01"
+          start: "2024-12-01 00:00:00"
           finish: "${endDate}"
           types: "PAYMENT_CREATED"
-          q: "${id}"
   }
   ) {
         data {
