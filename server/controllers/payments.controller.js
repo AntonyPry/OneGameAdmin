@@ -179,7 +179,10 @@ const getPaymentData = async (startDate, endDate, managerBearer) => {
               nickname: payment.client?.nickname ? payment.client?.nickname : null,
               title: payment.payment_items[i].title ? payment.payment_items[i].title : 'Пополнение депозита',
               amount: payment.payment_items[i].amount,
-              sum: Math.floor(payment.payment_items[i].sum),
+              sum:
+                payment.payment.title === 'DEPOSIT'
+                  ? Math.floor(payment.payment_items[i].sum - payment.value1)
+                  : Math.floor(payment.payment_items[i].sum),
               bonus: Math.floor(payment.value1),
               payment_title: payment.payment.title,
               operator: `${payment.operator?.first_name} ${payment.operator?.last_name}`,
@@ -227,7 +230,10 @@ const getPaymentData = async (startDate, endDate, managerBearer) => {
                   nickname: payment.client?.nickname ? payment.client?.nickname : null,
                   title: payment.payment_items[i].title ? payment.payment_items[i].title : 'Пополнение депозита',
                   amount: payment.payment_items[i].amount,
-                  sum: Math.floor(payment.payment_items[i].sum),
+                  sum:
+                    payment.payment.title === 'DEPOSIT'
+                      ? Math.floor(payment.payment_items[i].sum - payment.value1)
+                      : Math.floor(payment.payment_items[i].sum),
                   bonus: Math.floor(payment.value1),
                   payment_title: payment.payment.title,
                   operator: `${payment.operator?.first_name} ${payment.operator?.last_name}`,
@@ -757,11 +763,15 @@ const getPaymentRefundData = async (startDate, endDate, managerBearer) => {
               amount: payment.payment_items[i].amount,
               sum:
                 payment.payment.title === 'BONUS'
-                  ? Math.floor(payment.value1)
+                  ? 0
+                  : payment.payment.title === 'DEPOSIT'
+                  ? -Math.floor(payment.payment_items[i].sum - payment.value1)
                   : -Math.floor(payment.payment_items[i].sum),
               bonus:
                 payment.payment.title === 'BONUS'
-                  ? -Math.floor(payment.payment_items[i].sum)
+                  ? payment.payment.title === 'DEPOSIT'
+                    ? -Math.floor(payment.payment_items[i].sum - payment.value1)
+                    : -Math.floor(payment.payment_items[i].sum)
                   : Math.floor(payment.value1),
               payment_title: payment.payment.title,
               operator: `${payment.operator?.first_name} ${payment.operator?.last_name}`,
@@ -803,11 +813,15 @@ const getPaymentRefundData = async (startDate, endDate, managerBearer) => {
                   amount: payment.payment_items[i].amount,
                   sum:
                     payment.payment.title === 'BONUS'
-                      ? Math.floor(payment.value1)
+                      ? 0
+                      : payment.payment.title === 'DEPOSIT'
+                      ? -Math.floor(payment.payment_items[i].sum - payment.value1)
                       : -Math.floor(payment.payment_items[i].sum),
                   bonus:
                     payment.payment.title === 'BONUS'
-                      ? -Math.floor(payment.payment_items[i].sum)
+                      ? payment.payment.title === 'DEPOSIT'
+                        ? -Math.floor(payment.payment_items[i].sum - payment.value1)
+                        : -Math.floor(payment.payment_items[i].sum)
                       : Math.floor(payment.value1),
                   payment_title: payment.payment.title,
                   operator: `${payment.operator?.first_name} ${payment.operator?.last_name}`,
