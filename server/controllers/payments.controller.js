@@ -966,7 +966,7 @@ const generatePaymentsXlsx = async (data) => {
   let totalSum = 0;
 
   data.forEach((item) => {
-    if (!(item.type === 'TARIFF' && item.payment_title === 'DEPOSIT')) totalSum += Number(item.sum);
+    if (item.payment_title !== 'DEPOSIT') totalSum += item.sum;
   });
 
   worksheet.addRow({
