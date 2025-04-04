@@ -819,9 +819,7 @@ const getPaymentRefundData = async (startDate, endDate, managerBearer) => {
                       : -Math.floor(payment.payment_items[i].sum),
                   bonus:
                     payment.payment.title === 'BONUS'
-                      ? payment.payment.title === 'DEPOSIT'
-                        ? -Math.floor(payment.payment_items[i].sum - payment.value1)
-                        : -Math.floor(payment.payment_items[i].sum)
+                      ? -Math.floor(payment.payment_items[i].sum)
                       : Math.floor(payment.value1),
                   payment_title: payment.payment.title,
                   operator: `${payment.operator?.first_name} ${payment.operator?.last_name}`,
