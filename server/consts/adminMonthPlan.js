@@ -171,6 +171,42 @@ const ADMIN_MONTH_PLAN = {
       totalRevenue: 26704, // общая выручка
     },
   },
+  '2025-04-10': {
+    night: {
+      PCRevenue: 0, // выручка за ПК
+      PsServiceAutosimRevenue: 0, // выручка за PS5 + услуги + автосимулятор
+      foodRevenue: 0, // выручка за всю еду без шоколада
+      chocolateRevenue: 0, // выручка за шоколад
+      drinksRevenue: 0, // выручка за напитки
+      totalRevenue: 0, // общая выручка
+    },
+    day: {
+      PCRevenue: 13662, // выручка за ПК
+      PsServiceAutosimRevenue: 3349, // выручка за PS5 + услуги + автосимулятор
+      foodRevenue: 1750, // выручка за всю еду без шоколада
+      chocolateRevenue: 630, // выручка за шоколад
+      drinksRevenue: 2380, // выручка за напитки
+      totalRevenue: 21771, // общая выручка
+    },
+  },
+  '2025-04-11': {
+    night: {
+      PCRevenue: 9483, // выручка за ПК
+      PsServiceAutosimRevenue: 2022, // выручка за PS5 + услуги + автосимулятор
+      foodRevenue: 1250, // выручка за всю еду без шоколада
+      chocolateRevenue: 450, // выручка за шоколад
+      drinksRevenue: 1680, // выручка за напитки
+      totalRevenue: 14885, // общая выручка
+    },
+    day: {
+      PCRevenue: 0, // выручка за ПК
+      PsServiceAutosimRevenue: 0, // выручка за PS5 + услуги + автосимулятор
+      foodRevenue: 0, // выручка за всю еду без шоколада
+      chocolateRevenue: 0, // выручка за шоколад
+      drinksRevenue: 0, // выручка за напитки
+      totalRevenue: 0, // общая выручка
+    },
+  },
 };
 
 module.exports = {
