@@ -17,6 +17,7 @@ const responsibilityMap = {
   noStrangersNearTheWorkspace: 'посторонние за стойкой',
   clubClimateControl: 'климат-контроль',
   refrigeratorOccupancy: 'холодильник не заполнен',
+  foulLanguage: 'маты',
 };
 
 const AdminPage = () => {
@@ -147,6 +148,42 @@ const AdminPage = () => {
     return () => clearInterval(intervalId);
   }, []);
 
+  const renderResponsibilityCard = () => {
+    return (
+      <div className={styles.cardContent} style={{ backgroundColor: 'rgb(255, 255, 255)' }}>
+        <h3 className={styles.cardName}>Обязанности администратора</h3>
+        <ul
+          style={{
+            listStyle: 'none',
+            paddingLeft: 0,
+            margin: '12px 0',
+            display: 'grid',
+            gridTemplateColumns: '1fr 1fr',
+            columnGap: '16px',
+            rowGap: '4px',
+          }}
+        >
+          {Object.entries(responsibilityMap).map(([key, label]) => {
+            const check = currentAwardsObject?.responsibilitiesCheck;
+            let color = 'gray';
+
+            if (check?.status === 'ok') {
+              color = 'green';
+            } else if (check?.status === 'fail') {
+              color = check.notPassed?.includes(key) ? 'red' : 'green';
+            }
+
+            return (
+              <li key={key} style={{ color, fontSize: '14px', marginBottom: '4px' }}>
+                ● {label}
+              </li>
+            );
+          })}
+        </ul>
+      </div>
+    );
+  };
+
   return (
     <div className={styles.container}>
       <div style={{ display: 'flex', gap: '32px' }}>
@@ -174,7 +211,7 @@ const AdminPage = () => {
                     ? `${planStatsObject.foodRevenue - currentStatsObject.foodRevenue}₽`
                     : '✅'
                 }
-                valueStyle={{ fontSize: '24px', fontWeight: 'bold' }}
+                valueStyle={{ fontSize: '18px', fontWeight: '600', lineHeight: '1.2' }}
               />
               <Statistic
                 title="PS5 + услуги + автосимулятор"
@@ -183,7 +220,7 @@ const AdminPage = () => {
                     ? `${planStatsObject.PsServiceAutosimRevenue - currentStatsObject.PsServiceAutosimRevenue}₽`
                     : '✅'
                 }
-                valueStyle={{ fontSize: '24px', fontWeight: 'bold' }}
+                valueStyle={{ fontSize: '18px', fontWeight: '600', lineHeight: '1.2' }}
               />
               <Statistic
                 title="ПК"
@@ -192,7 +229,7 @@ const AdminPage = () => {
                     ? `${planStatsObject.PCRevenue - currentStatsObject.PCRevenue}₽`
                     : '✅'
                 }
-                valueStyle={{ fontSize: '24px', fontWeight: 'bold' }}
+                valueStyle={{ fontSize: '18px', fontWeight: '600', lineHeight: '1.2' }}
               />
             </div>
           </div>
@@ -207,21 +244,21 @@ const AdminPage = () => {
                     <Statistic
                       title="Факт"
                       value={`${currentStatsObject.totalRevenue}₽`}
-                      valueStyle={{ fontSize: '20px', fontWeight: 'bold' }}
+                      valueStyle={{ fontSize: '18px', fontWeight: '600', lineHeight: '1.2' }}
                     />
                   </div>
                   <div style={{ flex: '0 0 33%' }}>
                     <Statistic
                       title="План"
                       value={`${planStatsObject.totalRevenue}₽`}
-                      valueStyle={{ fontSize: '20px', fontWeight: 'bold' }}
+                      valueStyle={{ fontSize: '18px', fontWeight: '600', lineHeight: '1.2' }}
                     />
                   </div>
                   <div style={{ flex: '0 0 33%' }}>
                     <Statistic
                       title="Выполнение"
                       value={`${Math.floor((currentStatsObject.totalRevenue / planStatsObject.totalRevenue) * 100)}%`}
-                      valueStyle={{ fontSize: '20px', fontWeight: 'bold' }}
+                      valueStyle={{ fontSize: '18px', fontWeight: '600', lineHeight: '1.2' }}
                     />
                   </div>
                 </div>
@@ -240,7 +277,7 @@ const AdminPage = () => {
                         currentStatsObject.drinksRevenue +
                         currentStatsObject.chocolateRevenue
                       }₽`}
-                      valueStyle={{ fontSize: '20px', fontWeight: 'bold' }}
+                      valueStyle={{ fontSize: '18px', fontWeight: '600', lineHeight: '1.2' }}
                     />
                   </div>
                   <div style={{ flex: '0 0 33%' }}>
@@ -249,7 +286,7 @@ const AdminPage = () => {
                       value={`${
                         planStatsObject.foodRevenue + planStatsObject.drinksRevenue + planStatsObject.chocolateRevenue
                       }₽`}
-                      valueStyle={{ fontSize: '20px', fontWeight: 'bold' }}
+                      valueStyle={{ fontSize: '18px', fontWeight: '600', lineHeight: '1.2' }}
                     />
                   </div>
                   <div style={{ flex: '0 0 33%' }}>
@@ -264,7 +301,7 @@ const AdminPage = () => {
                             planStatsObject.chocolateRevenue)) *
                           100
                       )}%`}
-                      valueStyle={{ fontSize: '20px', fontWeight: 'bold' }}
+                      valueStyle={{ fontSize: '18px', fontWeight: '600', lineHeight: '1.2' }}
                     />
                   </div>
                 </div>
@@ -337,14 +374,14 @@ const AdminPage = () => {
                     <Statistic
                       title="Факт"
                       value={`${currentStatsObject.PsServiceAutosimRevenue}₽`}
-                      valueStyle={{ fontSize: '20px', fontWeight: 'bold' }}
+                      valueStyle={{ fontSize: '18px', fontWeight: '600', lineHeight: '1.2' }}
                     />
                   </div>
                   <div style={{ flex: '0 0 33%' }}>
                     <Statistic
                       title="План"
                       value={`${planStatsObject.PsServiceAutosimRevenue}₽`}
-                      valueStyle={{ fontSize: '20px', fontWeight: 'bold' }}
+                      valueStyle={{ fontSize: '18px', fontWeight: '600', lineHeight: '1.2' }}
                     />
                   </div>
                   <div style={{ flex: '0 0 33%' }}>
@@ -353,7 +390,7 @@ const AdminPage = () => {
                       value={`${Math.floor(
                         (currentStatsObject.PsServiceAutosimRevenue / planStatsObject.PsServiceAutosimRevenue) * 100
                       )}%`}
-                      valueStyle={{ fontSize: '20px', fontWeight: 'bold' }}
+                      valueStyle={{ fontSize: '18px', fontWeight: '600', lineHeight: '1.2' }}
                     />
                   </div>
                 </div>
@@ -367,21 +404,21 @@ const AdminPage = () => {
                       title="Факт"
                       value={`${currentStatsObject.PCRevenue}₽`}
                       titleStyle={{ margin: 0 }}
-                      valueStyle={{ fontSize: '20px', fontWeight: 'bold' }}
+                      valueStyle={{ fontSize: '18px', fontWeight: '600', lineHeight: '1.2' }}
                     />
                   </div>
                   <div style={{ flex: '0 0 33%' }}>
                     <Statistic
                       title="План"
                       value={`${planStatsObject.PCRevenue}₽`}
-                      valueStyle={{ fontSize: '20px', fontWeight: 'bold' }}
+                      valueStyle={{ fontSize: '18px', fontWeight: '600', lineHeight: '1.2' }}
                     />
                   </div>
                   <div style={{ flex: '0 0 33%' }}>
                     <Statistic
                       title="Выполнение"
                       value={`${Math.floor((currentStatsObject.PCRevenue / planStatsObject.PCRevenue) * 100)}%`}
-                      valueStyle={{ fontSize: '20px', fontWeight: 'bold' }}
+                      valueStyle={{ fontSize: '18px', fontWeight: '600', lineHeight: '1.2' }}
                     />
                   </div>
                 </div>
@@ -395,15 +432,26 @@ const AdminPage = () => {
           {/* Карточка 2 */}
           <div className={styles.cardContent} style={{ backgroundColor: 'rgb(255, 255, 255)', position: 'relative' }}>
             <h3 className={styles.cardName}>Текущая премия:</h3>
-            <div style={{ marginTop: 16, display: 'flex', flexDirection: 'column' }}>
+            <div
+              style={{
+                marginTop: 2,
+                display: 'grid',
+                gridTemplateColumns: '1fr 1fr',
+                gap: '16px',
+              }}
+            >
               <Statistic
-                title="База"
+                title="Оклад"
+                value={`${currentAwardsObject.baseSalary}₽`}
+                valueStyle={{ fontSize: '18px', fontWeight: '600', lineHeight: '1.2' }}
+              />
+              <Statistic
+                title="За выполнение обязанностей"
+                value={'+500₽'}
                 formatter={() => (
                   <>
-                    {`${currentAwardsObject.baseSalary}₽`}
                     <span
                       style={{
-                        marginLeft: 4,
                         color:
                           currentAwardsObject?.responsibilitiesCheck?.status === 'ok'
                             ? 'green'
@@ -414,7 +462,7 @@ const AdminPage = () => {
                           currentAwardsObject?.responsibilitiesCheck?.status === 'fail' ? 'line-through' : 'none',
                       }}
                     >
-                      +500₽
+                      {'+500₽'}
                     </span>
                     <Popover
                       content={
@@ -437,7 +485,7 @@ const AdminPage = () => {
                     >
                       <InfoCircleOutlined style={{ marginLeft: 8, cursor: 'pointer', fontSize: '16px' }} />
                     </Popover>
-                    {currentAwardsObject?.responsibilitiesCheck?.status === 'fail' &&
+                    {/* {currentAwardsObject?.responsibilitiesCheck?.status === 'fail' &&
                       currentAwardsObject?.responsibilitiesCheck?.notPassed?.length > 0 && (
                         <div style={{ fontSize: '12px', color: 'red', marginTop: 4 }}>
                           Нарушения:{' '}
@@ -445,14 +493,13 @@ const AdminPage = () => {
                             .map((key) => responsibilityMap[key] || key)
                             .join(', ')}
                         </div>
-                      )}
+                      )} */}
                   </>
                 )}
-                valueStyle={{ fontSize: '24px', fontWeight: 'bold' }}
+                valueStyle={{ fontSize: '18px', fontWeight: '600', lineHeight: '1.2' }}
               />
-              <Divider style={{ backgroundColor: '#ccc', margin: '12px 0' }} />
               <Statistic
-                title="За выполнение плана по товарам"
+                title="Товары"
                 formatter={() => (
                   <>
                     {`${currentAwardsObject.goodsBonus}₽`}
@@ -479,11 +526,10 @@ const AdminPage = () => {
                     </Popover>
                   </>
                 )}
-                valueStyle={{ fontSize: '24px', fontWeight: 'bold' }}
+                valueStyle={{ fontSize: '18px', fontWeight: '600', lineHeight: '1.2' }}
               />
-              <Divider style={{ backgroundColor: '#ccc', margin: '12px 0' }} />
               <Statistic
-                title="За выполнение плана по PS, услугам и автосимулятору"
+                title="PS, услуги, автосимулятор"
                 formatter={() => (
                   <>
                     {`${currentAwardsObject.psBonus}₽`}
@@ -510,29 +556,38 @@ const AdminPage = () => {
                     </Popover> */}
                   </>
                 )}
-                valueStyle={{ fontSize: '24px', fontWeight: 'bold' }}
+                valueStyle={{ fontSize: '18px', fontWeight: '600', lineHeight: '1.2' }}
               />
-              <Divider style={{ backgroundColor: '#ccc', margin: '12px 0' }} />
+            </div>
+            <div
+              style={{
+                marginTop: 16,
+                display: 'grid',
+                gridTemplateColumns: '1fr 1fr',
+                gap: '16px',
+              }}
+            >
               <Statistic
                 title="Суммарно"
                 value={`${currentAwardsObject.totalAward}₽`}
-                valueStyle={{ fontSize: '26px', fontWeight: 'bold' }}
+                valueStyle={{ fontSize: '18px', fontWeight: '600', lineHeight: '1.2' }}
               />
+              <Button
+                style={{ width: '250px', alignSelf: 'flex-end' }}
+                onClick={(e) => {
+                  e.preventDefault();
+                  setIsManagerModalOpen(true);
+                }}
+              >
+                Подтвердить выполнение
+              </Button>
             </div>
-            <Button
-              style={{ width: '250px', alignSelf: 'flex-end' }}
-              onClick={(e) => {
-                e.preventDefault();
-                setIsManagerModalOpen(true);
-              }}
-            >
-              Подтвердить выполнение
-            </Button>
           </div>
 
-          {/* Карточка 4 (пустая) */}
+          {renderResponsibilityCard()}
+
+          {/* Карточка 4 */}
           <div className={styles.cardContent} style={{ backgroundColor: 'rgb(255, 255, 255)', position: 'relative' }}>
-            <h3 className={styles.cardName}>Смена</h3>
             <div>
               <h4 style={{ marginBottom: '8px' }}>
                 Админ: {currentWorkshift.worker.first_name + ' ' + currentWorkshift.worker.last_name}
@@ -543,21 +598,21 @@ const AdminPage = () => {
                     title="Смена"
                     value={`${getShiftType()}`}
                     titleStyle={{ margin: 0 }}
-                    valueStyle={{ fontSize: '20px', fontWeight: 'bold' }}
+                    valueStyle={{ fontSize: '18px', fontWeight: '600', lineHeight: '1.2' }}
                   />
                 </div>
                 <div style={{ flex: '0 0 33%' }}>
                   <Statistic
                     title="Начало"
                     value={`${currentWorkshift?.created_at ? currentWorkshift.created_at.split(' ')[1] : '-'}`}
-                    valueStyle={{ fontSize: '20px', fontWeight: 'bold' }}
+                    valueStyle={{ fontSize: '18px', fontWeight: '600', lineHeight: '1.2' }}
                   />
                 </div>
                 <div style={{ flex: '0 0 33%' }}>
                   <Statistic
                     title="Продолжительность"
                     value={`${getWorkshiftDuration()}`}
-                    valueStyle={{ fontSize: '20px', fontWeight: 'bold' }}
+                    valueStyle={{ fontSize: '18px', fontWeight: '600', lineHeight: '1.2' }}
                   />
                 </div>
               </div>

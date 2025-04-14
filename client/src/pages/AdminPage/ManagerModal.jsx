@@ -9,16 +9,18 @@ const ManagerModal = ({ modalOpen, setModalOpen }) => {
 
   const onFinish = async (values) => {
     try {
-      const response = await axios.post(
-        `${process.env.REACT_APP_BACKEND_URL}/api/admin/approveAdminResponsibilities`,
-        {
-          adminResponsibilities,
-          password: values.password,
-        },
-        {
-          validateStatus: () => true,
-        }
-      );
+      const response = await axios
+        .post(
+          `${process.env.REACT_APP_BACKEND_URL}/api/admin/approveAdminResponsibilities`,
+          {
+            adminResponsibilities,
+            password: values.password,
+          },
+          {
+            validateStatus: () => true,
+          }
+        )
+        .catch((e) => {});
 
       if (!response.data.error) {
         api['success']({
@@ -50,6 +52,7 @@ const ManagerModal = ({ modalOpen, setModalOpen }) => {
     ['noStrangersNearTheWorkspace', 'Отсутствие посторонних за стойкой или около неё'],
     ['clubClimateControl', 'Климат-контроль клуба'],
     ['refrigeratorOccupancy', 'Заполняемость холодильников'],
+    ['foulLanguage', 'Маты'],
   ];
 
   return (
@@ -60,10 +63,13 @@ const ManagerModal = ({ modalOpen, setModalOpen }) => {
         open={modalOpen}
         onCancel={() => setModalOpen(false)}
         onOk={() => {
-          form.validateFields().then(async (values) => {
-            form.resetFields();
-            await onFinish(values);
-          });
+          form
+            .validateFields()
+            .then(async (values) => {
+              form.resetFields();
+              await onFinish(values);
+            })
+            .catch((e) => {});
         }}
         width={600}
       >

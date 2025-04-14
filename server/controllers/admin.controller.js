@@ -145,7 +145,7 @@ const getActiveWorkshift = async (req, res) => {
   let { clubId } = req.query;
   if (!clubId) clubId = 6816;
   const currentWorkshift = await getActiveWorkshiftStartDate(clubId);
-  if (currentWorkshift.error) {
+  if (currentWorkshift.error || !currentWorkshift) {
     console.log('getActiveWorkshift ERROR ->', currentWorkshift.message);
     return res.status(400).send({ currentWorkshift });
   }
@@ -249,6 +249,7 @@ const responsibilityOrder = [
   'noStrangersNearTheWorkspace',
   'clubClimateControl',
   'refrigeratorOccupancy',
+  'foulLanguage',
 ];
 
 const getResponsibilitiesCheck = (workshiftStart, managerComment) => {
@@ -309,6 +310,7 @@ const approveAdminResponsibilities = async (req, res) => {
     'noStrangersNearTheWorkspace',
     'clubClimateControl',
     'refrigeratorOccupancy',
+    'foulLanguage',
   ];
 
   // Формируем строку "010110..."
