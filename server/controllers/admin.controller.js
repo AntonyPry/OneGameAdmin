@@ -1,7 +1,6 @@
 // controllers/admin.controller.js
 const axios = require('axios');
 const https = require('https');
-const { FOOD, CHOCOLATE, DRINKS } = require('../consts/paymentTitles');
 const { ADMIN_MONTH_PLAN } = require('../consts/adminMonthPlan');
 const { getResultsArray, getSmartshellManagerBearer } = require('./payments.controller');
 
@@ -21,43 +20,36 @@ const currentStats = async (req, res) => {
 
     const currentStatsObject = {
       totalRevenue: 0, // общая выручка
-      foodRevenue: 0, // выручка за всю еду без шоколада
-      chocolateRevenue: 0, // выручка за шоколад
-      drinksRevenue: 0, // выручка за напитки
-      PsServiceAutosimRevenue: 0, // выручка за PS5 + услуги + автосимулятор
-      PCRevenue: 0, // выручка за ПК
+      goodsRevenue: 0, // выручка за все продукты
+      psServiceRevenue: 0, // выручка за PS5 + услуги
+      pcRevenue: 0, // выручка за ПК
     };
 
     for (let i = 0; i < resultsArray.length; i++) {
       const { type, title, sum, payment_title } = resultsArray[i];
       if (
-        (type === 'TARIFF' && title === 'Пополнение по СБП' && payment_title === 'СБП') ||
+        payment_title === 'СБП' ||
         (type === 'TARIFF' && payment_title === 'CARD') ||
         (type === 'TARIFF' && payment_title === 'CASH') ||
+        (type === 'TARIFF' && payment_title === 'COMPOSITE') ||
         type === 'GOOD' ||
         type === 'SERVICE' ||
         type === 'PS'
       ) {
         currentStatsObject.totalRevenue += sum;
       }
-      if (FOOD.includes(title) || FOOD.map((el) => 'Отмена ' + el).includes(title)) {
-        currentStatsObject.foodRevenue += sum;
+      if (type === 'GOOD') {
+        currentStatsObject.goodsRevenue += sum;
       }
-      if (CHOCOLATE.includes(title) || CHOCOLATE.map((el) => 'Отмена ' + el).includes(title)) {
-        currentStatsObject.chocolateRevenue += sum;
-      }
-      if (DRINKS.includes(title) || DRINKS.map((el) => 'Отмена ' + el).includes(title)) {
-        currentStatsObject.drinksRevenue += sum;
-      }
-      if (type === 'PS' || type === 'SERVICE' || title === 'Кресло 30мин Будни' || title === 'Кресло 30мин Выходные') {
-        currentStatsObject.PsServiceAutosimRevenue += sum;
+      if (type === 'PS' || type === 'SERVICE') {
+        currentStatsObject.psServiceRevenue += sum;
       }
       if (
         (type === 'TARIFF' && title === 'Пополнение по СБП' && payment_title === 'СБП') ||
         (type === 'TARIFF' && payment_title === 'CARD') ||
         (type === 'TARIFF' && payment_title === 'CASH')
       ) {
-        currentStatsObject.PCRevenue += sum;
+        currentStatsObject.pcRevenue += sum;
       }
     }
 
@@ -105,8 +97,7 @@ const getCurrentAwardsObject = async (endDate, smena, currentStatsObject, planSt
     baseSalary = Math.floor(NIGHT_RATE_PER_MINUTE * workedMinutes);
   }
 
-  const currentGoodsRevenue =
-    currentStatsObject.foodRevenue + currentStatsObject.chocolateRevenue + currentStatsObject.drinksRevenue;
+  const currentGoodsRevenue = currentStatsObject.goodsRevenue;
   const planGoodsRevenue =
     planStatsObject.foodRevenue + planStatsObject.chocolateRevenue + planStatsObject.drinksRevenue;
 
@@ -120,8 +111,8 @@ const getCurrentAwardsObject = async (endDate, smena, currentStatsObject, planSt
   }
 
   let psBonus = 0;
-  if (currentStatsObject.PSRevenue >= planStatsObject.PSRevenue) {
-    psBonus = currentStatsObject.PSRevenue * 0.1;
+  if (currentStatsObject.psServiceRevenue >= planStatsObject.psServiceRevenue) {
+    psBonus = currentStatsObject.psServiceRevenue * 0.1;
   }
 
   let additionalBonus = 0;

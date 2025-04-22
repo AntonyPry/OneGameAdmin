@@ -1,7 +1,7 @@
 // pages/AdminPage/AdminPage.jsx
 import React, { useEffect, useState } from 'react';
 import { Button, Divider, Popover, Statistic } from 'antd';
-import { InfoCircleOutlined } from '@ant-design/icons';
+import { InfoCircleOutlined, CopyOutlined } from '@ant-design/icons';
 import styles from './AdminPage.module.css';
 import axios from 'axios';
 import Standarts_for_admins from './Standarts_for_admins';
@@ -23,11 +23,9 @@ const responsibilityMap = {
 const AdminPage = () => {
   const [currentStatsObject, setCurrentStatsObject] = useState({
     totalRevenue: 0, // общая выручка
-    foodRevenue: 0, // выручка за всю еду без шоколада
-    chocolateRevenue: 0, // выручка за шоколад
-    drinksRevenue: 0, // выручка за напитки
-    PsServiceAutosimRevenue: 0, // выручка за PS5 + услуги + автосимулятор
-    PCRevenue: 0, // выручка за ПК
+    goodsRevenue: 0, // выручка за все продукты
+    psServiceRevenue: 0, // выручка за PS5 + услуги + автосимулятор
+    pcRevenue: 0, // выручка за ПК
   });
 
   const [planStatsObject, setPlanStatsObject] = useState({
@@ -35,14 +33,14 @@ const AdminPage = () => {
     foodRevenue: 0, // выручка за всю еду без шоколада
     chocolateRevenue: 0, // выручка за шоколад
     drinksRevenue: 0, // выручка за напитки
-    PsServiceAutosimRevenue: 0, // выручка за PS5 + услуги + автосимулятор
-    PCRevenue: 0, // выручка за ПК
+    psServiceRevenue: 0, // выручка за PS5 + услуги
+    pcRevenue: 0,
   });
 
   const [currentAwardsObject, setCurrentAwardsObject] = useState({
     baseSalary: 0, // гарантированный оклад
     goodsBonus: 0, // премия за товары
-    psBonus: 0, // премия за PS5 + услуги + автосимулятор
+    psBonus: 0, // премия за PS5 + услуги
     totalAward: 0, // суммарное вознаграждение + фиксированное за доп обязанности
   });
 
@@ -199,16 +197,19 @@ const AdminPage = () => {
               }}
             >
               <Statistic
-                title="Еда + напитки"
+                title="Товары"
                 value={
                   planStatsObject.foodRevenue +
                     planStatsObject.drinksRevenue +
                     planStatsObject.chocolateRevenue -
-                    currentStatsObject.foodRevenue -
-                    currentStatsObject.drinksRevenue -
-                    currentStatsObject.chocolateRevenue >
+                    currentStatsObject.goodsRevenue >
                   0
-                    ? `${planStatsObject.foodRevenue - currentStatsObject.foodRevenue}₽`
+                    ? `${
+                        planStatsObject.foodRevenue +
+                        planStatsObject.drinksRevenue +
+                        planStatsObject.chocolateRevenue -
+                        currentStatsObject.goodsRevenue
+                      }₽`
                     : '✅'
                 }
                 valueStyle={{ fontSize: '18px', fontWeight: '600', lineHeight: '1.2' }}
@@ -216,8 +217,8 @@ const AdminPage = () => {
               <Statistic
                 title="PS5 + услуги + автосимулятор"
                 value={
-                  planStatsObject.PsServiceAutosimRevenue - currentStatsObject.PsServiceAutosimRevenue > 0
-                    ? `${planStatsObject.PsServiceAutosimRevenue - currentStatsObject.PsServiceAutosimRevenue}₽`
+                  planStatsObject.psServiceRevenue - currentStatsObject.psServiceRevenue > 0
+                    ? `${planStatsObject.psServiceRevenue - currentStatsObject.psServiceRevenue}₽`
                     : '✅'
                 }
                 valueStyle={{ fontSize: '18px', fontWeight: '600', lineHeight: '1.2' }}
@@ -225,8 +226,8 @@ const AdminPage = () => {
               <Statistic
                 title="ПК"
                 value={
-                  planStatsObject.PCRevenue - currentStatsObject.PCRevenue > 0
-                    ? `${planStatsObject.PCRevenue - currentStatsObject.PCRevenue}₽`
+                  planStatsObject.pcRevenue - currentStatsObject.pcRevenue > 0
+                    ? `${planStatsObject.pcRevenue - currentStatsObject.pcRevenue}₽`
                     : '✅'
                 }
                 valueStyle={{ fontSize: '18px', fontWeight: '600', lineHeight: '1.2' }}
@@ -267,16 +268,12 @@ const AdminPage = () => {
               <Divider style={{ backgroundColor: '#ccc', margin: '12px 0' }} />
 
               <div>
-                <h4 style={{ marginBottom: '8px' }}>Еда + напитки:</h4>
+                <h4 style={{ marginBottom: '8px' }}>Товары:</h4>
                 <div style={{ display: 'flex', gap: '16px' }}>
                   <div style={{ flex: '0 0 33%' }}>
                     <Statistic
                       title="Факт"
-                      value={`${
-                        currentStatsObject.foodRevenue +
-                        currentStatsObject.drinksRevenue +
-                        currentStatsObject.chocolateRevenue
-                      }₽`}
+                      value={`${currentStatsObject.goodsRevenue}₽`}
                       valueStyle={{ fontSize: '18px', fontWeight: '600', lineHeight: '1.2' }}
                     />
                   </div>
@@ -293,9 +290,7 @@ const AdminPage = () => {
                     <Statistic
                       title="Выполнение"
                       value={`${Math.floor(
-                        ((currentStatsObject.foodRevenue +
-                          currentStatsObject.drinksRevenue +
-                          currentStatsObject.chocolateRevenue) /
+                        (currentStatsObject.goodsRevenue /
                           (planStatsObject.foodRevenue +
                             planStatsObject.drinksRevenue +
                             planStatsObject.chocolateRevenue)) *
@@ -373,14 +368,14 @@ const AdminPage = () => {
                   <div style={{ flex: '0 0 33%' }}>
                     <Statistic
                       title="Факт"
-                      value={`${currentStatsObject.PsServiceAutosimRevenue}₽`}
+                      value={`${currentStatsObject.psServiceRevenue}₽`}
                       valueStyle={{ fontSize: '18px', fontWeight: '600', lineHeight: '1.2' }}
                     />
                   </div>
                   <div style={{ flex: '0 0 33%' }}>
                     <Statistic
                       title="План"
-                      value={`${planStatsObject.PsServiceAutosimRevenue}₽`}
+                      value={`${planStatsObject.psServiceRevenue}₽`}
                       valueStyle={{ fontSize: '18px', fontWeight: '600', lineHeight: '1.2' }}
                     />
                   </div>
@@ -388,7 +383,7 @@ const AdminPage = () => {
                     <Statistic
                       title="Выполнение"
                       value={`${Math.floor(
-                        (currentStatsObject.PsServiceAutosimRevenue / planStatsObject.PsServiceAutosimRevenue) * 100
+                        (currentStatsObject.psServiceRevenue / planStatsObject.psServiceRevenue) * 100
                       )}%`}
                       valueStyle={{ fontSize: '18px', fontWeight: '600', lineHeight: '1.2' }}
                     />
@@ -402,7 +397,7 @@ const AdminPage = () => {
                   <div style={{ flex: '0 0 33%' }}>
                     <Statistic
                       title="Факт"
-                      value={`${currentStatsObject.PCRevenue}₽`}
+                      value={`${currentStatsObject.pcRevenue}₽`}
                       titleStyle={{ margin: 0 }}
                       valueStyle={{ fontSize: '18px', fontWeight: '600', lineHeight: '1.2' }}
                     />
@@ -410,14 +405,14 @@ const AdminPage = () => {
                   <div style={{ flex: '0 0 33%' }}>
                     <Statistic
                       title="План"
-                      value={`${planStatsObject.PCRevenue}₽`}
+                      value={`${planStatsObject.pcRevenue}₽`}
                       valueStyle={{ fontSize: '18px', fontWeight: '600', lineHeight: '1.2' }}
                     />
                   </div>
                   <div style={{ flex: '0 0 33%' }}>
                     <Statistic
                       title="Выполнение"
-                      value={`${Math.floor((currentStatsObject.PCRevenue / planStatsObject.PCRevenue) * 100)}%`}
+                      value={`${Math.floor((currentStatsObject.pcRevenue / planStatsObject.pcRevenue) * 100)}%`}
                       valueStyle={{ fontSize: '18px', fontWeight: '600', lineHeight: '1.2' }}
                     />
                   </div>
@@ -572,15 +567,84 @@ const AdminPage = () => {
                 value={`${currentAwardsObject.totalAward}₽`}
                 valueStyle={{ fontSize: '18px', fontWeight: '600', lineHeight: '1.2' }}
               />
-              <Button
-                style={{ width: '250px', alignSelf: 'flex-end' }}
-                onClick={(e) => {
-                  e.preventDefault();
-                  setIsManagerModalOpen(true);
-                }}
-              >
-                Подтвердить выполнение
-              </Button>
+              <div style={{ display: 'flex', gap: '12px' }}>
+                <Button
+                  style={{ width: '250px', alignSelf: 'flex-end' }}
+                  onClick={(e) => {
+                    e.preventDefault();
+                    setIsManagerModalOpen(true);
+                  }}
+                >
+                  Подтвердить выполнение
+                </Button>
+                <Button
+                  style={{ alignSelf: 'flex-end' }}
+                  onClick={() => {
+                    const planGoods =
+                      planStatsObject.foodRevenue + planStatsObject.drinksRevenue + planStatsObject.chocolateRevenue;
+                    const goodsFact = currentStatsObject.goodsRevenue;
+                    const psFact = currentStatsObject.psServiceRevenue;
+                    const psPlan = planStatsObject.psServiceRevenue;
+                    const pcFact = currentStatsObject.pcRevenue;
+                    const pcPlan = planStatsObject.pcRevenue;
+                    const totalFact = currentStatsObject.totalRevenue;
+                    const totalPlan = planStatsObject.totalRevenue;
+
+                    const percent = (fact, plan) => (plan > 0 ? Math.floor((fact / plan) * 100) : 0);
+
+                    const doneEmoji = (fact, plan) => (fact >= plan ? '✅' : '❌');
+
+                    const totalPercent = percent(totalFact, totalPlan);
+                    const goodsPercent = percent(goodsFact, planGoods);
+                    const psPercent = percent(psFact, psPlan);
+                    const pcPercent = percent(pcFact, pcPlan);
+
+                    const responsibilities = currentAwardsObject.responsibilitiesCheck;
+                    let responsibilityInfo = 'Выполнение обязанностей: не подтверждено';
+                    if (responsibilities?.status === 'ok') {
+                      responsibilityInfo = 'Выполнение обязанностей: подтверждено ✅';
+                    } else if (responsibilities?.status === 'fail') {
+                      const failed =
+                        responsibilities.notPassed?.map((key) => responsibilityMap[key] || key).join(', ') || '';
+                      responsibilityInfo = `Выполнение обязанностей: не выполнено ❌\nНарушения: ${failed}`;
+                    }
+
+                    const adminName = `${currentWorkshift.worker.first_name} ${currentWorkshift.worker.last_name}`;
+
+                    const textToCopy = `
+Админ: ${adminName}
+Смена: ${getShiftType()}
+Начало: ${currentWorkshift?.created_at?.split(' ')[1] || '-'}
+Продолжительность: ${getWorkshiftDuration()}
+                
+Выручка:
+Общая: ${totalFact}/${totalPlan} (${totalPercent}%) ${doneEmoji(totalFact, totalPlan)}
+Товары: ${goodsFact}/${planGoods} (${goodsPercent}%) ${doneEmoji(goodsFact, planGoods)}
+PS+услуги: ${psFact}/${psPlan} (${psPercent}%) ${doneEmoji(psFact, psPlan)}
+ПК: ${pcFact}/${pcPlan} (${pcPercent}%) ${doneEmoji(pcFact, pcPlan)}
+
+Премии:
+Оклад: ${currentAwardsObject.baseSalary}₽
+За обязанности: ${
+                      responsibilities?.status === 'ok'
+                        ? '+500₽ ✅'
+                        : responsibilities?.status === 'fail'
+                        ? '0₽ ❌ (нарушения)'
+                        : 'неизвестно'
+                    }
+Товары: ${currentAwardsObject.goodsBonus}₽
+PS+услуги: ${currentAwardsObject.psBonus}₽
+Сумма: ${currentAwardsObject.totalAward}₽
+                
+${responsibilityInfo}
+                    `.trim();
+
+                    navigator.clipboard.writeText(textToCopy);
+                  }}
+                >
+                  <CopyOutlined />
+                </Button>
+              </div>
             </div>
           </div>
 
