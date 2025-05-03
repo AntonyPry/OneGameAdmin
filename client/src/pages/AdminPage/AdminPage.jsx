@@ -258,7 +258,11 @@ const AdminPage = () => {
                   <div style={{ flex: '0 0 33%' }}>
                     <Statistic
                       title="Выполнение"
-                      value={`${Math.floor((currentStatsObject.totalRevenue / planStatsObject.totalRevenue) * 100)}%`}
+                      value={
+                        planStatsObject.totalRevenue
+                          ? `${Math.floor((currentStatsObject.totalRevenue / planStatsObject.totalRevenue) * 100)}%`
+                          : '-'
+                      }
                       valueStyle={{ fontSize: '18px', fontWeight: '600', lineHeight: '1.2' }}
                     />
                   </div>
@@ -289,13 +293,17 @@ const AdminPage = () => {
                   <div style={{ flex: '0 0 33%' }}>
                     <Statistic
                       title="Выполнение"
-                      value={`${Math.floor(
-                        (currentStatsObject.goodsRevenue /
-                          (planStatsObject.foodRevenue +
-                            planStatsObject.drinksRevenue +
-                            planStatsObject.chocolateRevenue)) *
-                          100
-                      )}%`}
+                      value={
+                        planStatsObject.foodRevenue && planStatsObject.drinksRevenue && planStatsObject.chocolateRevenue
+                          ? `${Math.floor(
+                              (currentStatsObject.goodsRevenue /
+                                (planStatsObject.foodRevenue +
+                                  planStatsObject.drinksRevenue +
+                                  planStatsObject.chocolateRevenue)) *
+                                100
+                            )}%`
+                          : '-'
+                      }
                       valueStyle={{ fontSize: '18px', fontWeight: '600', lineHeight: '1.2' }}
                     />
                   </div>
@@ -382,9 +390,13 @@ const AdminPage = () => {
                   <div style={{ flex: '0 0 33%' }}>
                     <Statistic
                       title="Выполнение"
-                      value={`${Math.floor(
-                        (currentStatsObject.psServiceRevenue / planStatsObject.psServiceRevenue) * 100
-                      )}%`}
+                      value={
+                        planStatsObject.psServiceRevenue
+                          ? `${Math.floor(
+                              (currentStatsObject.psServiceRevenue / planStatsObject.psServiceRevenue) * 100
+                            )}%`
+                          : '-'
+                      }
                       valueStyle={{ fontSize: '18px', fontWeight: '600', lineHeight: '1.2' }}
                     />
                   </div>
@@ -412,7 +424,11 @@ const AdminPage = () => {
                   <div style={{ flex: '0 0 33%' }}>
                     <Statistic
                       title="Выполнение"
-                      value={`${Math.floor((currentStatsObject.pcRevenue / planStatsObject.pcRevenue) * 100)}%`}
+                      value={
+                        planStatsObject.pcRevenue
+                          ? `${Math.floor((currentStatsObject.pcRevenue / planStatsObject.pcRevenue) * 100)}%`
+                          : '-'
+                      }
                       valueStyle={{ fontSize: '18px', fontWeight: '600', lineHeight: '1.2' }}
                     />
                   </div>

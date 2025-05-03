@@ -14,7 +14,16 @@ const currentStats = async (req, res) => {
     if (!clubId) clubId = 6816;
 
     const smena = endDate.split(' ')[1].split(':')[0] === '09' ? 'night' : 'day';
-    const planStatsObject = ADMIN_MONTH_PLAN[endDate.split(' ')[0]][smena];
+    const planStatsObject = ADMIN_MONTH_PLAN[endDate.split(' ')[0]]
+      ? ADMIN_MONTH_PLAN[endDate.split(' ')[0]][smena]
+      : {
+          totalRevenue: 0, // общая выручка
+          foodRevenue: 0, // выручка за всю еду без шоколада
+          chocolateRevenue: 0, // выручка за шоколад
+          drinksRevenue: 0, // выручка за напитки
+          psServiceRevenue: 0, // выручка за PS5 + услуги
+          pcRevenue: 0,
+        };
 
     const resultsArray = await getResultsArray(startDate, endDate, clubId);
 
