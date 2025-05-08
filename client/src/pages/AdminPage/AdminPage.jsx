@@ -41,6 +41,7 @@ const AdminPage = () => {
     baseSalary: 0, // гарантированный оклад
     goodsBonus: 0, // премия за товары
     psBonus: 0, // премия за PS5 + услуги
+    pcBonus: 0, // премия за ПК
     totalAward: 0, // суммарное вознаграждение + фиксированное за доп обязанности
   });
 
@@ -514,7 +515,7 @@ const AdminPage = () => {
                 formatter={() => (
                   <>
                     {`${currentAwardsObject.goodsBonus}₽`}
-                    <Popover
+                    {/* <Popover
                       content={
                         <span>
                           при выполнении{' '}
@@ -534,39 +535,24 @@ const AdminPage = () => {
                       title=""
                     >
                       <InfoCircleOutlined style={{ marginLeft: 8, cursor: 'pointer', fontSize: '16px' }} />
-                    </Popover>
+                    </Popover> */}
                   </>
                 )}
                 valueStyle={{ fontSize: '18px', fontWeight: '600', lineHeight: '1.2' }}
               />
               <Statistic
                 title="PS, услуги, автосимулятор"
-                formatter={() => (
-                  <>
-                    {`${currentAwardsObject.psBonus}₽`}
-                    {/* <Popover
-                      content={
-                        <span>
-                          при выполнении{' '}
-                          <a
-                            href="#"
-                            onClick={(e) => {
-                              e.preventDefault();
-                              setStandarts_for_adminsModalOpen(true);
-                            }}
-                          >
-                            условий
-                          </a>
-                        </span>
-                      }
-                      trigger="hover"
-                      placement="bottom"
-                      title=""
-                    >
-                      <InfoCircleOutlined style={{ marginLeft: 8, cursor: 'pointer', fontSize: '16px' }} />
-                    </Popover> */}
-                  </>
-                )}
+                formatter={() => <>{`${currentAwardsObject.psBonus}₽`}</>}
+                valueStyle={{ fontSize: '18px', fontWeight: '600', lineHeight: '1.2' }}
+              />
+              <Statistic
+                title="ПК"
+                formatter={() => <>{`${currentAwardsObject.pcBonus}₽`}</>}
+                valueStyle={{ fontSize: '18px', fontWeight: '600', lineHeight: '1.2' }}
+              />
+              <Statistic
+                title="Суммарно"
+                value={`${currentAwardsObject.totalAward}₽`}
                 valueStyle={{ fontSize: '18px', fontWeight: '600', lineHeight: '1.2' }}
               />
             </div>
@@ -578,11 +564,6 @@ const AdminPage = () => {
                 gap: '16px',
               }}
             >
-              <Statistic
-                title="Суммарно"
-                value={`${currentAwardsObject.totalAward}₽`}
-                valueStyle={{ fontSize: '18px', fontWeight: '600', lineHeight: '1.2' }}
-              />
               <div style={{ display: 'flex', gap: '12px' }}>
                 <Button
                   style={{ width: '250px', alignSelf: 'flex-end' }}

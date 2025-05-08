@@ -112,16 +112,17 @@ const getCurrentAwardsObject = async (endDate, smena, currentStatsObject, planSt
 
   let goodsBonus = 0;
   if (currentGoodsRevenue >= planGoodsRevenue) {
-    if (currentGoodsRevenue > 10000 && dayOfWeek >= 1 && dayOfWeek <= 4) {
-      goodsBonus = currentGoodsRevenue * 0.2;
-    } else {
-      goodsBonus = currentGoodsRevenue * 0.1;
-    }
+    goodsBonus = currentGoodsRevenue * 0.05;
   }
 
   let psBonus = 0;
   if (currentStatsObject.psServiceRevenue >= planStatsObject.psServiceRevenue) {
     psBonus = currentStatsObject.psServiceRevenue * 0.1;
+  }
+
+  let pcBonus = 0;
+  if (currentStatsObject.pcRevenue >= planStatsObject.pcRevenue) {
+    psBonus = currentStatsObject.psServiceRevenue * 0.03;
   }
 
   let additionalBonus = 0;
@@ -133,6 +134,7 @@ const getCurrentAwardsObject = async (endDate, smena, currentStatsObject, planSt
     baseSalary,
     goodsBonus,
     psBonus,
+    pcBonus,
     additionalBonus,
     totalAward: baseSalary + goodsBonus + psBonus + additionalBonus,
     responsibilitiesCheck: checkedResponsibilities,
