@@ -631,6 +631,7 @@ PS+услуги: ${psFact}/${psPlan} (${psPercent}%) ${doneEmoji(psFact, psPlan)
                     }
 Товары: ${currentAwardsObject.goodsBonus}₽
 PS+услуги: ${currentAwardsObject.psBonus}₽
+ПК: ${currentAwardsObject.pcBonus}₽
 Сумма: ${currentAwardsObject.totalAward}₽
                 
 ${responsibilityInfo}
