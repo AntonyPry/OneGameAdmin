@@ -809,7 +809,7 @@ const getPaymentRefundData = async (startDate, endDate, managerBearer) => {
                   time: payment.timestamp.split(' ')[1],
                   client: payment.client?.phone ? `+${payment.client?.phone}` : null,
                   nickname: payment.client?.nickname ? payment.client?.nickname : null,
-                  title: 'Отмена ' + (await getPaymentById(payment.timestamp, payment.payment.id, i, managerBearer)),
+                  title: 'Отмена ' + payment.payment_items[i].entity_type,
                   amount: payment.payment_items[i].amount,
                   sum:
                     payment.payment.title === 'BONUS'
@@ -893,52 +893,52 @@ const createSmartshellPaymentRefundDataRequest = (startDate, endDate, page, mana
   };
 };
 
-const getPaymentById = async (endDate, id, paymentItemsIndex, managerBearer) => {
-  try {
-    let smartshellPaymentsDataRequest = createSmartshellPaymentByIdRequest(endDate, id, managerBearer);
-    let resPaymentsData = await axios(smartshellPaymentsDataRequest);
+// const getPaymentById = async (endDate, id, paymentItemsIndex, managerBearer) => {
+//   try {
+//     let smartshellPaymentsDataRequest = createSmartshellPaymentByIdRequest(endDate, id, managerBearer);
+//     let resPaymentsData = await axios(smartshellPaymentsDataRequest);
 
-    if (resPaymentsData.data.errors) {
-      resPaymentsData.data.errors.map((error) => console.log('getPaymentById ERROR ->', error));
-      return { error: true, message: 'Не удалось получить данные об отмененном платеже' };
-    } else {
-      return resPaymentsData.data.data.eventList.data[0]?.payment_items[paymentItemsIndex].title || 'бонусы';
-    }
-  } catch (error) {
-    console.log('getPaymentById ERROR ->', error);
-    return { error: true, message: 'Ошибка на стороне сервера' };
-  }
-};
+//     if (resPaymentsData.data.errors) {
+//       resPaymentsData.data.errors.map((error) => console.log('getPaymentById ERROR ->', error));
+//       return { error: true, message: 'Не удалось получить данные об отмененном платеже' };
+//     } else {
+//       return resPaymentsData.data.data.eventList.data[0]?.payment_items[paymentItemsIndex].title || 'бонусы';
+//     }
+//   } catch (error) {
+//     console.log('getPaymentById ERROR ->', error);
+//     return { error: true, message: 'Ошибка на стороне сервера' };
+//   }
+// };
 
-const createSmartshellPaymentByIdRequest = (endDate, id, managerBearer) => {
-  let dataPayments = {
-    query: `query eventList {
-  eventList(
-      input: {
-          start: "2024-12-01 00:00:00"
-          finish: "${endDate}"
-          types: "PAYMENT_CREATED"
-  }
-  ) {
-        data {
-            payment_items {
-                title
-            }
-        }
-    }
-}
-  `,
-  };
-  return {
-    method: 'post',
-    url: `https://billing.smartshell.gg/api/graphql`,
-    headers: {
-      authorization: `Bearer ${managerBearer}`,
-    },
-    data: dataPayments,
-    httpsAgent: agent,
-  };
-};
+// const createSmartshellPaymentByIdRequest = (endDate, id, managerBearer) => {
+//   let dataPayments = {
+//     query: `query eventList {
+//   eventList(
+//       input: {
+//           start: "2024-12-01 00:00:00"
+//           finish: "${endDate}"
+//           types: "PAYMENT_CREATED"
+//   }
+//   ) {
+//         data {
+//             payment_items {
+//                 title
+//             }
+//         }
+//     }
+// }
+//   `,
+//   };
+//   return {
+//     method: 'post',
+//     url: `https://billing.smartshell.gg/api/graphql`,
+//     headers: {
+//       authorization: `Bearer ${managerBearer}`,
+//     },
+//     data: dataPayments,
+//     httpsAgent: agent,
+//   };
+// };
 
 const generatePaymentsXlsx = async (data) => {
   const workbook = new ExcelJS.Workbook();

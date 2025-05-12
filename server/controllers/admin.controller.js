@@ -122,7 +122,7 @@ const getCurrentAwardsObject = async (endDate, smena, currentStatsObject, planSt
 
   let pcBonus = 0;
   if (currentStatsObject.pcRevenue >= planStatsObject.pcRevenue) {
-    psBonus = currentStatsObject.psServiceRevenue * 0.03;
+    psBonus = currentStatsObject.pcRevenue * 0.03;
   }
 
   let additionalBonus = 0;
