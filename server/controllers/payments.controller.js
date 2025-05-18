@@ -759,7 +759,7 @@ const getPaymentRefundData = async (startDate, endDate, managerBearer) => {
               time: payment.timestamp.split(' ')[1],
               client: payment.client?.phone ? `+${payment.client?.phone}` : null,
               nickname: payment.client?.nickname ? payment.client?.nickname : null,
-              title: 'Отмена ' + (await getPaymentById(endDate, payment.payment.id, i, managerBearer)),
+              title: 'Отмена ' + payment.payment_items[i].entity_type,
               amount: payment.payment_items[i].amount,
               sum:
                 payment.payment.title === 'BONUS'
