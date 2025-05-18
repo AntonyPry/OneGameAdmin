@@ -982,6 +982,7 @@ const getCashOrders = async (startDate, endDate, managerBearer) => {
     } else {
       cashOrdersData.data.data.eventList.data.forEach((order) => {
         result = [
+          ...result,
           {
             idForSort: parseInt(
               order.cash_order.created_at.split(' ')[0].split('-').join('') +
@@ -1029,6 +1030,7 @@ const getCashOrders = async (startDate, endDate, managerBearer) => {
           });
         }
       }
+      console.log(result);
       return { result };
     }
   } catch (error) {
@@ -1160,6 +1162,7 @@ const generateSbpXlsx = async (data) => {
 };
 
 const generateCashOrdersXlsx = async (data) => {
+  console.log(data);
   const workbook = new ExcelJS.Workbook();
   const worksheet = workbook.addWorksheet('Payments');
 
