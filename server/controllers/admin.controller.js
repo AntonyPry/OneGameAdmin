@@ -25,7 +25,23 @@ const currentStats = async (req, res) => {
           pcRevenue: 0,
         };
 
-    const resultsArray = await getResultsArray(startDate, endDate, clubId);
+    // получаем данные строго с 9 до 9, а оклад с начала смены до ее конца, поэтому по времени начала работы ищем время начала смены (строгое)
+    const createdAt = new Date(startDate.replace(' ', 'T') + '+03:00');
+    const hours = createdAt.getHours();
+
+    let startSmena;
+    if (hours >= 6 && hours < 12) {
+      const start = new Date(now);
+      start.setHours(9, 0, 0, 0);
+      startSmena = formatDate(start);
+    } else if (hours >= 18 && hours < 24) {
+      const start = new Date(createdAt);
+      start.setHours(21, 0, 0, 0);
+      startSmena = formatDate(start);
+    }
+
+    // получаем данные с начла СМЕНЫ (а не работы) до конца смены (считается на фронте)
+    const resultsArray = await getResultsArray(startSmena, endDate, clubId);
 
     const currentStatsObject = {
       totalRevenue: 0, // общая выручка
