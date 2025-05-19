@@ -10,8 +10,10 @@ const { RangePicker } = DatePicker;
 const ExportStatisticsPage = () => {
   const [paymentsFromPeriodDates, setPaymentsFromPeriodDates] = useState([]);
   const [sbpFromPeriodDates, setSbpFromPeriodDates] = useState([]);
+  const [cashOrdersFromPeriodDates, setCashOrdersFromPeriodDates] = useState([]);
   const [paymentsFromPeriodLoading, setPaymentsFromPeriodLoading] = useState(false);
   const [sbpFromPeriodLoading, setSbpFromPeriodLoading] = useState(false);
+  const [cashOrdersFromPeriodLoading, setCashOrdersFromPeriodLoading] = useState(false);
 
   const handlePaymentsFromPeriodRangeChange = (values) => {
     setPaymentsFromPeriodDates(values || []);
@@ -105,6 +107,52 @@ const ExportStatisticsPage = () => {
     }
   };
 
+  const handleCashOrdersRangeChange = (values) => {
+    setCashOrdersFromPeriodDates(values || []);
+  };
+
+  const downloadCashOrdersFromPeriod = async () => {
+    if (!cashOrdersFromPeriodDates || cashOrdersFromPeriodDates.length !== 2) {
+      alert('Пожалуйста, заполните все поля!');
+      return;
+    }
+
+    const startDate = cashOrdersFromPeriodDates[0].format('YYYY-MM-DD');
+    const endDate = cashOrdersFromPeriodDates[1].format('YYYY-MM-DD');
+
+    try {
+      setCashOrdersFromPeriodLoading(true);
+
+      const response = await axios.post(
+        `${process.env.REACT_APP_BACKEND_URL}/api/payments/cashOrdersFromPeriod`,
+        { startDate: `${startDate} 00:00:00`, endDate: `${endDate} 23:59:59` },
+        { responseType: 'blob' }
+      );
+      const blob = response.data;
+
+      const url = window.URL.createObjectURL(blob);
+      const link = document.createElement('a');
+      link.href = url;
+      link.setAttribute(
+        'download',
+        `Кассовые_ордера_${startDate.split('-')[2]}.${startDate.split('-')[1]}.${startDate.split('-')[0]}-${
+          endDate.split('-')[2]
+        }.${endDate.split('-')[1]}.${endDate.split('-')[0]}.xlsx`
+      );
+
+      document.body.appendChild(link);
+      link.click();
+
+      link.parentNode.removeChild(link);
+      window.URL.revokeObjectURL(url);
+    } catch (error) {
+      console.error('Ошибка скачивания файла:', error);
+      alert('Произошла ошибка при скачивании файла');
+    } finally {
+      setCashOrdersFromPeriodLoading(false);
+    }
+  };
+
   return (
     <div className={styles.container}>
       <div className={styles.paymentsContainer}>
@@ -136,6 +184,23 @@ const ExportStatisticsPage = () => {
             {sbpFromPeriodLoading ? 'Загрузка...' : 'Скачать данные'}
           </Button>
           {sbpFromPeriodLoading && (
+            <Spin indicator={<LoadingOutlined spin />} size="small" style={{ marginLeft: '5px' }} />
+          )}
+        </div>
+      </div>
+
+      <div className={styles.paymentsContainer}>
+        <h1 style={{ marginBottom: '20px' }}>Выберите период для загрузки данных о кассовых ордерах</h1>
+        <div style={{ marginBottom: '40px' }}>
+          <RangePicker placeholder={['Дата начала', 'Дата конца']} onChange={handleCashOrdersRangeChange} />
+          <Button
+            onClick={downloadCashOrdersFromPeriod}
+            disabled={cashOrdersFromPeriodLoading || cashOrdersFromPeriodDates.length !== 2}
+            style={{ marginLeft: '16px' }}
+          >
+            {cashOrdersFromPeriodLoading ? 'Загрузка...' : 'Скачать данные'}
+          </Button>
+          {cashOrdersFromPeriodLoading && (
             <Spin indicator={<LoadingOutlined spin />} size="small" style={{ marginLeft: '5px' }} />
           )}
         </div>

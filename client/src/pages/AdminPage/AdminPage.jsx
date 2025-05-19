@@ -609,10 +609,11 @@ const AdminPage = () => {
                     const adminName = `${currentWorkshift.worker.first_name} ${currentWorkshift.worker.last_name}`;
 
                     const textToCopy = `
+${currentWorkshift?.created_at?.split(' ')[0] || '-'} - ${getShiftType()}
 Админ: ${adminName}
-Смена: ${getShiftType()}
 Начало: ${currentWorkshift?.created_at?.split(' ')[1] || '-'}
 Продолжительность: ${getWorkshiftDuration()}
+
                 
 Выручка:
 Общая: ${totalFact}/${totalPlan} (${totalPercent}%) ${doneEmoji(totalFact, totalPlan)}

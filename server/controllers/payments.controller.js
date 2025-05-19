@@ -109,6 +109,35 @@ const sbpFromPeriod = async (req, res) => {
   }
 };
 
+const cashOrdersFromPeriod = async (req, res) => {
+  try {
+    let { startDate, endDate, clubId } = req.body;
+    if (!clubId) clubId = 6816;
+
+    const managerBearer = await getSmartshellManagerBearer(clubId);
+    if (managerBearer.error) {
+      console.log(`Ошибка при получении менеджерского токена для клуба ${clubId}:`, managerBearer.message);
+      return res.status(400).send(managerBearer);
+    }
+
+    const data = await getCashOrders(startDate, endDate, managerBearer);
+    if (data.error) {
+      console.log(`Ошибка при получении даннх о кассовых ордерах клуба ${clubId}:`, data.message);
+      return res.status(400).send(data);
+    } else {
+      const xlsxBuffer = await generateCashOrdersXlsx(data.result);
+
+      res.setHeader('Content-Disposition', `attachment; filename=payments_${Date.now}.xlsx`);
+      res.setHeader('Content-Type', 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
+      res.send(xlsxBuffer);
+    }
+    // return res.status(200).send(data.result);
+  } catch (error) {
+    console.log('cashOrdersFromPeriod ERROR ->', error);
+    return res.status(500).send({ error: true, message: error.message });
+  }
+};
+
 const getSmartshellManagerBearer = async (clubId = 6816) => {
   const dataManagerLogin = {
     query: `mutation Login {
@@ -743,7 +772,6 @@ const getPaymentRefundData = async (startDate, endDate, managerBearer) => {
     } else {
       for (const payment of resPaymentsData.data.data.eventList.data) {
         for (let i = 0; i < payment.payment_items.length; i++) {
-          console.log(payment);
           result = [
             ...result,
             {
@@ -759,7 +787,7 @@ const getPaymentRefundData = async (startDate, endDate, managerBearer) => {
               time: payment.timestamp.split(' ')[1],
               client: payment.client?.phone ? `+${payment.client?.phone}` : null,
               nickname: payment.client?.nickname ? payment.client?.nickname : null,
-              title: 'Отмена ' + (await getPaymentById(endDate, payment.payment.id, i, managerBearer)),
+              title: 'Отмена ' + payment.payment_items[i].entity_type,
               amount: payment.payment_items[i].amount,
               sum:
                 payment.payment.title === 'BONUS'
@@ -809,7 +837,7 @@ const getPaymentRefundData = async (startDate, endDate, managerBearer) => {
                   time: payment.timestamp.split(' ')[1],
                   client: payment.client?.phone ? `+${payment.client?.phone}` : null,
                   nickname: payment.client?.nickname ? payment.client?.nickname : null,
-                  title: 'Отмена ' + (await getPaymentById(payment.timestamp, payment.payment.id, i, managerBearer)),
+                  title: 'Отмена ' + payment.payment_items[i].entity_type,
                   amount: payment.payment_items[i].amount,
                   sum:
                     payment.payment.title === 'BONUS'
@@ -893,36 +921,152 @@ const createSmartshellPaymentRefundDataRequest = (startDate, endDate, page, mana
   };
 };
 
-const getPaymentById = async (endDate, id, paymentItemsIndex, managerBearer) => {
-  try {
-    let smartshellPaymentsDataRequest = createSmartshellPaymentByIdRequest(endDate, id, managerBearer);
-    let resPaymentsData = await axios(smartshellPaymentsDataRequest);
+// const getPaymentById = async (endDate, id, paymentItemsIndex, managerBearer) => {
+//   try {
+//     let smartshellPaymentsDataRequest = createSmartshellPaymentByIdRequest(endDate, id, managerBearer);
+//     let resPaymentsData = await axios(smartshellPaymentsDataRequest);
 
-    if (resPaymentsData.data.errors) {
-      resPaymentsData.data.errors.map((error) => console.log('getPaymentById ERROR ->', error));
-      return { error: true, message: 'Не удалось получить данные об отмененном платеже' };
+//     if (resPaymentsData.data.errors) {
+//       resPaymentsData.data.errors.map((error) => console.log('getPaymentById ERROR ->', error));
+//       return { error: true, message: 'Не удалось получить данные об отмененном платеже' };
+//     } else {
+//       return resPaymentsData.data.data.eventList.data[0]?.payment_items[paymentItemsIndex].title || 'бонусы';
+//     }
+//   } catch (error) {
+//     console.log('getPaymentById ERROR ->', error);
+//     return { error: true, message: 'Ошибка на стороне сервера' };
+//   }
+// };
+
+// const createSmartshellPaymentByIdRequest = (endDate, id, managerBearer) => {
+//   let dataPayments = {
+//     query: `query eventList {
+//   eventList(
+//       input: {
+//           start: "2024-12-01 00:00:00"
+//           finish: "${endDate}"
+//           types: "PAYMENT_CREATED"
+//   }
+//   ) {
+//         data {
+//             payment_items {
+//                 title
+//             }
+//         }
+//     }
+// }
+//   `,
+//   };
+//   return {
+//     method: 'post',
+//     url: `https://billing.smartshell.gg/api/graphql`,
+//     headers: {
+//       authorization: `Bearer ${managerBearer}`,
+//     },
+//     data: dataPayments,
+//     httpsAgent: agent,
+//   };
+// };
+
+const getCashOrders = async (startDate, endDate, managerBearer) => {
+  try {
+    let page = 1;
+    let cashordersRequest = getCashOrdersRequest(startDate, endDate, page, managerBearer);
+
+    let result = [];
+    let cashOrdersData = await axios(cashordersRequest);
+
+    if (cashOrdersData.data.errors) {
+      cashOrdersData.data.errors.map((error) => console.log('getClientData ERROR ->', error));
+      return { error: true, message: 'Не удалось получить данные об оплатах' };
     } else {
-      return resPaymentsData.data.data.eventList.data[0]?.payment_items[paymentItemsIndex].title || 'бонусы';
+      cashOrdersData.data.data.eventList.data.forEach((order) => {
+        result = [
+          ...result,
+          {
+            idForSort: parseInt(
+              order.cash_order.created_at.split(' ')[0].split('-').join('') +
+                order.cash_order.created_at.split(' ')[1].split(':').join('')
+            ),
+            id: order.cash_order.id,
+            type: order.cash_order.type,
+            date: `${order.cash_order.created_at.split(' ')[0].split('-')[2]}.${
+              order.cash_order.created_at.split(' ')[0].split('-')[1]
+            }.${order.cash_order.created_at.split(' ')[0].split('-')[0]}`,
+            time: order.cash_order.created_at.split(' ')[1],
+            sum: order.cash_order.sum,
+            comment: order.cash_order.comment,
+            operator: `${order.operator?.first_name} ${order.operator?.last_name}`,
+          },
+        ];
+      });
+      while (cashOrdersData.data.data.eventList.paginatorInfo.lastPage > page) {
+        page += 1;
+        let cashordersRequest = getCashOrdersRequest(startDate, endDate, page, managerBearer);
+        cashOrdersData = await axios(cashordersRequest);
+        if (cashOrdersData.data.errors) {
+          cashOrdersData.data.errors.map((error) => console.log('getClientData ERROR ->', error));
+          return { error: true, message: 'Не удалось получить данные об оплатах' };
+        } else {
+          cashOrdersData.data.data.eventList.data.forEach((order) => {
+            result = [
+              ...result,
+              {
+                idForSort: parseInt(
+                  order.cash_order.created_at.split(' ')[0].split('-').join('') +
+                    order.cash_order.created_at.split(' ')[1].split(':').join('')
+                ),
+                id: order.cash_order.id,
+                type: order.cash_order.type,
+                date: `${order.cash_order.created_at.split(' ')[0].split('-')[2]}.${
+                  order.cash_order.created_at.split(' ')[0].split('-')[1]
+                }.${order.cash_order.created_at.split(' ')[0].split('-')[0]}`,
+                time: order.cash_order.created_at.split(' ')[1],
+                sum: order.cash_order.sum,
+                comment: order.cash_order.comment,
+                operator: `${order.operator?.first_name} ${order.operator?.last_name}`,
+              },
+            ];
+          });
+        }
+      }
+      console.log(result);
+      return { result };
     }
   } catch (error) {
-    console.log('getPaymentById ERROR ->', error);
+    console.log('getCashOrders ERROR ->', error);
     return { error: true, message: 'Ошибка на стороне сервера' };
   }
 };
 
-const createSmartshellPaymentByIdRequest = (endDate, id, managerBearer) => {
+const getCashOrdersRequest = (startDate, endDate, page, managerBearer) => {
   let dataPayments = {
     query: `query eventList {
-  eventList(
-      input: {
-          start: "2024-12-01 00:00:00"
-          finish: "${endDate}"
-          types: "PAYMENT_CREATED"
-  }
-  ) {
+    eventList(
+        input: {
+            start: "${startDate}"
+            finish:"${endDate}"
+            types: "CASH_ORDER_CREATED"
+        }
+        first: 1000
+        page: ${page}
+    ) {
+        paginatorInfo {
+            count
+            currentPage
+            lastPage
+        }
         data {
-            payment_items {
-                title
+            cash_order {
+                id
+                created_at
+                type
+                sum
+                comment
+            }
+            operator {
+                first_name
+                last_name
             }
         }
     }
@@ -1017,9 +1161,33 @@ const generateSbpXlsx = async (data) => {
   return buffer;
 };
 
+const generateCashOrdersXlsx = async (data) => {
+  console.log(data);
+  const workbook = new ExcelJS.Workbook();
+  const worksheet = workbook.addWorksheet('Payments');
+
+  worksheet.columns = [
+    { header: 'ID', key: 'id', width: 11 },
+    { header: 'Тип', key: 'type', width: 11 },
+    { header: 'Дата', key: 'date', width: 11 },
+    { header: 'Время', key: 'time', width: 11 },
+    { header: 'Сумма', key: 'sum', width: 11 },
+    { header: 'Комментарий', key: 'comment', width: 25 },
+    { header: 'Администратор', key: 'operator', width: 25 },
+  ];
+
+  data.forEach((item) => {
+    worksheet.addRow(item);
+  });
+
+  const buffer = await workbook.xlsx.writeBuffer();
+  return buffer;
+};
+
 module.exports = {
   getSmartshellManagerBearer,
   paymentsFromPeriod,
   getResultsArray,
   sbpFromPeriod,
+  cashOrdersFromPeriod,
 };
