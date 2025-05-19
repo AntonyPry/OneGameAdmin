@@ -8,6 +8,13 @@ const agent = new https.Agent({
   rejectUnauthorized: false, // Отключает проверку сертификата
 });
 
+const formatDate = (date) => {
+  const pad = (num) => String(num).padStart(2, '0');
+  return `${date.getFullYear()}-${pad(date.getMonth() + 1)}-${pad(date.getDate())} ${pad(date.getHours())}:${pad(
+    date.getMinutes()
+  )}:${pad(date.getSeconds())}`;
+};
+
 const currentStats = async (req, res) => {
   try {
     let { startDate, endDate, clubId } = req.query;
@@ -30,6 +37,7 @@ const currentStats = async (req, res) => {
     const hours = createdAt.getHours();
 
     let startSmena;
+    const now = new Date();
     if (hours >= 6 && hours < 12) {
       const start = new Date(now);
       start.setHours(9, 0, 0, 0);
@@ -163,7 +171,7 @@ const getActiveWorkshift = async (req, res) => {
   let { clubId } = req.query;
   if (!clubId) clubId = 6816;
   const currentWorkshift = await getActiveWorkshiftStartDate(clubId);
-  if (currentWorkshift.error || !currentWorkshift) {
+  if (currentWorkshift?.error || !currentWorkshift) {
     console.log('getActiveWorkshift ERROR ->', currentWorkshift.message);
     return res.status(400).send({ currentWorkshift });
   }
