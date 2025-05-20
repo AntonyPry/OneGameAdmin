@@ -37,16 +37,13 @@ const currentStats = async (req, res) => {
     const hours = createdAt.getHours();
 
     let startSmena;
-    const now = new Date();
-    if (hours >= 6 && hours < 12) {
-      const start = new Date(now);
+    const start = new Date(createdAt);
+    if (hours >= 6 && hours < 9) {
       start.setHours(9, 0, 0, 0);
-      startSmena = formatDate(start);
-    } else if (hours >= 18 && hours < 24) {
-      const start = new Date(createdAt);
+    } else if (hours >= 18 && hours < 21) {
       start.setHours(21, 0, 0, 0);
-      startSmena = formatDate(start);
     }
+    startSmena = formatDate(start);
 
     // получаем данные с начла СМЕНЫ (а не работы) до конца смены (считается на фронте)
     const resultsArray = await getResultsArray(startSmena, endDate, clubId);
@@ -110,8 +107,6 @@ const getCurrentAwardsObject = async (endDate, smena, currentStatsObject, planSt
     console.log(`getCurrentAwardsObject ERROR ->`, workshiftStart.message);
     return { workshiftStart };
   }
-  // Определяем день недели по endDate (0 – воскресенье, 1 – понедельник и т.д.)
-  const dayOfWeek = new Date(endDate).getDay();
 
   // Рассчитываем проработанное время в минутах
   const startTime = new Date(workshiftStart.created_at.replace(' ', 'T') + '+03:00');
