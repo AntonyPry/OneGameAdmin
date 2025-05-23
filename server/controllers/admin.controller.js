@@ -155,7 +155,7 @@ const getCurrentAwardsObject = async (endDate, smena, currentStatsObject, planSt
     psBonus,
     pcBonus,
     additionalBonus,
-    totalAward: baseSalary + goodsBonus + psBonus + additionalBonus,
+    totalAward: baseSalary + goodsBonus + psBonus + pcBonus + additionalBonus,
     responsibilitiesCheck: checkedResponsibilities,
   };
 
