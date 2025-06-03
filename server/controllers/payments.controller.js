@@ -193,7 +193,9 @@ const getPaymentData = async (startDate, endDate, managerBearer) => {
               id: payment.payment.id,
               type: FAKE_PAYMENTS.includes(payment.payment.id.toString())
                 ? 'FAKE'
-                : payment?.payment_items[i]?.title?.includes('PS')
+                : payment?.payment_items[i]?.title?.includes('PS') ||
+                  payment?.payment_items[i]?.title?.includes('Ps') ||
+                  payment?.payment_items[i]?.title?.includes('ps')
                 ? 'PS'
                 : payment?.payment_items[i]?.title?.includes('Кресло')
                 ? 'RACEZONE'
@@ -244,7 +246,9 @@ const getPaymentData = async (startDate, endDate, managerBearer) => {
                   id: payment.payment.id,
                   type: FAKE_PAYMENTS.includes(payment.payment.id.toString())
                     ? 'FAKE'
-                    : payment?.payment_items[i]?.title?.includes('PS')
+                    : payment?.payment_items[i]?.title?.includes('PS') ||
+                      payment?.payment_items[i]?.title?.includes('Ps') ||
+                      payment?.payment_items[i]?.title?.includes('ps')
                     ? 'PS'
                     : payment?.payment_items[i]?.title?.includes('Кресло')
                     ? 'RACEZONE'
