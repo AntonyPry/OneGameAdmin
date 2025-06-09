@@ -650,6 +650,7 @@ const getBonusData = async (startDate, endDate, managerBearer) => {
           bonus: payment.payment_items[0].sum,
           payment_title: payment.payment.title,
           operator: `${payment.operator?.first_name} ${payment.operator?.last_name}`,
+          comment: payment.comment,
         })),
       ];
       while (resPaymentsData.data.data.eventList.paginatorInfo.lastPage > page) {
@@ -681,6 +682,7 @@ const getBonusData = async (startDate, endDate, managerBearer) => {
               bonus: payment.payment_items[0].sum,
               payment_title: payment.payment.title,
               operator: `${payment.operator?.first_name} ${payment.operator?.last_name}`,
+              comment: payment.comment,
             })),
           ];
         }
@@ -737,6 +739,7 @@ const createSmartshellBonusDataRequest = (startDate, endDate, page, managerBeare
                   first_name
                   last_name
                 }
+                comment
             }
         }
     }
@@ -1101,6 +1104,7 @@ const generatePaymentsXlsx = async (data) => {
     { header: 'Бонус', key: 'bonus', width: 6 },
     { header: 'Источник', key: 'payment_title', width: 10 },
     { header: 'Сотрудник', key: 'operator', width: 25 },
+    { header: 'Комментарий', key: 'comment', width: 30 },
   ];
 
   data.forEach((item) => {
