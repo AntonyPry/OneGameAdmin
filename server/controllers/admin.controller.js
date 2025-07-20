@@ -278,7 +278,7 @@ const getResponsibilitiesCheck = (workshiftStart, managerComment) => {
     return { status: 'notChecked', notPassed: [], alreadyChecked: false };
   }
 
-  const parts = managerComment.split(' ');
+  const parts = managerComment?.split(' ');
   const commentDate = parts[0] + ' ' + parts[1];
 
   if (!commentDate || (!managerComment.includes('0') && !managerComment.includes('1'))) {
