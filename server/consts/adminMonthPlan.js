@@ -1097,6 +1097,564 @@ const ADMIN_MONTH_PLAN = {
       totalRevenue: 14401, // общая выручка
     },
   },
+  '2025-07-01': {
+    day: {
+      pcRevenue: 18460, // выручка за ПК
+      psServiceRevenue: 962, // выручка за PS5 + услуги
+      foodRevenue: 910, // выручка за всю еду без шоколада
+      chocolateRevenue: 360, // выручка за шоколад
+      drinksRevenue: 3584, // выручка за напитки
+      totalRevenue: 24276, // общая выручка
+    },
+    night: {
+      pcRevenue: 12942, // выручка за ПК
+      psServiceRevenue: 702, // выручка за PS5 + услуги
+      foodRevenue: 764, // выручка за всю еду без шоколада
+      chocolateRevenue: 302, // выручка за шоколад
+      drinksRevenue: 3008, // выручка за напитки
+      totalRevenue: 17718, // общая выручка
+    },
+  },
+  '2025-07-02': {
+    day: {
+      pcRevenue: 18460, // выручка за ПК
+      psServiceRevenue: 962, // выручка за PS5 + услуги
+      foodRevenue: 910, // выручка за всю еду без шоколада
+      chocolateRevenue: 360, // выручка за шоколад
+      drinksRevenue: 3584, // выручка за напитки
+      totalRevenue: 24276, // общая выручка
+    },
+    night: {
+      pcRevenue: 12942, // выручка за ПК
+      psServiceRevenue: 702, // выручка за PS5 + услуги
+      foodRevenue: 764, // выручка за всю еду без шоколада
+      chocolateRevenue: 302, // выручка за шоколад
+      drinksRevenue: 3008, // выручка за напитки
+      totalRevenue: 17718, // общая выручка
+    },
+  },
+  '2025-07-03': {
+    day: {
+      pcRevenue: 18460, // выручка за ПК
+      psServiceRevenue: 962, // выручка за PS5 + услуги
+      foodRevenue: 910, // выручка за всю еду без шоколада
+      chocolateRevenue: 360, // выручка за шоколад
+      drinksRevenue: 3584, // выручка за напитки
+      totalRevenue: 24276, // общая выручка
+    },
+    night: {
+      pcRevenue: 12942, // выручка за ПК
+      psServiceRevenue: 702, // выручка за PS5 + услуги
+      foodRevenue: 764, // выручка за всю еду без шоколада
+      chocolateRevenue: 302, // выручка за шоколад
+      drinksRevenue: 3008, // выручка за напитки
+      totalRevenue: 17718, // общая выручка
+    },
+  },
+  '2025-07-04': {
+    day: {
+      pcRevenue: 18900, // выручка за ПК
+      psServiceRevenue: 985, // выручка за PS5 + услуги
+      foodRevenue: 932, // выручка за всю еду без шоколада
+      chocolateRevenue: 369, // выручка за шоколад
+      drinksRevenue: 3669, // выручка за напитки
+      totalRevenue: 24855, // общая выручка
+    },
+    night: {
+      pcRevenue: 13250, // выручка за ПК
+      psServiceRevenue: 719, // выручка за PS5 + услуги
+      foodRevenue: 782, // выручка за всю еду без шоколада
+      chocolateRevenue: 310, // выручка за шоколад
+      drinksRevenue: 3079, // выручка за напитки
+      totalRevenue: 18140, // общая выручка
+    },
+  },
+  '2025-07-05': {
+    day: {
+      pcRevenue: 18460, // выручка за ПК
+      psServiceRevenue: 962, // выручка за PS5 + услуги
+      foodRevenue: 910, // выручка за всю еду без шоколада
+      chocolateRevenue: 360, // выручка за шоколад
+      drinksRevenue: 3584, // выручка за напитки
+      totalRevenue: 24276, // общая выручка
+    },
+    night: {
+      pcRevenue: 12942, // выручка за ПК
+      psServiceRevenue: 702, // выручка за PS5 + услуги
+      foodRevenue: 764, // выручка за всю еду без шоколада
+      chocolateRevenue: 302, // выручка за шоколад
+      drinksRevenue: 3008, // выручка за напитки
+      totalRevenue: 17718, // общая выручка
+    },
+  },
+  '2025-07-06': {
+    day: {
+      pcRevenue: 21097, // выручка за ПК
+      psServiceRevenue: 1100, // выручка за PS5 + услуги
+      foodRevenue: 1041, // выручка за всю еду без шоколада
+      chocolateRevenue: 412, // выручка за шоколад
+      drinksRevenue: 4096, // выручка за напитки
+      totalRevenue: 27746, // общая выручка
+    },
+    night: {
+      pcRevenue: 14791, // выручка за ПК
+      psServiceRevenue: 803, // выручка за PS5 + услуги
+      foodRevenue: 873, // выручка за всю еду без шоколада
+      chocolateRevenue: 346, // выручка за шоколад
+      drinksRevenue: 3438, // выручка за напитки
+      totalRevenue: 20251, // общая выручка
+    },
+  },
+  '2025-07-07': {
+    day: {
+      pcRevenue: 16702, // выручка за ПК
+      psServiceRevenue: 871, // выручка за PS5 + услуги
+      foodRevenue: 824, // выручка за всю еду без шоколада
+      chocolateRevenue: 326, // выручка за шоколад
+      drinksRevenue: 3242, // выручка за напитки
+      totalRevenue: 21965, // общая выручка
+    },
+    night: {
+      pcRevenue: 11709, // выручка за ПК
+      psServiceRevenue: 635, // выручка за PS5 + услуги
+      foodRevenue: 691, // выручка за всю еду без шоколада
+      chocolateRevenue: 274, // выручка за шоколад
+      drinksRevenue: 2721, // выручка за напитки
+      totalRevenue: 16030, // общая выручка
+    },
+  },
+  '2025-07-08': {
+    day: {
+      pcRevenue: 18460, // выручка за ПК
+      psServiceRevenue: 962, // выручка за PS5 + услуги
+      foodRevenue: 910, // выручка за всю еду без шоколада
+      chocolateRevenue: 360, // выручка за шоколад
+      drinksRevenue: 3584, // выручка за напитки
+      totalRevenue: 24276, // общая выручка
+    },
+    night: {
+      pcRevenue: 12942, // выручка за ПК
+      psServiceRevenue: 702, // выручка за PS5 + услуги
+      foodRevenue: 764, // выручка за всю еду без шоколада
+      chocolateRevenue: 302, // выручка за шоколад
+      drinksRevenue: 3008, // выручка за напитки
+      totalRevenue: 17718, // общая выручка
+    },
+  },
+  '2025-07-09': {
+    day: {
+      pcRevenue: 18460, // выручка за ПК
+      psServiceRevenue: 962, // выручка за PS5 + услуги
+      foodRevenue: 910, // выручка за всю еду без шоколада
+      chocolateRevenue: 360, // выручка за шоколад
+      drinksRevenue: 3584, // выручка за напитки
+      totalRevenue: 24276, // общая выручка
+    },
+    night: {
+      pcRevenue: 12942, // выручка за ПК
+      psServiceRevenue: 702, // выручка за PS5 + услуги
+      foodRevenue: 764, // выручка за всю еду без шоколада
+      chocolateRevenue: 302, // выручка за шоколад
+      drinksRevenue: 3008, // выручка за напитки
+      totalRevenue: 17718, // общая выручка
+    },
+  },
+  '2025-07-10': {
+    day: {
+      pcRevenue: 18460, // выручка за ПК
+      psServiceRevenue: 962, // выручка за PS5 + услуги
+      foodRevenue: 910, // выручка за всю еду без шоколада
+      chocolateRevenue: 360, // выручка за шоколад
+      drinksRevenue: 3584, // выручка за напитки
+      totalRevenue: 24276, // общая выручка
+    },
+    night: {
+      pcRevenue: 12942, // выручка за ПК
+      psServiceRevenue: 702, // выручка за PS5 + услуги
+      foodRevenue: 764, // выручка за всю еду без шоколада
+      chocolateRevenue: 302, // выручка за шоколад
+      drinksRevenue: 3008, // выручка за напитки
+      totalRevenue: 17718, // общая выручка
+    },
+  },
+  '2025-07-11': {
+    day: {
+      pcRevenue: 18900, // выручка за ПК
+      psServiceRevenue: 985, // выручка за PS5 + услуги
+      foodRevenue: 932, // выручка за всю еду без шоколада
+      chocolateRevenue: 369, // выручка за шоколад
+      drinksRevenue: 3669, // выручка за напитки
+      totalRevenue: 24855, // общая выручка
+    },
+    night: {
+      pcRevenue: 13250, // выручка за ПК
+      psServiceRevenue: 719, // выручка за PS5 + услуги
+      foodRevenue: 782, // выручка за всю еду без шоколада
+      chocolateRevenue: 310, // выручка за шоколад
+      drinksRevenue: 3079, // выручка за напитки
+      totalRevenue: 18140, // общая выручка
+    },
+  },
+  '2025-07-12': {
+    day: {
+      pcRevenue: 18460, // выручка за ПК
+      psServiceRevenue: 962, // выручка за PS5 + услуги
+      foodRevenue: 910, // выручка за всю еду без шоколада
+      chocolateRevenue: 360, // выручка за шоколад
+      drinksRevenue: 3584, // выручка за напитки
+      totalRevenue: 24276, // общая выручка
+    },
+    night: {
+      pcRevenue: 12942, // выручка за ПК
+      psServiceRevenue: 702, // выручка за PS5 + услуги
+      foodRevenue: 764, // выручка за всю еду без шоколада
+      chocolateRevenue: 302, // выручка за шоколад
+      drinksRevenue: 3008, // выручка за напитки
+      totalRevenue: 17718, // общая выручка
+    },
+  },
+  '2025-07-13': {
+    day: {
+      pcRevenue: 21097, // выручка за ПК
+      psServiceRevenue: 1100, // выручка за PS5 + услуги
+      foodRevenue: 1041, // выручка за всю еду без шоколада
+      chocolateRevenue: 412, // выручка за шоколад
+      drinksRevenue: 4096, // выручка за напитки
+      totalRevenue: 27746, // общая выручка
+    },
+    night: {
+      pcRevenue: 14791, // выручка за ПК
+      psServiceRevenue: 803, // выручка за PS5 + услуги
+      foodRevenue: 873, // выручка за всю еду без шоколада
+      chocolateRevenue: 346, // выручка за шоколад
+      drinksRevenue: 3438, // выручка за напитки
+      totalRevenue: 20251, // общая выручка
+    },
+  },
+  '2025-07-14': {
+    day: {
+      pcRevenue: 15823, // выручка за ПК
+      psServiceRevenue: 825, // выручка за PS5 + услуги
+      foodRevenue: 780, // выручка за всю еду без шоколада
+      chocolateRevenue: 309, // выручка за шоколад
+      drinksRevenue: 3072, // выручка за напитки
+      totalRevenue: 20809, // общая выручка
+    },
+    night: {
+      pcRevenue: 11093, // выручка за ПК
+      psServiceRevenue: 602, // выручка за PS5 + услуги
+      foodRevenue: 655, // выручка за всю еду без шоколада
+      chocolateRevenue: 259, // выручка за шоколад
+      drinksRevenue: 2578, // выручка за напитки
+      totalRevenue: 15187, // общая выручка
+    },
+  },
+  '2025-07-15': {
+    day: {
+      pcRevenue: 18460, // выручка за ПК
+      psServiceRevenue: 962, // выручка за PS5 + услуги
+      foodRevenue: 910, // выручка за всю еду без шоколада
+      chocolateRevenue: 360, // выручка за шоколад
+      drinksRevenue: 3584, // выручка за напитки
+      totalRevenue: 24276, // общая выручка
+    },
+    night: {
+      pcRevenue: 12942, // выручка за ПК
+      psServiceRevenue: 702, // выручка за PS5 + услуги
+      foodRevenue: 764, // выручка за всю еду без шоколада
+      chocolateRevenue: 302, // выручка за шоколад
+      drinksRevenue: 3008, // выручка за напитки
+      totalRevenue: 17718, // общая выручка
+    },
+  },
+  '2025-07-16': {
+    day: {
+      pcRevenue: 18460, // выручка за ПК
+      psServiceRevenue: 962, // выручка за PS5 + услуги
+      foodRevenue: 910, // выручка за всю еду без шоколада
+      chocolateRevenue: 360, // выручка за шоколад
+      drinksRevenue: 3584, // выручка за напитки
+      totalRevenue: 24276, // общая выручка
+    },
+    night: {
+      pcRevenue: 12942, // выручка за ПК
+      psServiceRevenue: 702, // выручка за PS5 + услуги
+      foodRevenue: 764, // выручка за всю еду без шоколада
+      chocolateRevenue: 302, // выручка за шоколад
+      drinksRevenue: 3008, // выручка за напитки
+      totalRevenue: 17718, // общая выручка
+    },
+  },
+  '2025-07-17': {
+    day: {
+      pcRevenue: 18460, // выручка за ПК
+      psServiceRevenue: 962, // выручка за PS5 + услуги
+      foodRevenue: 910, // выручка за всю еду без шоколада
+      chocolateRevenue: 360, // выручка за шоколад
+      drinksRevenue: 3584, // выручка за напитки
+      totalRevenue: 24276, // общая выручка
+    },
+    night: {
+      pcRevenue: 12942, // выручка за ПК
+      psServiceRevenue: 702, // выручка за PS5 + услуги
+      foodRevenue: 764, // выручка за всю еду без шоколада
+      chocolateRevenue: 302, // выручка за шоколад
+      drinksRevenue: 3008, // выручка за напитки
+      totalRevenue: 17718, // общая выручка
+    },
+  },
+  '2025-07-18': {
+    day: {
+      pcRevenue: 18900, // выручка за ПК
+      psServiceRevenue: 985, // выручка за PS5 + услуги
+      foodRevenue: 932, // выручка за всю еду без шоколада
+      chocolateRevenue: 369, // выручка за шоколад
+      drinksRevenue: 3669, // выручка за напитки
+      totalRevenue: 24855, // общая выручка
+    },
+    night: {
+      pcRevenue: 13250, // выручка за ПК
+      psServiceRevenue: 719, // выручка за PS5 + услуги
+      foodRevenue: 782, // выручка за всю еду без шоколада
+      chocolateRevenue: 310, // выручка за шоколад
+      drinksRevenue: 3079, // выручка за напитки
+      totalRevenue: 18140, // общая выручка
+    },
+  },
+  '2025-07-19': {
+    day: {
+      pcRevenue: 18460, // выручка за ПК
+      psServiceRevenue: 962, // выручка за PS5 + услуги
+      foodRevenue: 910, // выручка за всю еду без шоколада
+      chocolateRevenue: 360, // выручка за шоколад
+      drinksRevenue: 3584, // выручка за напитки
+      totalRevenue: 24276, // общая выручка
+    },
+    night: {
+      pcRevenue: 12942, // выручка за ПК
+      psServiceRevenue: 702, // выручка за PS5 + услуги
+      foodRevenue: 764, // выручка за всю еду без шоколада
+      chocolateRevenue: 302, // выручка за шоколад
+      drinksRevenue: 3008, // выручка за напитки
+      totalRevenue: 17718, // общая выручка
+    },
+  },
+  '2025-07-20': {
+    day: {
+      pcRevenue: 21097, // выручка за ПК
+      psServiceRevenue: 1100, // выручка за PS5 + услуги
+      foodRevenue: 1041, // выручка за всю еду без шоколада
+      chocolateRevenue: 412, // выручка за шоколад
+      drinksRevenue: 4096, // выручка за напитки
+      totalRevenue: 27746, // общая выручка
+    },
+    night: {
+      pcRevenue: 14791, // выручка за ПК
+      psServiceRevenue: 803, // выручка за PS5 + услуги
+      foodRevenue: 873, // выручка за всю еду без шоколада
+      chocolateRevenue: 346, // выручка за шоколад
+      drinksRevenue: 3438, // выручка за напитки
+      totalRevenue: 20251, // общая выручка
+    },
+  },
+  '2025-07-21': {
+    day: {
+      pcRevenue: 15823, // выручка за ПК
+      psServiceRevenue: 825, // выручка за PS5 + услуги
+      foodRevenue: 780, // выручка за всю еду без шоколада
+      chocolateRevenue: 309, // выручка за шоколад
+      drinksRevenue: 3072, // выручка за напитки
+      totalRevenue: 20809, // общая выручка
+    },
+    night: {
+      pcRevenue: 11093, // выручка за ПК
+      psServiceRevenue: 602, // выручка за PS5 + услуги
+      foodRevenue: 655, // выручка за всю еду без шоколада
+      chocolateRevenue: 259, // выручка за шоколад
+      drinksRevenue: 2578, // выручка за напитки
+      totalRevenue: 15187, // общая выручка
+    },
+  },
+  '2025-07-22': {
+    day: {
+      pcRevenue: 18460, // выручка за ПК
+      psServiceRevenue: 962, // выручка за PS5 + услуги
+      foodRevenue: 910, // выручка за всю еду без шоколада
+      chocolateRevenue: 360, // выручка за шоколад
+      drinksRevenue: 3584, // выручка за напитки
+      totalRevenue: 24276, // общая выручка
+    },
+    night: {
+      pcRevenue: 12942, // выручка за ПК
+      psServiceRevenue: 702, // выручка за PS5 + услуги
+      foodRevenue: 764, // выручка за всю еду без шоколада
+      chocolateRevenue: 302, // выручка за шоколад
+      drinksRevenue: 3008, // выручка за напитки
+      totalRevenue: 17718, // общая выручка
+    },
+  },
+  '2025-07-23': {
+    day: {
+      pcRevenue: 18460, // выручка за ПК
+      psServiceRevenue: 962, // выручка за PS5 + услуги
+      foodRevenue: 910, // выручка за всю еду без шоколада
+      chocolateRevenue: 360, // выручка за шоколад
+      drinksRevenue: 3584, // выручка за напитки
+      totalRevenue: 24276, // общая выручка
+    },
+    night: {
+      pcRevenue: 12942, // выручка за ПК
+      psServiceRevenue: 702, // выручка за PS5 + услуги
+      foodRevenue: 764, // выручка за всю еду без шоколада
+      chocolateRevenue: 302, // выручка за шоколад
+      drinksRevenue: 3008, // выручка за напитки
+      totalRevenue: 17718, // общая выручка
+    },
+  },
+  '2025-07-24': {
+    day: {
+      pcRevenue: 18460, // выручка за ПК
+      psServiceRevenue: 962, // выручка за PS5 + услуги
+      foodRevenue: 910, // выручка за всю еду без шоколада
+      chocolateRevenue: 360, // выручка за шоколад
+      drinksRevenue: 3584, // выручка за напитки
+      totalRevenue: 24276, // общая выручка
+    },
+    night: {
+      pcRevenue: 12942, // выручка за ПК
+      psServiceRevenue: 702, // выручка за PS5 + услуги
+      foodRevenue: 764, // выручка за всю еду без шоколада
+      chocolateRevenue: 302, // выручка за шоколад
+      drinksRevenue: 3008, // выручка за напитки
+      totalRevenue: 17718, // общая выручка
+    },
+  },
+  '2025-07-25': {
+    day: {
+      pcRevenue: 18900, // выручка за ПК
+      psServiceRevenue: 985, // выручка за PS5 + услуги
+      foodRevenue: 932, // выручка за всю еду без шоколада
+      chocolateRevenue: 369, // выручка за шоколад
+      drinksRevenue: 3669, // выручка за напитки
+      totalRevenue: 24855, // общая выручка
+    },
+    night: {
+      pcRevenue: 13250, // выручка за ПК
+      psServiceRevenue: 719, // выручка за PS5 + услуги
+      foodRevenue: 782, // выручка за всю еду без шоколада
+      chocolateRevenue: 310, // выручка за шоколад
+      drinksRevenue: 3079, // выручка за напитки
+      totalRevenue: 18140, // общая выручка
+    },
+  },
+  '2025-07-26': {
+    day: {
+      pcRevenue: 18460, // выручка за ПК
+      psServiceRevenue: 962, // выручка за PS5 + услуги
+      foodRevenue: 910, // выручка за всю еду без шоколада
+      chocolateRevenue: 360, // выручка за шоколад
+      drinksRevenue: 3584, // выручка за напитки
+      totalRevenue: 24276, // общая выручка
+    },
+    night: {
+      pcRevenue: 12942, // выручка за ПК
+      psServiceRevenue: 702, // выручка за PS5 + услуги
+      foodRevenue: 764, // выручка за всю еду без шоколада
+      chocolateRevenue: 302, // выручка за шоколад
+      drinksRevenue: 3008, // выручка за напитки
+      totalRevenue: 17718, // общая выручка
+    },
+  },
+  '2025-07-27': {
+    day: {
+      pcRevenue: 21097, // выручка за ПК
+      psServiceRevenue: 1100, // выручка за PS5 + услуги
+      foodRevenue: 1041, // выручка за всю еду без шоколада
+      chocolateRevenue: 412, // выручка за шоколад
+      drinksRevenue: 4096, // выручка за напитки
+      totalRevenue: 27746, // общая выручка
+    },
+    night: {
+      pcRevenue: 14791, // выручка за ПК
+      psServiceRevenue: 803, // выручка за PS5 + услуги
+      foodRevenue: 873, // выручка за всю еду без шоколада
+      chocolateRevenue: 346, // выручка за шоколад
+      drinksRevenue: 3438, // выручка за напитки
+      totalRevenue: 20251, // общая выручка
+    },
+  },
+  '2025-07-28': {
+    day: {
+      pcRevenue: 15823, // выручка за ПК
+      psServiceRevenue: 825, // выручка за PS5 + услуги
+      foodRevenue: 780, // выручка за всю еду без шоколада
+      chocolateRevenue: 309, // выручка за шоколад
+      drinksRevenue: 3072, // выручка за напитки
+      totalRevenue: 20809, // общая выручка
+    },
+    night: {
+      pcRevenue: 11093, // выручка за ПК
+      psServiceRevenue: 602, // выручка за PS5 + услуги
+      foodRevenue: 655, // выручка за всю еду без шоколада
+      chocolateRevenue: 259, // выручка за шоколад
+      drinksRevenue: 2578, // выручка за напитки
+      totalRevenue: 15187, // общая выручка
+    },
+  },
+  '2025-07-29': {
+    day: {
+      pcRevenue: 18460, // выручка за ПК
+      psServiceRevenue: 962, // выручка за PS5 + услуги
+      foodRevenue: 910, // выручка за всю еду без шоколада
+      chocolateRevenue: 360, // выручка за шоколад
+      drinksRevenue: 3584, // выручка за напитки
+      totalRevenue: 24276, // общая выручка
+    },
+    night: {
+      pcRevenue: 12942, // выручка за ПК
+      psServiceRevenue: 702, // выручка за PS5 + услуги
+      foodRevenue: 764, // выручка за всю еду без шоколада
+      chocolateRevenue: 302, // выручка за шоколад
+      drinksRevenue: 3008, // выручка за напитки
+      totalRevenue: 17718, // общая выручка
+    },
+  },
+  '2025-07-30': {
+    day: {
+      pcRevenue: 18460, // выручка за ПК
+      psServiceRevenue: 962, // выручка за PS5 + услуги
+      foodRevenue: 910, // выручка за всю еду без шоколада
+      chocolateRevenue: 360, // выручка за шоколад
+      drinksRevenue: 3584, // выручка за напитки
+      totalRevenue: 24276, // общая выручка
+    },
+    night: {
+      pcRevenue: 12942, // выручка за ПК
+      psServiceRevenue: 702, // выручка за PS5 + услуги
+      foodRevenue: 764, // выручка за всю еду без шоколада
+      chocolateRevenue: 302, // выручка за шоколад
+      drinksRevenue: 3008, // выручка за напитки
+      totalRevenue: 17718, // общая выручка
+    },
+  },
+  '2025-07-31': {
+    day: {
+      pcRevenue: 18460, // выручка за ПК
+      psServiceRevenue: 962, // выручка за PS5 + услуги
+      foodRevenue: 910, // выручка за всю еду без шоколада
+      chocolateRevenue: 360, // выручка за шоколад
+      drinksRevenue: 3584, // выручка за напитки
+      totalRevenue: 24276, // общая выручка
+    },
+    night: {
+      pcRevenue: 12942, // выручка за ПК
+      psServiceRevenue: 702, // выручка за PS5 + услуги
+      foodRevenue: 764, // выручка за всю еду без шоколада
+      chocolateRevenue: 302, // выручка за шоколад
+      drinksRevenue: 3008, // выручка за напитки
+      totalRevenue: 17718, // общая выручка
+    },
+  },
 };
 
 module.exports = {
