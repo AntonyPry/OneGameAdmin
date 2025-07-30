@@ -14,6 +14,7 @@ const ExportStatisticsPage = () => {
   const [paymentsFromPeriodLoading, setPaymentsFromPeriodLoading] = useState(false);
   const [sbpFromPeriodLoading, setSbpFromPeriodLoading] = useState(false);
   const [cashOrdersFromPeriodLoading, setCashOrdersFromPeriodLoading] = useState(false);
+  const [firstSessionsLoading, setFirstSessionsLoading] = useState(false);
 
   const handlePaymentsFromPeriodRangeChange = (values) => {
     setPaymentsFromPeriodDates(values || []);
@@ -153,6 +154,41 @@ const ExportStatisticsPage = () => {
     }
   };
 
+  // Функция теперь скачивает файл, а не получает JSON
+  const downloadFirstSessions = async () => {
+    try {
+      setFirstSessionsLoading(true);
+
+      const response = await axios.post(
+        `${process.env.REACT_APP_BACKEND_URL}/api/payments/firstSessionsFromPeriod`,
+        {},
+        {
+          responseType: 'blob',
+        }
+      );
+
+      const blob = response.data;
+      const url = window.URL.createObjectURL(blob);
+      const link = document.createElement('a');
+      link.href = url;
+
+      // Формируем имя файла для сохранения
+      const downloadFileName = `Первые_сессии_за_все_время.xlsx`;
+      link.setAttribute('download', downloadFileName);
+
+      document.body.appendChild(link);
+      link.click();
+
+      link.parentNode.removeChild(link);
+      window.URL.revokeObjectURL(url);
+    } catch (error) {
+      console.error('Ошибка скачивания файла:', error);
+      alert('Произошла ошибка при скачивании файла. Попробуйте позже.');
+    } finally {
+      setFirstSessionsLoading(false);
+    }
+  };
+
   return (
     <div className={styles.container}>
       <div className={styles.paymentsContainer}>
@@ -202,6 +238,21 @@ const ExportStatisticsPage = () => {
           </Button>
           {cashOrdersFromPeriodLoading && (
             <Spin indicator={<LoadingOutlined spin />} size="small" style={{ marginLeft: '5px' }} />
+          )}
+        </div>
+      </div>
+
+      <div className={styles.paymentsContainer}>
+        <h1 style={{ marginBottom: '20px' }}>Отчёт по первым сессиям клиентов</h1>
+        <p style={{ marginTop: '-15px', marginBottom: '20px', color: '#888' }}>
+          Отчёт формируется за всё время работы клуба (с 01.12.2024)
+        </p>
+        <div>
+          <Button onClick={downloadFirstSessions} disabled={firstSessionsLoading}>
+            {firstSessionsLoading ? 'Формирование отчёта...' : 'Скачать отчёт за всё время'}
+          </Button>
+          {firstSessionsLoading && (
+            <Spin indicator={<LoadingOutlined spin />} size="small" style={{ marginLeft: '10px' }} />
           )}
         </div>
       </div>

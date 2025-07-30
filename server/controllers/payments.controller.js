@@ -93,7 +93,7 @@ const sbpFromPeriod = async (req, res) => {
 
     const data = await getSbpData(startDate, endDate, managerBearer);
     if (data.error) {
-      console.log(`Ошибка при получении даннх по СБП токена для клуба ${clubId}:`, data.message);
+      console.log(`Ошибка при получении даннх по СБП для клуба ${clubId}:`, data.message);
       return res.status(400).send(data);
     } else {
       const xlsxBuffer = await generateSbpXlsx(data.result);
@@ -1091,6 +1091,150 @@ const getCashOrdersRequest = (startDate, endDate, page, managerBearer) => {
   };
 };
 
+const getFirstSessionsFromPeriod = async (req, res) => {
+  try {
+    const startDate = '2024-12-01 00:00:00'; // Дата открытия клуба
+    const endDate = new Date().toISOString().slice(0, 19).replace('T', ' '); // Текущая дата и время
+    const managerBearer = await getSmartshellManagerBearer();
+
+    // 1. Получаем данные так же, как и раньше
+    const firstSessions = await getFirstClientSessions(startDate, endDate, managerBearer);
+
+    if (firstSessions.error) {
+      return res.status(500).json({ message: firstSessions.message });
+    }
+
+    // 2. Генерируем XLSX-буфер из полученных данных
+    const xlsxBuffer = await generateFirstSessionsXlsx(firstSessions.result);
+
+    const formattedStartDate = startDate.split(' ')[0];
+    const formattedEndDate = endDate.split(' ')[0];
+    const fileName = `Первые_сессии_${formattedStartDate}_${formattedEndDate}.xlsx`;
+
+    // 3. Отправляем файл клиенту
+    res.setHeader('Content-Type', 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
+    res.setHeader(
+      'Content-Disposition',
+      `attachment; filename="First_Sessions_All_Time.xlsx"; filename*=UTF-8''${encodeURIComponent(fileName)}`
+    );
+    res.send(xlsxBuffer);
+  } catch (error) {
+    console.log('getFirstSessionsFromPeriod ERROR ->', error);
+    res.status(500).json({ message: 'Ошибка на стороне сервера' });
+  }
+};
+
+// Сервисная функция для основной логики
+const getFirstClientSessions = async (startDate, endDate, managerBearer) => {
+  try {
+    const result = [];
+    const seenClients = new Set(); // Хранилище для уникальных клиентов (по номеру телефона)
+
+    let currentStartDate = new Date(startDate);
+
+    // Итерация по месяцам
+    while (currentStartDate <= new Date(endDate)) {
+      const currentMonth = currentStartDate.getMonth();
+      const currentYear = currentStartDate.getFullYear();
+
+      const monthStartDate = new Date(currentYear, currentMonth, 1, 0, 0, 0);
+      const monthEndDate = new Date(currentYear, currentMonth + 1, 0, 23, 59, 59);
+
+      const formattedMonthStart = monthStartDate.toISOString().slice(0, 19).replace('T', ' ');
+      const formattedMonthEnd = monthEndDate.toISOString().slice(0, 19).replace('T', ' ');
+
+      let page = 1;
+      let hasMorePages = true;
+
+      // Пагинация внутри месяца
+      while (hasMorePages) {
+        const requestConfig = createSmartshellEventListRequest(
+          formattedMonthStart,
+          formattedMonthEnd,
+          page,
+          managerBearer
+        );
+        const response = await axios(requestConfig);
+
+        if (response.data.errors) {
+          response.data.errors.map((error) => console.log('getFirstClientSessions ERROR ->', error));
+          return { error: true, message: 'Не удалось получить данные о сессиях' };
+        }
+
+        const eventList = response.data.data.eventList;
+        hasMorePages = eventList.paginatorInfo.hasMorePages;
+        page += 1;
+
+        for (const event of eventList.data) {
+          const clientPhone = event.client?.phone;
+
+          // Проверяем, видели ли мы этого клиента раньше
+          if (clientPhone && !seenClients.has(clientPhone)) {
+            seenClients.add(clientPhone); // Добавляем в список уникальных
+            result.push({
+              key: clientPhone, // Уникальный ключ для React-таблицы
+              firstSessionDate: event.timestamp,
+              nickname: event.client.nickname,
+              phone: `+${event.client.phone}`,
+              email: event.client.email || 'Не указан',
+            });
+          }
+        }
+      }
+      // Переходим к следующему месяцу
+      currentStartDate.setMonth(currentStartDate.getMonth() + 1);
+    }
+
+    // Сортируем результат по дате для наглядности
+    result.sort((a, b) => new Date(a.firstSessionDate) - new Date(b.firstSessionDate));
+
+    return { result };
+  } catch (error) {
+    console.log('getFirstClientSessions ERROR ->', error);
+    return { error: true, message: 'Ошибка на стороне сервера' };
+  }
+};
+
+// Хелпер для создания запроса (на основе вашего примера)
+const createSmartshellEventListRequest = (startDate, endDate, page, managerBearer) => {
+  const query = `
+      query EventList {
+        eventList(
+            input: {
+                start: "${startDate}"
+                finish: "${endDate}"
+                types: "CLIENT_SESSION_FINISHED"
+            }
+            first: 1000
+            page: ${page}
+        ) {
+            paginatorInfo {
+                hasMorePages
+            }
+            data {
+                timestamp
+                type
+                client {
+                    phone
+                    email
+                    nickname
+                }
+            }
+        }
+      }`;
+
+  return {
+    method: 'post',
+    url: 'https://billing.smartshell.gg/api/graphql',
+    headers: {
+      authorization: `Bearer ${managerBearer}`,
+      'Content-Type': 'application/json',
+    },
+    data: { query },
+    // httpsAgent: agent, // если используете
+  };
+};
+
 const generatePaymentsXlsx = async (data) => {
   const workbook = new ExcelJS.Workbook();
   const worksheet = workbook.addWorksheet('Payments');
@@ -1192,10 +1336,34 @@ const generateCashOrdersXlsx = async (data) => {
   return buffer;
 };
 
+const generateFirstSessionsXlsx = async (data) => {
+  const workbook = new ExcelJS.Workbook();
+  const worksheet = workbook.addWorksheet('Первые сессии');
+
+  worksheet.columns = [
+    { header: 'Дата первой сессии', key: 'firstSessionDate', width: 20 },
+    { header: 'Никнейм', key: 'nickname', width: 25 },
+    { header: 'Телефон', key: 'phone', width: 20 },
+    { header: 'Email', key: 'email', width: 30 },
+  ];
+
+  // Заполняем строки данными
+  data.forEach((item) => {
+    worksheet.addRow(item);
+  });
+
+  // Делаем заголовок жирным
+  worksheet.getRow(1).font = { bold: true };
+
+  const buffer = await workbook.xlsx.writeBuffer();
+  return buffer;
+};
+
 module.exports = {
   getSmartshellManagerBearer,
   paymentsFromPeriod,
   getResultsArray,
   sbpFromPeriod,
   cashOrdersFromPeriod,
+  getFirstSessionsFromPeriod,
 };
