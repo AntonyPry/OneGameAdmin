@@ -2,7 +2,8 @@
 const axios = require('axios');
 const https = require('https');
 const { ADMIN_MONTH_PLAN } = require('../consts/adminMonthPlan');
-const { getResultsArray, getSmartshellManagerBearer } = require('./payments.controller');
+const { getResultsArray } = require('./payments.controller');
+const { getManagerToken } = require('../services/token.service');
 
 const agent = new https.Agent({
   rejectUnauthorized: false, // Отключает проверку сертификата
@@ -180,7 +181,7 @@ const getActiveWorkshift = async (req, res) => {
 };
 
 const getActiveWorkshiftStartDate = async (clubId = 6816) => {
-  const managerBearer = await getSmartshellManagerBearer(clubId);
+  const managerBearer = await getManagerToken(clubId);
   if (managerBearer.error) {
     console.log(`Ошибка при получении менеджерского токена для клуба ${clubId}:`, managerBearer.message);
     return { managerBearer };
@@ -222,7 +223,7 @@ const getActiveWorkshiftStartDate = async (clubId = 6816) => {
   }
 };
 const getManagerComment = async (clubId = 6816) => {
-  const managerBearer = await getSmartshellManagerBearer(clubId);
+  const managerBearer = await getManagerToken(clubId);
   if (managerBearer.error) {
     console.log(`Ошибка при получении менеджерского токена для клуба ${clubId}:`, managerBearer.message);
     return { managerBearer };
@@ -309,7 +310,7 @@ const approveAdminResponsibilities = async (req, res) => {
     return res.status(400).send({ error: true, message: 'Неверный пароль' });
   }
 
-  const managerBearer = await getSmartshellManagerBearer();
+  const managerBearer = await getManagerToken(clubId);
   if (managerBearer.error) {
     console.log('Ошибка при получении токена:', managerBearer.message);
     return res.status(400).send({ error: true, message: 'Ошибка при получении менеджерского токена' });

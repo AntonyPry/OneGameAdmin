@@ -29,7 +29,7 @@ const paymentsFromPeriod = async (req, res) => {
 
 const getResultsArray = async (startDate, endDate, clubId) => {
   try {
-    const managerBearer = await getSmartshellManagerBearer(clubId);
+    const managerBearer = await getManagerToken(clubId);
     if (managerBearer.error) {
       console.log(`Ошибка при получении менеджерского токена для клуба ${clubId}:`, managerBearer.message);
       return managerBearer;
@@ -85,7 +85,7 @@ const sbpFromPeriod = async (req, res) => {
     let { startDate, endDate, clubId } = req.body;
     if (!clubId) clubId = 6816;
 
-    const managerBearer = await getSmartshellManagerBearer(clubId);
+    const managerBearer = await getManagerToken(clubId);
     if (managerBearer.error) {
       console.log(`Ошибка при получении менеджерского токена для клуба ${clubId}:`, managerBearer.message);
       return res.status(400).send(managerBearer);
@@ -114,7 +114,7 @@ const cashOrdersFromPeriod = async (req, res) => {
     let { startDate, endDate, clubId } = req.body;
     if (!clubId) clubId = 6816;
 
-    const managerBearer = await getSmartshellManagerBearer(clubId);
+    const managerBearer = await getManagerToken(clubId);
     if (managerBearer.error) {
       console.log(`Ошибка при получении менеджерского токена для клуба ${clubId}:`, managerBearer.message);
       return res.status(400).send(managerBearer);
@@ -135,37 +135,6 @@ const cashOrdersFromPeriod = async (req, res) => {
   } catch (error) {
     console.log('cashOrdersFromPeriod ERROR ->', error);
     return res.status(500).send({ error: true, message: error.message });
-  }
-};
-
-const getSmartshellManagerBearer = async (clubId = 6816) => {
-  const dataManagerLogin = {
-    query: `mutation Login {
-          login(
-              input: { login: "79216855543", password: "Toshka3g39!", company_id: ${clubId} }
-          ) {
-              access_token
-          }
-      }`,
-  };
-
-  try {
-    const res = await axios({
-      method: 'post',
-      url: `https://billing.smartshell.gg/api/graphql`,
-      data: dataManagerLogin,
-      httpsAgent: agent,
-    });
-
-    if (res.data.errors) {
-      res.data.errors.map((error) => console.log(login, 'getSmartshellManagerBearer ERROR ->', error.message));
-      return { error: true, message: 'Не удалось получить данные от smartshell' };
-    } else {
-      return res.data.data.login.access_token;
-    }
-  } catch (error) {
-    console.log('getSmartshellManagerBearer ERROR ->', error.message);
-    return { error: true, message: 'Ошибка на стороне сервера' };
   }
 };
 
@@ -1095,7 +1064,7 @@ const getFirstSessionsFromPeriod = async (req, res) => {
   try {
     const startDate = '2024-12-01 00:00:00'; // Дата открытия клуба
     const endDate = new Date().toISOString().slice(0, 19).replace('T', ' '); // Текущая дата и время
-    const managerBearer = await getSmartshellManagerBearer();
+    const managerBearer = await getManagerToken(clubId);
 
     // 1. Получаем данные так же, как и раньше
     const firstSessions = await getFirstClientSessions(startDate, endDate, managerBearer);
@@ -1360,7 +1329,6 @@ const generateFirstSessionsXlsx = async (data) => {
 };
 
 module.exports = {
-  getSmartshellManagerBearer,
   paymentsFromPeriod,
   getResultsArray,
   sbpFromPeriod,

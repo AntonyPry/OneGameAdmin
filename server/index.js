@@ -2,6 +2,7 @@ const express = require('express');
 const cors = require('cors');
 const dotenv = require('dotenv');
 const router = require('./routes');
+const { initializeTokenService } = require('./services/token.service');
 
 dotenv.config();
 
@@ -15,6 +16,8 @@ app.use('/api', router);
 app.get('/', (req, res) => {
   res.send('Home Route');
 });
+
+initializeTokenService();
 
 // Запуск сервера
 app.listen(BACKEND_PORT, () => {
