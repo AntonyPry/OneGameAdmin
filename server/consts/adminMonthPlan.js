@@ -1657,7 +1657,7 @@ const ADMIN_MONTH_PLAN = {
   },
   '2025-08-01': {
     night: {
-      PCRevenue: 12797, // выручка за ПК
+      pcRevenue: 12797, // выручка за ПК
       PsServiceAutosimRevenue: 1054, // выручка за PS5 + услуги + автосимулятор
       foodRevenue: 1279, // выручка за всю еду без шоколада
       chocolateRevenue: 506, // выручка за шоколад
@@ -1665,7 +1665,7 @@ const ADMIN_MONTH_PLAN = {
       totalRevenue: 20674, // общая выручка
     },
     day: {
-      PCRevenue: 20082, // выручка за ПК
+      pcRevenue: 20082, // выручка за ПК
       PsServiceAutosimRevenue: 1444, // выручка за PS5 + услуги + автосимулятор
       foodRevenue: 1275, // выручка за всю еду без шоколада
       chocolateRevenue: 505, // выручка за шоколад
@@ -1675,7 +1675,7 @@ const ADMIN_MONTH_PLAN = {
   },
   '2025-08-02': {
     night: {
-      PCRevenue: 13058, // выручка за ПК
+      pcRevenue: 13058, // выручка за ПК
       PsServiceAutosimRevenue: 1075, // выручка за PS5 + услуги + автосимулятор
       foodRevenue: 1306, // выручка за всю еду без шоколада
       chocolateRevenue: 517, // выручка за шоколад
@@ -1683,7 +1683,7 @@ const ADMIN_MONTH_PLAN = {
       totalRevenue: 21096, // общая выручка
     },
     day: {
-      PCRevenue: 20492, // выручка за ПК
+      pcRevenue: 20492, // выручка за ПК
       PsServiceAutosimRevenue: 1474, // выручка за PS5 + услуги + автосимулятор
       foodRevenue: 1301, // выручка за всю еду без шоколада
       chocolateRevenue: 515, // выручка за шоколад
@@ -1693,7 +1693,7 @@ const ADMIN_MONTH_PLAN = {
   },
   '2025-08-03': {
     night: {
-      PCRevenue: 12797, // выручка за ПК
+      pcRevenue: 12797, // выручка за ПК
       PsServiceAutosimRevenue: 1054, // выручка за PS5 + услуги + автосимулятор
       foodRevenue: 1279, // выручка за всю еду без шоколада
       chocolateRevenue: 506, // выручка за шоколад
@@ -1701,7 +1701,7 @@ const ADMIN_MONTH_PLAN = {
       totalRevenue: 20674, // общая выручка
     },
     day: {
-      PCRevenue: 20082, // выручка за ПК
+      pcRevenue: 20082, // выручка за ПК
       PsServiceAutosimRevenue: 1444, // выручка за PS5 + услуги + автосимулятор
       foodRevenue: 1275, // выручка за всю еду без шоколада
       chocolateRevenue: 505, // выручка за шоколад
@@ -1711,7 +1711,7 @@ const ADMIN_MONTH_PLAN = {
   },
   '2025-08-04': {
     night: {
-      PCRevenue: 12013, // выручка за ПК
+      pcRevenue: 12013, // выручка за ПК
       PsServiceAutosimRevenue: 989, // выручка за PS5 + услуги + автосимулятор
       foodRevenue: 1201, // выручка за всю еду без шоколада
       chocolateRevenue: 475, // выручка за шоколад
@@ -1719,7 +1719,7 @@ const ADMIN_MONTH_PLAN = {
       totalRevenue: 19408, // общая выручка
     },
     day: {
-      PCRevenue: 18853, // выручка за ПК
+      pcRevenue: 18853, // выручка за ПК
       PsServiceAutosimRevenue: 1356, // выручка за PS5 + услуги + автосимулятор
       foodRevenue: 1197, // выручка за всю еду без шоколада
       chocolateRevenue: 474, // выручка за шоколад
@@ -1729,7 +1729,7 @@ const ADMIN_MONTH_PLAN = {
   },
   '2025-08-05': {
     night: {
-      PCRevenue: 11491, // выручка за ПК
+      pcRevenue: 11491, // выручка за ПК
       PsServiceAutosimRevenue: 946, // выручка за PS5 + услуги + автосимулятор
       foodRevenue: 1149, // выручка за всю еду без шоколада
       chocolateRevenue: 455, // выручка за шоколад
@@ -1737,7 +1737,7 @@ const ADMIN_MONTH_PLAN = {
       totalRevenue: 18564, // общая выручка
     },
     day: {
-      PCRevenue: 18033, // выручка за ПК
+      pcRevenue: 18033, // выручка за ПК
       PsServiceAutosimRevenue: 1297, // выручка за PS5 + услуги + автосимулятор
       foodRevenue: 1145, // выручка за всю еду без шоколада
       chocolateRevenue: 453, // выручка за шоколад
@@ -1747,7 +1747,7 @@ const ADMIN_MONTH_PLAN = {
   },
   '2025-08-06': {
     night: {
-      PCRevenue: 11230, // выручка за ПК
+      pcRevenue: 11230, // выручка за ПК
       PsServiceAutosimRevenue: 925, // выручка за PS5 + услуги + автосимулятор
       foodRevenue: 1123, // выручка за всю еду без шоколада
       chocolateRevenue: 444, // выручка за шоколад
@@ -1755,7 +1755,7 @@ const ADMIN_MONTH_PLAN = {
       totalRevenue: 18142, // общая выручка
     },
     day: {
-      PCRevenue: 17623, // выручка за ПК
+      pcRevenue: 17623, // выручка за ПК
       PsServiceAutosimRevenue: 1267, // выручка за PS5 + услуги + автосимулятор
       foodRevenue: 1119, // выручка за всю еду без шоколада
       chocolateRevenue: 443, // выручка за шоколад
@@ -1765,7 +1765,7 @@ const ADMIN_MONTH_PLAN = {
   },
   '2025-08-07': {
     night: {
-      PCRevenue: 12797, // выручка за ПК
+      pcRevenue: 12797, // выручка за ПК
       PsServiceAutosimRevenue: 1054, // выручка за PS5 + услуги + автосимулятор
       foodRevenue: 1279, // выручка за всю еду без шоколада
       chocolateRevenue: 506, // выручка за шоколад
@@ -1773,7 +1773,7 @@ const ADMIN_MONTH_PLAN = {
       totalRevenue: 20674, // общая выручка
     },
     day: {
-      PCRevenue: 20082, // выручка за ПК
+      pcRevenue: 20082, // выручка за ПК
       PsServiceAutosimRevenue: 1444, // выручка за PS5 + услуги + автосимулятор
       foodRevenue: 1275, // выручка за всю еду без шоколада
       chocolateRevenue: 505, // выручка за шоколад
@@ -1783,7 +1783,7 @@ const ADMIN_MONTH_PLAN = {
   },
   '2025-08-08': {
     night: {
-      PCRevenue: 13058, // выручка за ПК
+      pcRevenue: 13058, // выручка за ПК
       PsServiceAutosimRevenue: 1075, // выручка за PS5 + услуги + автосимулятор
       foodRevenue: 1306, // выручка за всю еду без шоколада
       chocolateRevenue: 517, // выручка за шоколад
@@ -1791,7 +1791,7 @@ const ADMIN_MONTH_PLAN = {
       totalRevenue: 21096, // общая выручка
     },
     day: {
-      PCRevenue: 20492, // выручка за ПК
+      pcRevenue: 20492, // выручка за ПК
       PsServiceAutosimRevenue: 1474, // выручка за PS5 + услуги + автосимулятор
       foodRevenue: 1301, // выручка за всю еду без шоколада
       chocolateRevenue: 515, // выручка за шоколад
@@ -1801,7 +1801,7 @@ const ADMIN_MONTH_PLAN = {
   },
   '2025-08-09': {
     night: {
-      PCRevenue: 13058, // выручка за ПК
+      pcRevenue: 13058, // выручка за ПК
       PsServiceAutosimRevenue: 1075, // выручка за PS5 + услуги + автосимулятор
       foodRevenue: 1306, // выручка за всю еду без шоколада
       chocolateRevenue: 517, // выручка за шоколад
@@ -1809,7 +1809,7 @@ const ADMIN_MONTH_PLAN = {
       totalRevenue: 21096, // общая выручка
     },
     day: {
-      PCRevenue: 20492, // выручка за ПК
+      pcRevenue: 20492, // выручка за ПК
       PsServiceAutosimRevenue: 1474, // выручка за PS5 + услуги + автосимулятор
       foodRevenue: 1301, // выручка за всю еду без шоколада
       chocolateRevenue: 515, // выручка за шоколад
@@ -1819,7 +1819,7 @@ const ADMIN_MONTH_PLAN = {
   },
   '2025-08-10': {
     night: {
-      PCRevenue: 12797, // выручка за ПК
+      pcRevenue: 12797, // выручка за ПК
       PsServiceAutosimRevenue: 1054, // выручка за PS5 + услуги + автосимулятор
       foodRevenue: 1279, // выручка за всю еду без шоколада
       chocolateRevenue: 506, // выручка за шоколад
@@ -1827,7 +1827,7 @@ const ADMIN_MONTH_PLAN = {
       totalRevenue: 20674, // общая выручка
     },
     day: {
-      PCRevenue: 20082, // выручка за ПК
+      pcRevenue: 20082, // выручка за ПК
       PsServiceAutosimRevenue: 1444, // выручка за PS5 + услуги + автосимулятор
       foodRevenue: 1275, // выручка за всю еду без шоколада
       chocolateRevenue: 505, // выручка за шоколад
@@ -1837,7 +1837,7 @@ const ADMIN_MONTH_PLAN = {
   },
   '2025-08-11': {
     night: {
-      PCRevenue: 12013, // выручка за ПК
+      pcRevenue: 12013, // выручка за ПК
       PsServiceAutosimRevenue: 989, // выручка за PS5 + услуги + автосимулятор
       foodRevenue: 1201, // выручка за всю еду без шоколада
       chocolateRevenue: 475, // выручка за шоколад
@@ -1845,7 +1845,7 @@ const ADMIN_MONTH_PLAN = {
       totalRevenue: 19408, // общая выручка
     },
     day: {
-      PCRevenue: 18853, // выручка за ПК
+      pcRevenue: 18853, // выручка за ПК
       PsServiceAutosimRevenue: 1356, // выручка за PS5 + услуги + автосимулятор
       foodRevenue: 1197, // выручка за всю еду без шоколада
       chocolateRevenue: 474, // выручка за шоколад
@@ -1855,7 +1855,7 @@ const ADMIN_MONTH_PLAN = {
   },
   '2025-08-12': {
     night: {
-      PCRevenue: 11491, // выручка за ПК
+      pcRevenue: 11491, // выручка за ПК
       PsServiceAutosimRevenue: 946, // выручка за PS5 + услуги + автосимулятор
       foodRevenue: 1149, // выручка за всю еду без шоколада
       chocolateRevenue: 455, // выручка за шоколад
@@ -1863,7 +1863,7 @@ const ADMIN_MONTH_PLAN = {
       totalRevenue: 18564, // общая выручка
     },
     day: {
-      PCRevenue: 18033, // выручка за ПК
+      pcRevenue: 18033, // выручка за ПК
       PsServiceAutosimRevenue: 1297, // выручка за PS5 + услуги + автосимулятор
       foodRevenue: 1145, // выручка за всю еду без шоколада
       chocolateRevenue: 453, // выручка за шоколад
@@ -1873,7 +1873,7 @@ const ADMIN_MONTH_PLAN = {
   },
   '2025-08-13': {
     night: {
-      PCRevenue: 11230, // выручка за ПК
+      pcRevenue: 11230, // выручка за ПК
       PsServiceAutosimRevenue: 925, // выручка за PS5 + услуги + автосимулятор
       foodRevenue: 1123, // выручка за всю еду без шоколада
       chocolateRevenue: 444, // выручка за шоколад
@@ -1881,7 +1881,7 @@ const ADMIN_MONTH_PLAN = {
       totalRevenue: 18142, // общая выручка
     },
     day: {
-      PCRevenue: 17623, // выручка за ПК
+      pcRevenue: 17623, // выручка за ПК
       PsServiceAutosimRevenue: 1267, // выручка за PS5 + услуги + автосимулятор
       foodRevenue: 1119, // выручка за всю еду без шоколада
       chocolateRevenue: 443, // выручка за шоколад
@@ -1891,7 +1891,7 @@ const ADMIN_MONTH_PLAN = {
   },
   '2025-08-14': {
     night: {
-      PCRevenue: 12797, // выручка за ПК
+      pcRevenue: 12797, // выручка за ПК
       PsServiceAutosimRevenue: 1054, // выручка за PS5 + услуги + автосимулятор
       foodRevenue: 1279, // выручка за всю еду без шоколада
       chocolateRevenue: 506, // выручка за шоколад
@@ -1899,7 +1899,7 @@ const ADMIN_MONTH_PLAN = {
       totalRevenue: 20674, // общая выручка
     },
     day: {
-      PCRevenue: 20082, // выручка за ПК
+      pcRevenue: 20082, // выручка за ПК
       PsServiceAutosimRevenue: 1444, // выручка за PS5 + услуги + автосимулятор
       foodRevenue: 1275, // выручка за всю еду без шоколада
       chocolateRevenue: 505, // выручка за шоколад
@@ -1909,7 +1909,7 @@ const ADMIN_MONTH_PLAN = {
   },
   '2025-08-15': {
     night: {
-      PCRevenue: 13058, // выручка за ПК
+      pcRevenue: 13058, // выручка за ПК
       PsServiceAutosimRevenue: 1075, // выручка за PS5 + услуги + автосимулятор
       foodRevenue: 1306, // выручка за всю еду без шоколада
       chocolateRevenue: 517, // выручка за шоколад
@@ -1917,7 +1917,7 @@ const ADMIN_MONTH_PLAN = {
       totalRevenue: 21096, // общая выручка
     },
     day: {
-      PCRevenue: 20492, // выручка за ПК
+      pcRevenue: 20492, // выручка за ПК
       PsServiceAutosimRevenue: 1474, // выручка за PS5 + услуги + автосимулятор
       foodRevenue: 1301, // выручка за всю еду без шоколада
       chocolateRevenue: 515, // выручка за шоколад
@@ -1927,7 +1927,7 @@ const ADMIN_MONTH_PLAN = {
   },
   '2025-08-16': {
     night: {
-      PCRevenue: 13058, // выручка за ПК
+      pcRevenue: 13058, // выручка за ПК
       PsServiceAutosimRevenue: 1075, // выручка за PS5 + услуги + автосимулятор
       foodRevenue: 1306, // выручка за всю еду без шоколада
       chocolateRevenue: 517, // выручка за шоколад
@@ -1935,7 +1935,7 @@ const ADMIN_MONTH_PLAN = {
       totalRevenue: 21096, // общая выручка
     },
     day: {
-      PCRevenue: 20492, // выручка за ПК
+      pcRevenue: 20492, // выручка за ПК
       PsServiceAutosimRevenue: 1474, // выручка за PS5 + услуги + автосимулятор
       foodRevenue: 1301, // выручка за всю еду без шоколада
       chocolateRevenue: 515, // выручка за шоколад
@@ -1945,7 +1945,7 @@ const ADMIN_MONTH_PLAN = {
   },
   '2025-08-17': {
     night: {
-      PCRevenue: 12797, // выручка за ПК
+      pcRevenue: 12797, // выручка за ПК
       PsServiceAutosimRevenue: 1054, // выручка за PS5 + услуги + автосимулятор
       foodRevenue: 1279, // выручка за всю еду без шоколада
       chocolateRevenue: 506, // выручка за шоколад
@@ -1953,7 +1953,7 @@ const ADMIN_MONTH_PLAN = {
       totalRevenue: 20674, // общая выручка
     },
     day: {
-      PCRevenue: 20082, // выручка за ПК
+      pcRevenue: 20082, // выручка за ПК
       PsServiceAutosimRevenue: 1444, // выручка за PS5 + услуги + автосимулятор
       foodRevenue: 1275, // выручка за всю еду без шоколада
       chocolateRevenue: 505, // выручка за шоколад
@@ -1963,7 +1963,7 @@ const ADMIN_MONTH_PLAN = {
   },
   '2025-08-18': {
     night: {
-      PCRevenue: 12274, // выручка за ПК
+      pcRevenue: 12274, // выручка за ПК
       PsServiceAutosimRevenue: 1011, // выручка за PS5 + услуги + автосимулятор
       foodRevenue: 1227, // выручка за всю еду без шоколада
       chocolateRevenue: 486, // выручка за шоколад
@@ -1971,7 +1971,7 @@ const ADMIN_MONTH_PLAN = {
       totalRevenue: 19830, // общая выручка
     },
     day: {
-      PCRevenue: 19263, // выручка за ПК
+      pcRevenue: 19263, // выручка за ПК
       PsServiceAutosimRevenue: 1385, // выручка за PS5 + услуги + автосимулятор
       foodRevenue: 1223, // выручка за всю еду без шоколада
       chocolateRevenue: 484, // выручка за шоколад
@@ -1981,7 +1981,7 @@ const ADMIN_MONTH_PLAN = {
   },
   '2025-08-19': {
     night: {
-      PCRevenue: 12013, // выручка за ПК
+      pcRevenue: 12013, // выручка за ПК
       PsServiceAutosimRevenue: 989, // выручка за PS5 + услуги + автосимулятор
       foodRevenue: 1201, // выручка за всю еду без шоколада
       chocolateRevenue: 475, // выручка за шоколад
@@ -1989,7 +1989,7 @@ const ADMIN_MONTH_PLAN = {
       totalRevenue: 19408, // общая выручка
     },
     day: {
-      PCRevenue: 18853, // выручка за ПК
+      pcRevenue: 18853, // выручка за ПК
       PsServiceAutosimRevenue: 1356, // выручка за PS5 + услуги + автосимулятор
       foodRevenue: 1197, // выручка за всю еду без шоколада
       chocolateRevenue: 474, // выручка за шоколад
@@ -1999,7 +1999,7 @@ const ADMIN_MONTH_PLAN = {
   },
   '2025-08-20': {
     night: {
-      PCRevenue: 11230, // выручка за ПК
+      pcRevenue: 11230, // выручка за ПК
       PsServiceAutosimRevenue: 925, // выручка за PS5 + услуги + автосимулятор
       foodRevenue: 1123, // выручка за всю еду без шоколада
       chocolateRevenue: 444, // выручка за шоколад
@@ -2007,7 +2007,7 @@ const ADMIN_MONTH_PLAN = {
       totalRevenue: 18142, // общая выручка
     },
     day: {
-      PCRevenue: 17623, // выручка за ПК
+      pcRevenue: 17623, // выручка за ПК
       PsServiceAutosimRevenue: 1267, // выручка за PS5 + услуги + автосимулятор
       foodRevenue: 1119, // выручка за всю еду без шоколада
       chocolateRevenue: 443, // выручка за шоколад
@@ -2017,7 +2017,7 @@ const ADMIN_MONTH_PLAN = {
   },
   '2025-08-21': {
     night: {
-      PCRevenue: 12536, // выручка за ПК
+      pcRevenue: 12536, // выручка за ПК
       PsServiceAutosimRevenue: 1032, // выручка за PS5 + услуги + автосимулятор
       foodRevenue: 1253, // выручка за всю еду без шоколада
       chocolateRevenue: 496, // выручка за шоколад
@@ -2025,7 +2025,7 @@ const ADMIN_MONTH_PLAN = {
       totalRevenue: 20252, // общая выручка
     },
     day: {
-      PCRevenue: 19673, // выручка за ПК
+      pcRevenue: 19673, // выручка за ПК
       PsServiceAutosimRevenue: 1415, // выручка за PS5 + услуги + автосимулятор
       foodRevenue: 1249, // выручка за всю еду без шоколада
       chocolateRevenue: 494, // выручка за шоколад
@@ -2035,7 +2035,7 @@ const ADMIN_MONTH_PLAN = {
   },
   '2025-08-22': {
     night: {
-      PCRevenue: 13058, // выручка за ПК
+      pcRevenue: 13058, // выручка за ПК
       PsServiceAutosimRevenue: 1075, // выручка за PS5 + услуги + автосимулятор
       foodRevenue: 1306, // выручка за всю еду без шоколада
       chocolateRevenue: 517, // выручка за шоколад
@@ -2043,7 +2043,7 @@ const ADMIN_MONTH_PLAN = {
       totalRevenue: 21096, // общая выручка
     },
     day: {
-      PCRevenue: 20492, // выручка за ПК
+      pcRevenue: 20492, // выручка за ПК
       PsServiceAutosimRevenue: 1474, // выручка за PS5 + услуги + автосимулятор
       foodRevenue: 1301, // выручка за всю еду без шоколада
       chocolateRevenue: 515, // выручка за шоколад
@@ -2053,7 +2053,7 @@ const ADMIN_MONTH_PLAN = {
   },
   '2025-08-23': {
     night: {
-      PCRevenue: 13058, // выручка за ПК
+      pcRevenue: 13058, // выручка за ПК
       PsServiceAutosimRevenue: 1075, // выручка за PS5 + услуги + автосимулятор
       foodRevenue: 1306, // выручка за всю еду без шоколада
       chocolateRevenue: 517, // выручка за шоколад
@@ -2061,7 +2061,7 @@ const ADMIN_MONTH_PLAN = {
       totalRevenue: 21096, // общая выручка
     },
     day: {
-      PCRevenue: 20492, // выручка за ПК
+      pcRevenue: 20492, // выручка за ПК
       PsServiceAutosimRevenue: 1474, // выручка за PS5 + услуги + автосимулятор
       foodRevenue: 1301, // выручка за всю еду без шоколада
       chocolateRevenue: 515, // выручка за шоколад
@@ -2071,7 +2071,7 @@ const ADMIN_MONTH_PLAN = {
   },
   '2025-08-24': {
     night: {
-      PCRevenue: 12797, // выручка за ПК
+      pcRevenue: 12797, // выручка за ПК
       PsServiceAutosimRevenue: 1054, // выручка за PS5 + услуги + автосимулятор
       foodRevenue: 1279, // выручка за всю еду без шоколада
       chocolateRevenue: 506, // выручка за шоколад
@@ -2079,7 +2079,7 @@ const ADMIN_MONTH_PLAN = {
       totalRevenue: 20674, // общая выручка
     },
     day: {
-      PCRevenue: 20082, // выручка за ПК
+      pcRevenue: 20082, // выручка за ПК
       PsServiceAutosimRevenue: 1444, // выручка за PS5 + услуги + автосимулятор
       foodRevenue: 1275, // выручка за всю еду без шоколада
       chocolateRevenue: 505, // выручка за шоколад
@@ -2089,7 +2089,7 @@ const ADMIN_MONTH_PLAN = {
   },
   '2025-08-25': {
     night: {
-      PCRevenue: 12274, // выручка за ПК
+      pcRevenue: 12274, // выручка за ПК
       PsServiceAutosimRevenue: 1011, // выручка за PS5 + услуги + автосимулятор
       foodRevenue: 1227, // выручка за всю еду без шоколада
       chocolateRevenue: 486, // выручка за шоколад
@@ -2097,7 +2097,7 @@ const ADMIN_MONTH_PLAN = {
       totalRevenue: 19830, // общая выручка
     },
     day: {
-      PCRevenue: 19263, // выручка за ПК
+      pcRevenue: 19263, // выручка за ПК
       PsServiceAutosimRevenue: 1385, // выручка за PS5 + услуги + автосимулятор
       foodRevenue: 1223, // выручка за всю еду без шоколада
       chocolateRevenue: 484, // выручка за шоколад
@@ -2107,7 +2107,7 @@ const ADMIN_MONTH_PLAN = {
   },
   '2025-08-26': {
     night: {
-      PCRevenue: 12013, // выручка за ПК
+      pcRevenue: 12013, // выручка за ПК
       PsServiceAutosimRevenue: 989, // выручка за PS5 + услуги + автосимулятор
       foodRevenue: 1201, // выручка за всю еду без шоколада
       chocolateRevenue: 475, // выручка за шоколад
@@ -2115,7 +2115,7 @@ const ADMIN_MONTH_PLAN = {
       totalRevenue: 19408, // общая выручка
     },
     day: {
-      PCRevenue: 18853, // выручка за ПК
+      pcRevenue: 18853, // выручка за ПК
       PsServiceAutosimRevenue: 1356, // выручка за PS5 + услуги + автосимулятор
       foodRevenue: 1197, // выручка за всю еду без шоколада
       chocolateRevenue: 474, // выручка за шоколад
@@ -2125,7 +2125,7 @@ const ADMIN_MONTH_PLAN = {
   },
   '2025-08-27': {
     night: {
-      PCRevenue: 11230, // выручка за ПК
+      pcRevenue: 11230, // выручка за ПК
       PsServiceAutosimRevenue: 925, // выручка за PS5 + услуги + автосимулятор
       foodRevenue: 1123, // выручка за всю еду без шоколада
       chocolateRevenue: 444, // выручка за шоколад
@@ -2133,7 +2133,7 @@ const ADMIN_MONTH_PLAN = {
       totalRevenue: 18142, // общая выручка
     },
     day: {
-      PCRevenue: 17623, // выручка за ПК
+      pcRevenue: 17623, // выручка за ПК
       PsServiceAutosimRevenue: 1267, // выручка за PS5 + услуги + автосимулятор
       foodRevenue: 1119, // выручка за всю еду без шоколада
       chocolateRevenue: 443, // выручка за шоколад
@@ -2143,7 +2143,7 @@ const ADMIN_MONTH_PLAN = {
   },
   '2025-08-28': {
     night: {
-      PCRevenue: 12536, // выручка за ПК
+      pcRevenue: 12536, // выручка за ПК
       PsServiceAutosimRevenue: 1032, // выручка за PS5 + услуги + автосимулятор
       foodRevenue: 1253, // выручка за всю еду без шоколада
       chocolateRevenue: 496, // выручка за шоколад
@@ -2151,7 +2151,7 @@ const ADMIN_MONTH_PLAN = {
       totalRevenue: 20252, // общая выручка
     },
     day: {
-      PCRevenue: 19673, // выручка за ПК
+      pcRevenue: 19673, // выручка за ПК
       PsServiceAutosimRevenue: 1415, // выручка за PS5 + услуги + автосимулятор
       foodRevenue: 1249, // выручка за всю еду без шоколада
       chocolateRevenue: 494, // выручка за шоколад
@@ -2161,7 +2161,7 @@ const ADMIN_MONTH_PLAN = {
   },
   '2025-08-29': {
     night: {
-      PCRevenue: 13058, // выручка за ПК
+      pcRevenue: 13058, // выручка за ПК
       PsServiceAutosimRevenue: 1075, // выручка за PS5 + услуги + автосимулятор
       foodRevenue: 1306, // выручка за всю еду без шоколада
       chocolateRevenue: 517, // выручка за шоколад
@@ -2169,7 +2169,7 @@ const ADMIN_MONTH_PLAN = {
       totalRevenue: 21096, // общая выручка
     },
     day: {
-      PCRevenue: 20492, // выручка за ПК
+      pcRevenue: 20492, // выручка за ПК
       PsServiceAutosimRevenue: 1474, // выручка за PS5 + услуги + автосимулятор
       foodRevenue: 1301, // выручка за всю еду без шоколада
       chocolateRevenue: 515, // выручка за шоколад
@@ -2179,7 +2179,7 @@ const ADMIN_MONTH_PLAN = {
   },
   '2025-08-30': {
     night: {
-      PCRevenue: 13058, // выручка за ПК
+      pcRevenue: 13058, // выручка за ПК
       PsServiceAutosimRevenue: 1075, // выручка за PS5 + услуги + автосимулятор
       foodRevenue: 1306, // выручка за всю еду без шоколада
       chocolateRevenue: 517, // выручка за шоколад
@@ -2187,7 +2187,7 @@ const ADMIN_MONTH_PLAN = {
       totalRevenue: 21096, // общая выручка
     },
     day: {
-      PCRevenue: 20492, // выручка за ПК
+      pcRevenue: 20492, // выручка за ПК
       PsServiceAutosimRevenue: 1474, // выручка за PS5 + услуги + автосимулятор
       foodRevenue: 1301, // выручка за всю еду без шоколада
       chocolateRevenue: 515, // выручка за шоколад
@@ -2197,7 +2197,7 @@ const ADMIN_MONTH_PLAN = {
   },
   '2025-08-31': {
     night: {
-      PCRevenue: 12797, // выручка за ПК
+      pcRevenue: 12797, // выручка за ПК
       PsServiceAutosimRevenue: 1054, // выручка за PS5 + услуги + автосимулятор
       foodRevenue: 1279, // выручка за всю еду без шоколада
       chocolateRevenue: 506, // выручка за шоколад
@@ -2205,7 +2205,7 @@ const ADMIN_MONTH_PLAN = {
       totalRevenue: 20674, // общая выручка
     },
     day: {
-      PCRevenue: 20082, // выручка за ПК
+      pcRevenue: 20082, // выручка за ПК
       PsServiceAutosimRevenue: 1444, // выручка за PS5 + услуги + автосимулятор
       foodRevenue: 1275, // выручка за всю еду без шоколада
       chocolateRevenue: 505, // выручка за шоколад
