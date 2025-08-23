@@ -1065,7 +1065,7 @@ const getFirstSessionsFromPeriod = async (req, res) => {
   try {
     const startDate = '2024-12-01 00:00:00'; // Дата открытия клуба
     const endDate = new Date().toISOString().slice(0, 19).replace('T', ' '); // Текущая дата и время
-    const managerBearer = await getManagerToken(clubId);
+    const managerBearer = await getManagerToken();
 
     // 1. Получаем данные так же, как и раньше
     const firstSessions = await getFirstClientSessions(startDate, endDate, managerBearer);

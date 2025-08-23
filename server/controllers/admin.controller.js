@@ -310,7 +310,7 @@ const approveAdminResponsibilities = async (req, res) => {
     return res.status(400).send({ error: true, message: 'Неверный пароль' });
   }
 
-  const managerBearer = await getManagerToken(clubId);
+  const managerBearer = await getManagerToken();
   if (managerBearer.error) {
     console.log('Ошибка при получении токена:', managerBearer.message);
     return res.status(400).send({ error: true, message: 'Ошибка при получении менеджерского токена' });
