@@ -18,13 +18,24 @@ const paymentsFromPeriod = async (req, res) => {
 
   const resultsArray = await getResultsArray(startDate, endDate, clubId);
   if (resultsArray.error) {
-    console.log(`Ошибка при получении данных для клуба ${clubId}:`, resultsArray.message);
+    console.log(
+      `Ошибка при получении данных для клуба ${clubId}:`,
+      resultsArray.message
+    );
     return res.status(400).send(resultsArray);
   }
 
-  const xlsxBuffer = await generatePaymentsXlsx(resultsArray.sort((a, b) => (a.idForSort > b.idForSort ? 1 : -1)));
-  res.setHeader('Content-Disposition', `attachment; filename=payments_${Date.now}.xlsx`);
-  res.setHeader('Content-Type', 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
+  const xlsxBuffer = await generatePaymentsXlsx(
+    resultsArray.sort((a, b) => (a.idForSort > b.idForSort ? 1 : -1))
+  );
+  res.setHeader(
+    'Content-Disposition',
+    `attachment; filename=payments_${Date.now}.xlsx`
+  );
+  res.setHeader(
+    'Content-Type',
+    'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
+  );
   res.send(xlsxBuffer);
 };
 
@@ -32,49 +43,68 @@ const getResultsArray = async (startDate, endDate, clubId) => {
   try {
     const managerBearer = await getManagerToken(clubId);
     if (managerBearer.error) {
-      console.log(`Ошибка при получении менеджерского токена для клуба ${clubId}:`, managerBearer.message);
+      console.log(`Ошибка токена для клуба ${clubId}:`, managerBearer.message);
       return managerBearer;
     }
 
-    const dataBasicPayments = await getPaymentData(startDate, endDate, managerBearer);
-    if (dataBasicPayments.error) {
-      console.log(`Ошибка при получении данных об оплатах для клуба ${clubId}:`, dataBasicPayments.message);
-      return dataBasicPayments;
-    }
+    // --- ИЗМЕНЕНИЕ ЗДЕСЬ ---
+    // Создаем новую дату начала специально для запроса смен, сдвинув её на 1 день назад
+    const shiftsStartDate = new Date(startDate);
+    shiftsStartDate.setDate(shiftsStartDate.getDate() - 1);
 
-    const dataSbpPayments = await getSbpData(startDate, endDate, managerBearer);
-    if (dataSbpPayments.error) {
-      console.log(`Ошибка при получении пополненй по СБП для клуба ${clubId}:`, dataSbpPayments.message);
-      return dataSbpPayments;
-    }
+    // Форматируем дату обратно в строку 'YYYY-MM-DD HH:MM:SS'
+    const formattedShiftsStartDate = `${shiftsStartDate.getFullYear()}-${String(
+      shiftsStartDate.getMonth() + 1
+    ).padStart(2, '0')}-${String(shiftsStartDate.getDate()).padStart(2, '0')} ${
+      startDate.split(' ')[1]
+    }`;
+    // ----------------------
 
-    const dataTariffPerMinutePayments = await getTariffPerMinuteData(startDate, endDate, managerBearer);
-    if (dataTariffPerMinutePayments.error) {
-      console.log(`Ошибка при получении поминутных тарифов для клуба ${clubId}:`, dataTariffPerMinutePayments.message);
-      return dataTariffPerMinutePayments;
-    }
+    // Запрашиваем все данные параллельно
+    const [paymentResults, shiftsData] = await Promise.all([
+      Promise.all([
+        // Платежи запрашиваем по оригинальным датам
+        getPaymentData(startDate, endDate, managerBearer),
+        getSbpData(startDate, endDate, managerBearer),
+        getTariffPerMinuteData(startDate, endDate, managerBearer),
+        getBonusData(startDate, endDate, managerBearer),
+        getPaymentRefundData(startDate, endDate, managerBearer),
+      ]),
+      // А смены запрашиваем по новой, сдвинутой дате
+      getAllShiftsForPeriod(formattedShiftsStartDate, endDate, managerBearer),
+    ]);
 
-    const dataBonusPayments = await getBonusData(startDate, endDate, managerBearer);
-    if (getBonusData.error) {
-      console.log(`Ошибка при получении начисления бонусов для клуба ${clubId}:`, getBonusData.message);
-      return getBonusData;
-    }
+    // Проверяем на ошибки
+    if (shiftsData.error) return shiftsData;
+    const paymentData = paymentResults.flatMap((res) => {
+      if (res.error)
+        console.error('Ошибка при загрузке части платежей:', res.message);
+      return res.result || [];
+    });
 
-    const paymentRefundData = await getPaymentRefundData(startDate, endDate, managerBearer);
-    if (paymentRefundData.error) {
-      console.log(`Ошибка при получении отмененных платежей ${clubId}:`, paymentRefundData.message);
-      return paymentRefundData;
-    }
+    const shifts = shiftsData.result;
 
-    const resultsArray = [
-      ...dataBasicPayments?.result,
-      ...dataSbpPayments?.result,
-      ...dataTariffPerMinutePayments?.result,
-      ...dataBonusPayments?.result,
-      ...paymentRefundData?.result,
-    ];
+    // Сопоставляем СБП-платежи со сменами
+    const processedEvents = paymentData.map((event) => {
+      if (event.payment_title === 'СБП') {
+        const eventTimeNum = event.idForSort;
 
-    return resultsArray;
+        const matchingShift = shifts.find(
+          (shift) =>
+            eventTimeNum >= shift.start_at_num &&
+            eventTimeNum <= shift.finished_at_num
+        );
+
+        if (matchingShift && matchingShift.operatorName) {
+          event.operator = matchingShift.operatorName;
+        } else {
+          event.operator = 'Смена не найдена';
+        }
+      }
+      return event;
+    });
+
+    return processedEvents.sort((a, b) => a.idForSort - b.idForSort);
   } catch (error) {
     console.log('getResultsArray ERROR ->', error);
     return { error: true, message: error.message };
@@ -88,19 +118,31 @@ const sbpFromPeriod = async (req, res) => {
 
     const managerBearer = await getManagerToken(clubId);
     if (managerBearer.error) {
-      console.log(`Ошибка при получении менеджерского токена для клуба ${clubId}:`, managerBearer.message);
+      console.log(
+        `Ошибка при получении менеджерского токена для клуба ${clubId}:`,
+        managerBearer.message
+      );
       return res.status(400).send(managerBearer);
     }
 
     const data = await getSbpData(startDate, endDate, managerBearer);
     if (data.error) {
-      console.log(`Ошибка при получении даннх по СБП для клуба ${clubId}:`, data.message);
+      console.log(
+        `Ошибка при получении даннх по СБП для клуба ${clubId}:`,
+        data.message
+      );
       return res.status(400).send(data);
     } else {
       const xlsxBuffer = await generateSbpXlsx(data.result);
 
-      res.setHeader('Content-Disposition', `attachment; filename=payments_${Date.now}.xlsx`);
-      res.setHeader('Content-Type', 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
+      res.setHeader(
+        'Content-Disposition',
+        `attachment; filename=payments_${Date.now}.xlsx`
+      );
+      res.setHeader(
+        'Content-Type',
+        'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
+      );
       res.send(xlsxBuffer);
     }
     // return res.status(200).send(data.result);
@@ -117,19 +159,31 @@ const cashOrdersFromPeriod = async (req, res) => {
 
     const managerBearer = await getManagerToken(clubId);
     if (managerBearer.error) {
-      console.log(`Ошибка при получении менеджерского токена для клуба ${clubId}:`, managerBearer.message);
+      console.log(
+        `Ошибка при получении менеджерского токена для клуба ${clubId}:`,
+        managerBearer.message
+      );
       return res.status(400).send(managerBearer);
     }
 
     const data = await getCashOrders(startDate, endDate, managerBearer);
     if (data.error) {
-      console.log(`Ошибка при получении даннх о кассовых ордерах клуба ${clubId}:`, data.message);
+      console.log(
+        `Ошибка при получении даннх о кассовых ордерах клуба ${clubId}:`,
+        data.message
+      );
       return res.status(400).send(data);
     } else {
       const xlsxBuffer = await generateCashOrdersXlsx(data.result);
 
-      res.setHeader('Content-Disposition', `attachment; filename=payments_${Date.now}.xlsx`);
-      res.setHeader('Content-Type', 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
+      res.setHeader(
+        'Content-Disposition',
+        `attachment; filename=payments_${Date.now}.xlsx`
+      );
+      res.setHeader(
+        'Content-Type',
+        'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
+      );
       res.send(xlsxBuffer);
     }
     // return res.status(200).send(data.result);
@@ -142,13 +196,20 @@ const cashOrdersFromPeriod = async (req, res) => {
 const getPaymentData = async (startDate, endDate, managerBearer) => {
   try {
     let page = 1;
-    let smartshellPaymentsDataRequest = createSmartshellPaymentsDataRequest(startDate, endDate, page, managerBearer);
+    let smartshellPaymentsDataRequest = createSmartshellPaymentsDataRequest(
+      startDate,
+      endDate,
+      page,
+      managerBearer
+    );
 
     let result = [];
     let resPaymentsData = await axios(smartshellPaymentsDataRequest);
 
     if (resPaymentsData.data.errors) {
-      resPaymentsData.data.errors.map((error) => console.log('getClientData ERROR ->', error));
+      resPaymentsData.data.errors.map((error) =>
+        console.log('getClientData ERROR ->', error)
+      );
       return { error: true, message: 'Не удалось получить данные об оплатах' };
     } else {
       resPaymentsData.data.data.eventList.data.forEach((payment) => {
@@ -156,6 +217,7 @@ const getPaymentData = async (startDate, endDate, managerBearer) => {
           result = [
             ...result,
             {
+              timestamp: payment.timestamp,
               idForSort: parseInt(
                 payment.timestamp.split(' ')[0].split('-').join('') +
                   payment.timestamp.split(' ')[1].split(':').join('')
@@ -176,9 +238,15 @@ const getPaymentData = async (startDate, endDate, managerBearer) => {
                 payment.timestamp.split(' ')[0].split('-')[1]
               }.${payment.timestamp.split(' ')[0].split('-')[0]}`,
               time: payment.timestamp.split(' ')[1],
-              client: payment.client?.phone ? `+${payment.client?.phone}` : null,
-              nickname: payment.client?.nickname ? payment.client?.nickname : null,
-              title: payment.payment_items[i].title ? payment.payment_items[i].title : 'Пополнение депозита',
+              client: payment.client?.phone
+                ? `+${payment.client?.phone}`
+                : null,
+              nickname: payment.client?.nickname
+                ? payment.client?.nickname
+                : null,
+              title: payment.payment_items[i].title
+                ? payment.payment_items[i].title
+                : 'Пополнение депозита',
               amount: payment.payment_items[i].amount,
               sum:
                 payment.payment.title === 'DEPOSIT'
@@ -191,7 +259,9 @@ const getPaymentData = async (startDate, endDate, managerBearer) => {
           ];
         }
       });
-      while (resPaymentsData.data.data.eventList.paginatorInfo.lastPage > page) {
+      while (
+        resPaymentsData.data.data.eventList.paginatorInfo.lastPage > page
+      ) {
         page += 1;
         let smartshellPaymentsDataRequest = createSmartshellPaymentsDataRequest(
           startDate,
@@ -201,14 +271,20 @@ const getPaymentData = async (startDate, endDate, managerBearer) => {
         );
         resPaymentsData = await axios(smartshellPaymentsDataRequest);
         if (resPaymentsData.data.errors) {
-          resPaymentsData.data.errors.map((error) => console.log('getClientData ERROR ->', error));
-          return { error: true, message: 'Не удалось получить данные об оплатах' };
+          resPaymentsData.data.errors.map((error) =>
+            console.log('getClientData ERROR ->', error)
+          );
+          return {
+            error: true,
+            message: 'Не удалось получить данные об оплатах',
+          };
         } else {
           resPaymentsData.data.data.eventList.data.forEach((payment) => {
             for (let i = 0; i < payment.payment_items.length; i++) {
               result = [
                 ...result,
                 {
+                  timestamp: payment.timestamp,
                   idForSort: parseInt(
                     payment.timestamp.split(' ')[0].split('-').join('') +
                       payment.timestamp.split(' ')[1].split(':').join('')
@@ -229,13 +305,21 @@ const getPaymentData = async (startDate, endDate, managerBearer) => {
                     payment.timestamp.split(' ')[0].split('-')[1]
                   }.${payment.timestamp.split(' ')[0].split('-')[0]}`,
                   time: payment.timestamp.split(' ')[1],
-                  client: payment.client?.phone ? `+${payment.client?.phone}` : null,
-                  nickname: payment.client?.nickname ? payment.client?.nickname : null,
-                  title: payment.payment_items[i].title ? payment.payment_items[i].title : 'Пополнение депозита',
+                  client: payment.client?.phone
+                    ? `+${payment.client?.phone}`
+                    : null,
+                  nickname: payment.client?.nickname
+                    ? payment.client?.nickname
+                    : null,
+                  title: payment.payment_items[i].title
+                    ? payment.payment_items[i].title
+                    : 'Пополнение депозита',
                   amount: payment.payment_items[i].amount,
                   sum:
                     payment.payment.title === 'DEPOSIT'
-                      ? Math.floor(payment.payment_items[i].sum - payment.value1)
+                      ? Math.floor(
+                          payment.payment_items[i].sum - payment.value1
+                        )
                       : Math.floor(payment.payment_items[i].sum),
                   bonus: Math.floor(payment.value1),
                   payment_title: payment.payment.title,
@@ -254,7 +338,12 @@ const getPaymentData = async (startDate, endDate, managerBearer) => {
   }
 };
 
-const createSmartshellPaymentsDataRequest = (startDate, endDate, page, managerBearer) => {
+const createSmartshellPaymentsDataRequest = (
+  startDate,
+  endDate,
+  page,
+  managerBearer
+) => {
   let dataPayments = {
     query: `query eventList {
   eventList(
@@ -310,29 +399,123 @@ const createSmartshellPaymentsDataRequest = (startDate, endDate, page, managerBe
   };
 };
 
+const getAllShiftsForPeriod = async (startDate, endDate, managerBearer) => {
+  let page = 1;
+  let hasMorePages = true;
+  const result = [];
+
+  const createRequest = (currentPage) => {
+    const query = `
+      query WorkShifts {
+        workShifts(
+          input: { 
+            created_from: "${startDate}", 
+            created_to: "${endDate}" 
+          }, 
+          page: ${currentPage}, 
+          first: 500 
+        ) {
+          paginatorInfo {
+            hasMorePages
+          }
+          data {
+            id
+            created_at
+            finished_at
+            worker {
+              first_name
+              last_name
+            }
+          }
+        }
+      }`;
+    return {
+      method: 'post',
+      url: 'https://billing.smartshell.gg/api/graphql',
+      headers: { authorization: `Bearer ${managerBearer}` },
+      data: { query },
+      httpsAgent: agent,
+    };
+  };
+
+  while (hasMorePages) {
+    try {
+      const response = await axios(createRequest(page));
+
+      if (response.data.errors) {
+        console.log('getAllShiftsForPeriod ERROR ->', response.data.errors);
+        return { error: true, message: 'Не удалось получить данные о сменах' };
+      }
+
+      const shiftsData = response.data.data.workShifts;
+      if (!shiftsData) {
+        console.log('No workShifts data in response for page', page);
+        break;
+      }
+
+      const mappedShifts = shiftsData.data.map((shift) => {
+        const finishedAtNum = shift.finished_at
+          ? parseInt(shift.finished_at.replace(/[- :]/g, ''))
+          : 99999999999999;
+        return {
+          start_at_num: parseInt(shift.created_at.replace(/[- :]/g, '')),
+          finished_at_num: finishedAtNum,
+          operatorName: `${shift.worker?.first_name || ''} ${
+            shift.worker?.last_name || ''
+          }`.trim(),
+        };
+      });
+      result.push(...mappedShifts);
+
+      hasMorePages = shiftsData.paginatorInfo.hasMorePages;
+      page++;
+    } catch (error) {
+      console.log(
+        `getAllShiftsForPeriod AXIOS ERROR on page ${page} ->`,
+        error.message
+      );
+      return {
+        error: true,
+        message: 'Сетевая ошибка при получении данных о сменах',
+      };
+    }
+  }
+
+  return { result };
+};
+
 const getSbpData = async (startDate, endDate, managerBearer) => {
   try {
     let page = 1;
 
-    let smartshellPaymentsDataRequest = createSmartshellSpbDataRequest(startDate, endDate, page, managerBearer);
+    let smartshellPaymentsDataRequest = createSmartshellSpbDataRequest(
+      startDate,
+      endDate,
+      page,
+      managerBearer
+    );
     let result = [];
     let resPaymentsData = await axios(smartshellPaymentsDataRequest);
 
     if (resPaymentsData.data.errors) {
-      resPaymentsData.data.errors.map((error) => console.log('getClientData ERROR ->', error));
+      resPaymentsData.data.errors.map((error) =>
+        console.log('getClientData ERROR ->', error)
+      );
       return { error: true, message: 'Не удалось получить данные об оплатах' };
     } else {
       result = [
         ...result,
         ...resPaymentsData.data.data.eventList.data.map((payment) => ({
+          timestamp: payment.timestamp,
           idForSort: parseInt(
-            payment.timestamp.split(' ')[0].split('-').join('') + payment.timestamp.split(' ')[1].split(':').join('')
+            payment.timestamp.split(' ')[0].split('-').join('') +
+              payment.timestamp.split(' ')[1].split(':').join('')
           ),
           id: payment.payment.id,
           type: 'TARIFF',
-          date: `${payment.timestamp.split(' ')[0].split('-')[2]}.${payment.timestamp.split(' ')[0].split('-')[1]}.${
-            payment.timestamp.split(' ')[0].split('-')[0]
-          }`,
+          date: `${payment.timestamp.split(' ')[0].split('-')[2]}.${
+            payment.timestamp.split(' ')[0].split('-')[1]
+          }.${payment.timestamp.split(' ')[0].split('-')[0]}`,
           time: payment.timestamp.split(' ')[1],
           client: payment.client?.phone ? `+${payment.client?.phone}` : null,
           nickname: payment.client?.nickname ? payment.client?.nickname : null,
@@ -343,17 +526,30 @@ const getSbpData = async (startDate, endDate, managerBearer) => {
           payment_title: 'СБП',
         })),
       ];
-      while (resPaymentsData.data.data.eventList.paginatorInfo.lastPage > page) {
+      while (
+        resPaymentsData.data.data.eventList.paginatorInfo.lastPage > page
+      ) {
         page += 1;
-        let smartshellPaymentsDataRequest = createSmartshellSpbDataRequest(startDate, endDate, page, managerBearer);
+        let smartshellPaymentsDataRequest = createSmartshellSpbDataRequest(
+          startDate,
+          endDate,
+          page,
+          managerBearer
+        );
         resPaymentsData = await axios(smartshellPaymentsDataRequest);
         if (resPaymentsData.data.errors) {
-          resPaymentsData.data.errors.map((error) => console.log('getClientData ERROR ->', error));
-          return { error: true, message: 'Не удалось получить данные об оплатах' };
+          resPaymentsData.data.errors.map((error) =>
+            console.log('getClientData ERROR ->', error)
+          );
+          return {
+            error: true,
+            message: 'Не удалось получить данные об оплатах',
+          };
         } else {
           result = [
             ...result,
             ...resPaymentsData.data.data.eventList.data.map((payment) => ({
+              timestamp: payment.timestamp,
               idForSort: parseInt(
                 payment.timestamp.split(' ')[0].split('-').join('') +
                   payment.timestamp.split(' ')[1].split(':').join('')
@@ -364,8 +560,12 @@ const getSbpData = async (startDate, endDate, managerBearer) => {
                 payment.timestamp.split(' ')[0].split('-')[1]
               }.${payment.timestamp.split(' ')[0].split('-')[0]}`,
               time: payment.timestamp.split(' ')[1],
-              client: payment.client?.phone ? `+${payment.client?.phone}` : null,
-              nickname: payment.client?.nickname ? payment.client?.nickname : null,
+              client: payment.client?.phone
+                ? `+${payment.client?.phone}`
+                : null,
+              nickname: payment.client?.nickname
+                ? payment.client?.nickname
+                : null,
               title: 'Пополнение по СБП',
               amount: payment.payment_items[0].amount,
               sum: Math.floor(payment.payment_items[0].sum),
@@ -384,7 +584,12 @@ const getSbpData = async (startDate, endDate, managerBearer) => {
   }
 };
 
-const createSmartshellSpbDataRequest = (startDate, endDate, page, managerBearer) => {
+const createSmartshellSpbDataRequest = (
+  startDate,
+  endDate,
+  page,
+  managerBearer
+) => {
   const dataPayments = {
     query: `query eventList {
   eventList(
@@ -442,17 +647,20 @@ const getTariffPerMinuteData = async (startDate, endDate, managerBearer) => {
   try {
     let page = 1;
 
-    let smartshellPaymentsDataRequest = createSmartshellTariffPerMinuteDataRequest(
-      startDate,
-      endDate,
-      page,
-      managerBearer
-    );
+    let smartshellPaymentsDataRequest =
+      createSmartshellTariffPerMinuteDataRequest(
+        startDate,
+        endDate,
+        page,
+        managerBearer
+      );
     let result = [];
     let resPaymentsData = await axios(smartshellPaymentsDataRequest);
 
     if (resPaymentsData.data.errors) {
-      resPaymentsData.data.errors.map((error) => console.log('getClientData ERROR ->', error));
+      resPaymentsData.data.errors.map((error) =>
+        console.log('getClientData ERROR ->', error)
+      );
       return { error: true, message: 'Не удалось получить данные об оплатах' };
     } else {
       resPaymentsData.data.data.eventList.data.forEach((payment) => {
@@ -460,6 +668,7 @@ const getTariffPerMinuteData = async (startDate, endDate, managerBearer) => {
           result = [
             ...result,
             {
+              timestamp: payment.timestamp,
               idForSort: parseInt(
                 payment.timestamp.split(' ')[0].split('-').join('') +
                   payment.timestamp.split(' ')[1].split(':').join('')
@@ -470,8 +679,12 @@ const getTariffPerMinuteData = async (startDate, endDate, managerBearer) => {
                 payment.timestamp.split(' ')[0].split('-')[1]
               }.${payment.timestamp.split(' ')[0].split('-')[0]}`,
               time: payment.timestamp.split(' ')[1],
-              client: payment.client?.phone ? `+${payment.client?.phone}` : null,
-              nickname: payment.client?.nickname ? payment.client?.nickname : null,
+              client: payment.client?.phone
+                ? `+${payment.client?.phone}`
+                : null,
+              nickname: payment.client?.nickname
+                ? payment.client?.nickname
+                : null,
               title: 'Поминутный',
               amount: payment.client_session.elapsed,
               sum: Math.floor(payment?.client_session?.total_cost) || 0,
@@ -482,24 +695,33 @@ const getTariffPerMinuteData = async (startDate, endDate, managerBearer) => {
           ];
         }
       });
-      while (resPaymentsData.data.data.eventList.paginatorInfo.lastPage > page) {
+      while (
+        resPaymentsData.data.data.eventList.paginatorInfo.lastPage > page
+      ) {
         page += 1;
-        let smartshellPaymentsDataRequest = createSmartshellTariffPerMinuteDataRequest(
-          startDate,
-          endDate,
-          page,
-          managerBearer
-        );
+        let smartshellPaymentsDataRequest =
+          createSmartshellTariffPerMinuteDataRequest(
+            startDate,
+            endDate,
+            page,
+            managerBearer
+          );
         resPaymentsData = await axios(smartshellPaymentsDataRequest);
         if (resPaymentsData.data.errors) {
-          resPaymentsData.data.errors.map((error) => console.log('getClientData ERROR ->', error));
-          return { error: true, message: 'Не удалось получить данные об оплатах' };
+          resPaymentsData.data.errors.map((error) =>
+            console.log('getClientData ERROR ->', error)
+          );
+          return {
+            error: true,
+            message: 'Не удалось получить данные об оплатах',
+          };
         } else {
           resPaymentsData.data.data.eventList.data.forEach((payment) => {
             if (payment.client_session.is_per_minute === true) {
               result = [
                 ...result,
                 {
+                  timestamp: payment.timestamp,
                   idForSort: parseInt(
                     payment.timestamp.split(' ')[0].split('-').join('') +
                       payment.timestamp.split(' ')[1].split(':').join('')
@@ -510,8 +732,12 @@ const getTariffPerMinuteData = async (startDate, endDate, managerBearer) => {
                     payment.timestamp.split(' ')[0].split('-')[1]
                   }.${payment.timestamp.split(' ')[0].split('-')[0]}`,
                   time: payment.timestamp.split(' ')[1],
-                  client: payment.client?.phone ? `+${payment.client?.phone}` : null,
-                  nickname: payment.client?.nickname ? payment.client?.nickname : null,
+                  client: payment.client?.phone
+                    ? `+${payment.client?.phone}`
+                    : null,
+                  nickname: payment.client?.nickname
+                    ? payment.client?.nickname
+                    : null,
                   title: 'Поминутный',
                   amount: payment.client_session.elapsed,
                   sum: Math.floor(payment?.client_session?.total_cost) || 0,
@@ -532,7 +758,12 @@ const getTariffPerMinuteData = async (startDate, endDate, managerBearer) => {
   }
 };
 
-const createSmartshellTariffPerMinuteDataRequest = (startDate, endDate, page, managerBearer) => {
+const createSmartshellTariffPerMinuteDataRequest = (
+  startDate,
+  endDate,
+  page,
+  managerBearer
+) => {
   const dataPayments = {
     query: `query eventList {
       eventList(
@@ -596,25 +827,34 @@ const getBonusData = async (startDate, endDate, managerBearer) => {
   try {
     let page = 1;
 
-    let smartshellPaymentsDataRequest = createSmartshellBonusDataRequest(startDate, endDate, page, managerBearer);
+    let smartshellPaymentsDataRequest = createSmartshellBonusDataRequest(
+      startDate,
+      endDate,
+      page,
+      managerBearer
+    );
     let result = [];
     let resPaymentsData = await axios(smartshellPaymentsDataRequest);
 
     if (resPaymentsData.data.errors) {
-      resPaymentsData.data.errors.map((error) => console.log('getClientData ERROR ->', error));
+      resPaymentsData.data.errors.map((error) =>
+        console.log('getClientData ERROR ->', error)
+      );
       return { error: true, message: 'Не удалось получить данные об оплатах' };
     } else {
       result = [
         ...result,
         ...resPaymentsData.data.data.eventList.data.map((payment) => ({
+          timestamp: payment.timestamp,
           idForSort: parseInt(
-            payment.timestamp.split(' ')[0].split('-').join('') + payment.timestamp.split(' ')[1].split(':').join('')
+            payment.timestamp.split(' ')[0].split('-').join('') +
+              payment.timestamp.split(' ')[1].split(':').join('')
           ),
           id: payment.payment.id,
           type: 'DEPOSIT',
-          date: `${payment.timestamp.split(' ')[0].split('-')[2]}.${payment.timestamp.split(' ')[0].split('-')[1]}.${
-            payment.timestamp.split(' ')[0].split('-')[0]
-          }`,
+          date: `${payment.timestamp.split(' ')[0].split('-')[2]}.${
+            payment.timestamp.split(' ')[0].split('-')[1]
+          }.${payment.timestamp.split(' ')[0].split('-')[0]}`,
           time: payment.timestamp.split(' ')[1],
           client: payment.client?.phone ? `+${payment.client?.phone}` : null,
           nickname: payment.client?.nickname ? payment.client?.nickname : null,
@@ -627,17 +867,30 @@ const getBonusData = async (startDate, endDate, managerBearer) => {
           comment: payment.comment,
         })),
       ];
-      while (resPaymentsData.data.data.eventList.paginatorInfo.lastPage > page) {
+      while (
+        resPaymentsData.data.data.eventList.paginatorInfo.lastPage > page
+      ) {
         page += 1;
-        let smartshellPaymentsDataRequest = createSmartshellBonusDataRequest(startDate, endDate, page, managerBearer);
+        let smartshellPaymentsDataRequest = createSmartshellBonusDataRequest(
+          startDate,
+          endDate,
+          page,
+          managerBearer
+        );
         resPaymentsData = await axios(smartshellPaymentsDataRequest);
         if (resPaymentsData.data.errors) {
-          resPaymentsData.data.errors.map((error) => console.log('getClientData ERROR ->', error));
-          return { error: true, message: 'Не удалось получить данные об оплатах' };
+          resPaymentsData.data.errors.map((error) =>
+            console.log('getClientData ERROR ->', error)
+          );
+          return {
+            error: true,
+            message: 'Не удалось получить данные об оплатах',
+          };
         } else {
           result = [
             ...result,
             ...resPaymentsData.data.data.eventList.data.map((payment) => ({
+              timestamp: payment.timestamp,
               idForSort: parseInt(
                 payment.timestamp.split(' ')[0].split('-').join('') +
                   payment.timestamp.split(' ')[1].split(':').join('')
@@ -648,8 +901,12 @@ const getBonusData = async (startDate, endDate, managerBearer) => {
                 payment.timestamp.split(' ')[0].split('-')[1]
               }.${payment.timestamp.split(' ')[0].split('-')[0]}`,
               time: payment.timestamp.split(' ')[1],
-              client: payment.client?.phone ? `+${payment.client?.phone}` : null,
-              nickname: payment.client?.nickname ? payment.client?.nickname : null,
+              client: payment.client?.phone
+                ? `+${payment.client?.phone}`
+                : null,
+              nickname: payment.client?.nickname
+                ? payment.client?.nickname
+                : null,
               title: 'Начисление смарт-бонусов',
               amount: payment.payment_items[0].amount,
               sum: 0,
@@ -669,7 +926,12 @@ const getBonusData = async (startDate, endDate, managerBearer) => {
   }
 };
 
-const createSmartshellBonusDataRequest = (startDate, endDate, page, managerBearer) => {
+const createSmartshellBonusDataRequest = (
+  startDate,
+  endDate,
+  page,
+  managerBearer
+) => {
   const dataPayments = {
     query: `query eventList {
       eventList(
@@ -733,18 +995,21 @@ const createSmartshellBonusDataRequest = (startDate, endDate, page, managerBeare
 const getPaymentRefundData = async (startDate, endDate, managerBearer) => {
   try {
     let page = 1;
-    let smartshellPaymentsDataRequest = createSmartshellPaymentRefundDataRequest(
-      startDate,
-      endDate,
-      page,
-      managerBearer
-    );
+    let smartshellPaymentsDataRequest =
+      createSmartshellPaymentRefundDataRequest(
+        startDate,
+        endDate,
+        page,
+        managerBearer
+      );
 
     let result = [];
     let resPaymentsData = await axios(smartshellPaymentsDataRequest);
 
     if (resPaymentsData.data.errors) {
-      resPaymentsData.data.errors.map((error) => console.log('getPaymentRefundData ERROR ->', error));
+      resPaymentsData.data.errors.map((error) =>
+        console.log('getPaymentRefundData ERROR ->', error)
+      );
       return { error: true, message: 'Не удалось получить данные об отменах' };
     } else {
       for (const payment of resPaymentsData.data.data.eventList.data) {
@@ -752,6 +1017,7 @@ const getPaymentRefundData = async (startDate, endDate, managerBearer) => {
           result = [
             ...result,
             {
+              timestamp: payment.timestamp,
               idForSort: parseInt(
                 payment.timestamp.split(' ')[0].split('-').join('') +
                   payment.timestamp.split(' ')[1].split(':').join('')
@@ -762,8 +1028,12 @@ const getPaymentRefundData = async (startDate, endDate, managerBearer) => {
                 payment.timestamp.split(' ')[0].split('-')[1]
               }.${payment.timestamp.split(' ')[0].split('-')[0]}`,
               time: payment.timestamp.split(' ')[1],
-              client: payment.client?.phone ? `+${payment.client?.phone}` : null,
-              nickname: payment.client?.nickname ? payment.client?.nickname : null,
+              client: payment.client?.phone
+                ? `+${payment.client?.phone}`
+                : null,
+              nickname: payment.client?.nickname
+                ? payment.client?.nickname
+                : null,
               title: 'Отмена ' + payment.payment_items[i].entity_type,
               amount: payment.payment_items[i].amount,
               sum:
@@ -784,24 +1054,33 @@ const getPaymentRefundData = async (startDate, endDate, managerBearer) => {
           ];
         }
       }
-      while (resPaymentsData.data.data.eventList.paginatorInfo.lastPage > page) {
+      while (
+        resPaymentsData.data.data.eventList.paginatorInfo.lastPage > page
+      ) {
         page += 1;
-        let smartshellPaymentsDataRequest = createSmartshellPaymentRefundDataRequest(
-          startDate,
-          endDate,
-          page,
-          managerBearer
-        );
+        let smartshellPaymentsDataRequest =
+          createSmartshellPaymentRefundDataRequest(
+            startDate,
+            endDate,
+            page,
+            managerBearer
+          );
         resPaymentsData = await axios(smartshellPaymentsDataRequest);
         if (resPaymentsData.data.errors) {
-          resPaymentsData.data.errors.map((error) => console.log('getPaymentRefundData ERROR ->', error));
-          return { error: true, message: 'Не удалось получить данные об отменах' };
+          resPaymentsData.data.errors.map((error) =>
+            console.log('getPaymentRefundData ERROR ->', error)
+          );
+          return {
+            error: true,
+            message: 'Не удалось получить данные об отменах',
+          };
         } else {
           for (const payment of resPaymentsData.data.data.eventList.data) {
             for (let i = 0; i < payment.payment_items.length; i++) {
               result = [
                 ...result,
                 {
+                  timestamp: payment.timestamp,
                   idForSort: parseInt(
                     payment.timestamp.split(' ')[0].split('-').join('') +
                       payment.timestamp.split(' ')[1].split(':').join('')
@@ -812,15 +1091,21 @@ const getPaymentRefundData = async (startDate, endDate, managerBearer) => {
                     payment.timestamp.split(' ')[0].split('-')[1]
                   }.${payment.timestamp.split(' ')[0].split('-')[0]}`,
                   time: payment.timestamp.split(' ')[1],
-                  client: payment.client?.phone ? `+${payment.client?.phone}` : null,
-                  nickname: payment.client?.nickname ? payment.client?.nickname : null,
+                  client: payment.client?.phone
+                    ? `+${payment.client?.phone}`
+                    : null,
+                  nickname: payment.client?.nickname
+                    ? payment.client?.nickname
+                    : null,
                   title: 'Отмена ' + payment.payment_items[i].entity_type,
                   amount: payment.payment_items[i].amount,
                   sum:
                     payment.payment.title === 'BONUS'
                       ? 0
                       : payment.payment.title === 'DEPOSIT'
-                      ? -Math.floor(payment.payment_items[i].sum - payment.value1)
+                      ? -Math.floor(
+                          payment.payment_items[i].sum - payment.value1
+                        )
                       : -Math.floor(payment.payment_items[i].sum),
                   bonus:
                     payment.payment.title === 'BONUS'
@@ -842,7 +1127,12 @@ const getPaymentRefundData = async (startDate, endDate, managerBearer) => {
   }
 };
 
-const createSmartshellPaymentRefundDataRequest = (startDate, endDate, page, managerBearer) => {
+const createSmartshellPaymentRefundDataRequest = (
+  startDate,
+  endDate,
+  page,
+  managerBearer
+) => {
   let dataPayments = {
     query: `query eventList {
   eventList(
@@ -948,19 +1238,27 @@ const createSmartshellPaymentRefundDataRequest = (startDate, endDate, page, mana
 const getCashOrders = async (startDate, endDate, managerBearer) => {
   try {
     let page = 1;
-    let cashordersRequest = getCashOrdersRequest(startDate, endDate, page, managerBearer);
+    let cashordersRequest = getCashOrdersRequest(
+      startDate,
+      endDate,
+      page,
+      managerBearer
+    );
 
     let result = [];
     let cashOrdersData = await axios(cashordersRequest);
 
     if (cashOrdersData.data.errors) {
-      cashOrdersData.data.errors.map((error) => console.log('getClientData ERROR ->', error));
+      cashOrdersData.data.errors.map((error) =>
+        console.log('getClientData ERROR ->', error)
+      );
       return { error: true, message: 'Не удалось получить данные об оплатах' };
     } else {
       cashOrdersData.data.data.eventList.data.forEach((order) => {
         result = [
           ...result,
           {
+            timestamp: payment.timestamp,
             idForSort: parseInt(
               order.cash_order.created_at.split(' ')[0].split('-').join('') +
                 order.cash_order.created_at.split(' ')[1].split(':').join('')
@@ -979,25 +1277,44 @@ const getCashOrders = async (startDate, endDate, managerBearer) => {
       });
       while (cashOrdersData.data.data.eventList.paginatorInfo.lastPage > page) {
         page += 1;
-        let cashordersRequest = getCashOrdersRequest(startDate, endDate, page, managerBearer);
+        let cashordersRequest = getCashOrdersRequest(
+          startDate,
+          endDate,
+          page,
+          managerBearer
+        );
         cashOrdersData = await axios(cashordersRequest);
         if (cashOrdersData.data.errors) {
-          cashOrdersData.data.errors.map((error) => console.log('getClientData ERROR ->', error));
-          return { error: true, message: 'Не удалось получить данные об оплатах' };
+          cashOrdersData.data.errors.map((error) =>
+            console.log('getClientData ERROR ->', error)
+          );
+          return {
+            error: true,
+            message: 'Не удалось получить данные об оплатах',
+          };
         } else {
           cashOrdersData.data.data.eventList.data.forEach((order) => {
             result = [
               ...result,
               {
+                timestamp: payment.timestamp,
                 idForSort: parseInt(
-                  order.cash_order.created_at.split(' ')[0].split('-').join('') +
-                    order.cash_order.created_at.split(' ')[1].split(':').join('')
+                  order.cash_order.created_at
+                    .split(' ')[0]
+                    .split('-')
+                    .join('') +
+                    order.cash_order.created_at
+                      .split(' ')[1]
+                      .split(':')
+                      .join('')
                 ),
                 id: order.cash_order.id,
                 type: order.cash_order.type,
-                date: `${order.cash_order.created_at.split(' ')[0].split('-')[2]}.${
-                  order.cash_order.created_at.split(' ')[0].split('-')[1]
-                }.${order.cash_order.created_at.split(' ')[0].split('-')[0]}`,
+                date: `${
+                  order.cash_order.created_at.split(' ')[0].split('-')[2]
+                }.${order.cash_order.created_at.split(' ')[0].split('-')[1]}.${
+                  order.cash_order.created_at.split(' ')[0].split('-')[0]
+                }`,
                 time: order.cash_order.created_at.split(' ')[1],
                 sum: order.cash_order.sum,
                 comment: order.cash_order.comment,
@@ -1068,7 +1385,11 @@ const getFirstSessionsFromPeriod = async (req, res) => {
     const managerBearer = await getManagerToken();
 
     // 1. Получаем данные так же, как и раньше
-    const firstSessions = await getFirstClientSessions(startDate, endDate, managerBearer);
+    const firstSessions = await getFirstClientSessions(
+      startDate,
+      endDate,
+      managerBearer
+    );
 
     if (firstSessions.error) {
       return res.status(500).json({ message: firstSessions.message });
@@ -1082,10 +1403,15 @@ const getFirstSessionsFromPeriod = async (req, res) => {
     const fileName = `Первые_сессии_${formattedStartDate}_${formattedEndDate}.xlsx`;
 
     // 3. Отправляем файл клиенту
-    res.setHeader('Content-Type', 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
+    res.setHeader(
+      'Content-Type',
+      'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
+    );
     res.setHeader(
       'Content-Disposition',
-      `attachment; filename="First_Sessions_All_Time.xlsx"; filename*=UTF-8''${encodeURIComponent(fileName)}`
+      `attachment; filename="First_Sessions_All_Time.xlsx"; filename*=UTF-8''${encodeURIComponent(
+        fileName
+      )}`
     );
     res.send(xlsxBuffer);
   } catch (error) {
@@ -1108,10 +1434,23 @@ const getFirstClientSessions = async (startDate, endDate, managerBearer) => {
       const currentYear = currentStartDate.getFullYear();
 
       const monthStartDate = new Date(currentYear, currentMonth, 1, 0, 0, 0);
-      const monthEndDate = new Date(currentYear, currentMonth + 1, 0, 23, 59, 59);
+      const monthEndDate = new Date(
+        currentYear,
+        currentMonth + 1,
+        0,
+        23,
+        59,
+        59
+      );
 
-      const formattedMonthStart = monthStartDate.toISOString().slice(0, 19).replace('T', ' ');
-      const formattedMonthEnd = monthEndDate.toISOString().slice(0, 19).replace('T', ' ');
+      const formattedMonthStart = monthStartDate
+        .toISOString()
+        .slice(0, 19)
+        .replace('T', ' ');
+      const formattedMonthEnd = monthEndDate
+        .toISOString()
+        .slice(0, 19)
+        .replace('T', ' ');
 
       let page = 1;
       let hasMorePages = true;
@@ -1127,8 +1466,13 @@ const getFirstClientSessions = async (startDate, endDate, managerBearer) => {
         const response = await axios(requestConfig);
 
         if (response.data.errors) {
-          response.data.errors.map((error) => console.log('getFirstClientSessions ERROR ->', error));
-          return { error: true, message: 'Не удалось получить данные о сессиях' };
+          response.data.errors.map((error) =>
+            console.log('getFirstClientSessions ERROR ->', error)
+          );
+          return {
+            error: true,
+            message: 'Не удалось получить данные о сессиях',
+          };
         }
 
         const eventList = response.data.data.eventList;
@@ -1156,7 +1500,9 @@ const getFirstClientSessions = async (startDate, endDate, managerBearer) => {
     }
 
     // Сортируем результат по дате для наглядности
-    result.sort((a, b) => new Date(a.firstSessionDate) - new Date(b.firstSessionDate));
+    result.sort(
+      (a, b) => new Date(a.firstSessionDate) - new Date(b.firstSessionDate)
+    );
 
     return { result };
   } catch (error) {
@@ -1166,7 +1512,12 @@ const getFirstClientSessions = async (startDate, endDate, managerBearer) => {
 };
 
 // Хелпер для создания запроса (на основе вашего примера)
-const createSmartshellEventListRequest = (startDate, endDate, page, managerBearer) => {
+const createSmartshellEventListRequest = (
+  startDate,
+  endDate,
+  page,
+  managerBearer
+) => {
   const query = `
       query EventList {
         eventList(
