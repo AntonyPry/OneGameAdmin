@@ -11,9 +11,11 @@ const agent = new https.Agent({
 
 const formatDate = (date) => {
   const pad = (num) => String(num).padStart(2, '0');
-  return `${date.getFullYear()}-${pad(date.getMonth() + 1)}-${pad(date.getDate())} ${pad(date.getHours())}:${pad(
-    date.getMinutes()
-  )}:${pad(date.getSeconds())}`;
+  return `${date.getFullYear()}-${pad(date.getMonth() + 1)}-${pad(
+    date.getDate()
+  )} ${pad(date.getHours())}:${pad(date.getMinutes())}:${pad(
+    date.getSeconds()
+  )}`;
 };
 
 const currentStats = async (req, res) => {
@@ -21,7 +23,8 @@ const currentStats = async (req, res) => {
     let { startDate, endDate, clubId } = req.query;
     if (!clubId) clubId = 6816;
 
-    const smena = endDate.split(' ')[1].split(':')[0] === '09' ? 'night' : 'day';
+    const smena =
+      endDate.split(' ')[1].split(':')[0] === '09' ? 'night' : 'day';
     const planStatsObject = ADMIN_MONTH_PLAN[endDate.split(' ')[0]]
       ? ADMIN_MONTH_PLAN[endDate.split(' ')[0]][smena]
       : {
@@ -76,7 +79,9 @@ const currentStats = async (req, res) => {
         currentStatsObject.psServiceRevenue += sum;
       }
       if (
-        (type === 'TARIFF' && title === 'Пополнение по СБП' && payment_title === 'СБП') ||
+        (type === 'TARIFF' &&
+          title === 'Пополнение по СБП' &&
+          payment_title === 'СБП') ||
         (type === 'TARIFF' && payment_title === 'CARD') ||
         (type === 'TARIFF' && payment_title === 'CASH')
       ) {
@@ -85,7 +90,10 @@ const currentStats = async (req, res) => {
     }
 
     const managerComment = await getManagerComment(clubId);
-    const responsibilitiesCheck = getResponsibilitiesCheck(await getActiveWorkshiftStartDate(clubId), managerComment);
+    const responsibilitiesCheck = getResponsibilitiesCheck(
+      await getActiveWorkshiftStartDate(clubId),
+      managerComment
+    );
 
     const currentAwardsObject = await getCurrentAwardsObject(
       endDate,
@@ -95,14 +103,22 @@ const currentStats = async (req, res) => {
       responsibilitiesCheck
     );
 
-    return res.status(200).send({ currentStatsObject, planStatsObject, currentAwardsObject });
+    return res
+      .status(200)
+      .send({ currentStatsObject, planStatsObject, currentAwardsObject });
   } catch (error) {
     console.log('currentStats ERROR ->', error);
     return res.status(500).send({ error: true, message: error.message });
   }
 };
 
-const getCurrentAwardsObject = async (endDate, smena, currentStatsObject, planStatsObject, checkedResponsibilities) => {
+const getCurrentAwardsObject = async (
+  endDate,
+  smena,
+  currentStatsObject,
+  planStatsObject,
+  checkedResponsibilities
+) => {
   const workshiftStart = await getActiveWorkshiftStartDate();
   if (workshiftStart.error) {
     console.log(`getCurrentAwardsObject ERROR ->`, workshiftStart.message);
@@ -110,7 +126,9 @@ const getCurrentAwardsObject = async (endDate, smena, currentStatsObject, planSt
   }
 
   // Рассчитываем проработанное время в минутах
-  const startTime = new Date(workshiftStart.created_at.replace(' ', 'T') + '+03:00');
+  const startTime = new Date(
+    workshiftStart.created_at.replace(' ', 'T') + '+03:00'
+  );
   const endTime = new Date();
   const workedMinutes = Math.floor((endTime - startTime) / 1000 / 60);
 
@@ -128,7 +146,9 @@ const getCurrentAwardsObject = async (endDate, smena, currentStatsObject, planSt
 
   const currentGoodsRevenue = currentStatsObject.goodsRevenue;
   const planGoodsRevenue =
-    planStatsObject.foodRevenue + planStatsObject.chocolateRevenue + planStatsObject.drinksRevenue;
+    planStatsObject.foodRevenue +
+    planStatsObject.chocolateRevenue +
+    planStatsObject.drinksRevenue;
 
   let goodsBonus = 0;
   if (currentGoodsRevenue >= planGoodsRevenue) {
@@ -183,7 +203,10 @@ const getActiveWorkshift = async (req, res) => {
 const getActiveWorkshiftStartDate = async (clubId = 6816) => {
   const managerBearer = await getManagerToken(clubId);
   if (managerBearer.error) {
-    console.log(`Ошибка при получении менеджерского токена для клуба ${clubId}:`, managerBearer.message);
+    console.log(
+      `Ошибка при получении менеджерского токена для клуба ${clubId}:`,
+      managerBearer.message
+    );
     return { managerBearer };
   }
 
@@ -212,8 +235,13 @@ const getActiveWorkshiftStartDate = async (clubId = 6816) => {
     });
 
     if (res.data.errors) {
-      res.data.errors.map((error) => console.log('getActiveWorkshiftStartDate ERROR ->', error.message));
-      return { error: true, message: 'Не удалось получить данные от smartshell' };
+      res.data.errors.map((error) =>
+        console.log('getActiveWorkshiftStartDate ERROR ->', error.message)
+      );
+      return {
+        error: true,
+        message: 'Не удалось получить данные от smartshell',
+      };
     } else {
       return res.data.data.activeWorkShift;
     }
@@ -225,7 +253,10 @@ const getActiveWorkshiftStartDate = async (clubId = 6816) => {
 const getManagerComment = async (clubId = 6816) => {
   const managerBearer = await getManagerToken(clubId);
   if (managerBearer.error) {
-    console.log(`Ошибка при получении менеджерского токена для клуба ${clubId}:`, managerBearer.message);
+    console.log(
+      `Ошибка при получении менеджерского токена для клуба ${clubId}:`,
+      managerBearer.message
+    );
     return { managerBearer };
   }
 
@@ -251,8 +282,13 @@ const getManagerComment = async (clubId = 6816) => {
     });
 
     if (res.data.errors) {
-      res.data.errors.map((error) => console.log('getManagerComment ERROR ->', error.message));
-      return { error: true, message: 'Не удалось получить данные от smartshell' };
+      res.data.errors.map((error) =>
+        console.log('getManagerComment ERROR ->', error.message)
+      );
+      return {
+        error: true,
+        message: 'Не удалось получить данные от smartshell',
+      };
     } else {
       return res.data.data.comments.data[0].text;
     }
@@ -272,6 +308,7 @@ const responsibilityOrder = [
   'clubClimateControl',
   'refrigeratorOccupancy',
   'foulLanguage',
+  'reportsDuringDay', // Новый пункт
 ];
 
 const getResponsibilitiesCheck = (workshiftStart, managerComment) => {
@@ -282,7 +319,10 @@ const getResponsibilitiesCheck = (workshiftStart, managerComment) => {
   const parts = managerComment?.split(' ');
   const commentDate = parts[0] + ' ' + parts[1];
 
-  if (!commentDate || (!managerComment.includes('0') && !managerComment.includes('1'))) {
+  if (
+    !commentDate ||
+    (!managerComment.includes('0') && !managerComment.includes('1'))
+  ) {
     return { status: 'notChecked', notPassed: [], alreadyChecked: false };
   }
 
@@ -313,13 +353,18 @@ const approveAdminResponsibilities = async (req, res) => {
   const managerBearer = await getManagerToken();
   if (managerBearer.error) {
     console.log('Ошибка при получении токена:', managerBearer.message);
-    return res.status(400).send({ error: true, message: 'Ошибка при получении менеджерского токена' });
+    return res.status(400).send({
+      error: true,
+      message: 'Ошибка при получении менеджерского токена',
+    });
   }
 
   const currentWorkshift = await getActiveWorkshiftStartDate();
   if (currentWorkshift.error) {
     console.log('Ошибка при получении смены:', currentWorkshift.message);
-    return res.status(400).send({ error: true, message: 'Не удалось получить активную смену' });
+    return res
+      .status(400)
+      .send({ error: true, message: 'Не удалось получить активную смену' });
   }
 
   // Фиксированный порядок обязанностей:
@@ -333,10 +378,13 @@ const approveAdminResponsibilities = async (req, res) => {
     'clubClimateControl',
     'refrigeratorOccupancy',
     'foulLanguage',
+    'reportsDuringDay', // Новый пункт
   ];
 
   // Формируем строку "010110..."
-  const responsibilitiesBits = responsibilityOrder.map((key) => (adminResponsibilities[key] ? '1' : '0')).join('');
+  const responsibilitiesBits = responsibilityOrder
+    .map((key) => (adminResponsibilities[key] ? '1' : '0'))
+    .join('');
 
   const commentText = `${currentWorkshift.created_at} ${responsibilitiesBits}`;
   const dataComment = {
@@ -359,14 +407,22 @@ const approveAdminResponsibilities = async (req, res) => {
     });
 
     if (response.data.errors) {
-      response.data.errors.map((error) => console.log('approveAdminResponsibilities ERROR ->', error.message));
-      return res.status(400).send({ error: true, message: 'Не удалось сохранить комментарий' });
+      response.data.errors.map((error) =>
+        console.log('approveAdminResponsibilities ERROR ->', error.message)
+      );
+      return res
+        .status(400)
+        .send({ error: true, message: 'Не удалось сохранить комментарий' });
     }
 
-    return res.status(200).send({ error: false, message: 'Обязанности успешно подтверждены' });
+    return res
+      .status(200)
+      .send({ error: false, message: 'Обязанности успешно подтверждены' });
   } catch (error) {
     console.log('approveAdminResponsibilities ERROR ->', error.message);
-    return res.status(400).send({ error: true, message: 'Ошибка на стороне сервера' });
+    return res
+      .status(400)
+      .send({ error: true, message: 'Ошибка на стороне сервера' });
   }
 };
 
