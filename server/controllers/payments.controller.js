@@ -50,11 +50,11 @@ const getResultsArray = async (startDate, endDate, clubId) => {
     // --- ИЗМЕНЕНИЕ ЗДЕСЬ ---
     // Создаем новую дату начала специально для запроса смен, сдвинув её на 1 день назад
     const shiftsStartDate = new Date(startDate);
-    shiftsStartDate.setDate(shiftsStartDate.getDate() - 1);
+    shiftsStartDate.setDate(shiftsStartDate.getDate() + 1);
 
     // Форматируем дату обратно в строку 'YYYY-MM-DD HH:MM:SS'
     const formattedShiftsStartDate = `${shiftsStartDate.getFullYear()}-${String(
-      shiftsStartDate.getMonth() + 1
+      shiftsStartDate.getMonth() - 1
     ).padStart(2, '0')}-${String(shiftsStartDate.getDate()).padStart(2, '0')} ${
       startDate.split(' ')[1]
     }`;
@@ -84,20 +84,53 @@ const getResultsArray = async (startDate, endDate, clubId) => {
 
     const shifts = shiftsData.result;
 
+    shifts.sort((a, b) => a.start_at_num - b.start_at_num);
+
+    const transactionsMap = new Map();
+    paymentData.forEach((event) => {
+      // Записываем в карту только оригинальные операции с уникальным ID
+      if (event.id && event.id !== 0 && !event.title.startsWith('Отмена')) {
+        transactionsMap.set(event.id, { type: event.type, title: event.title });
+      }
+    });
+
     // Сопоставляем СБП-платежи со сменами
     const processedEvents = paymentData.map((event) => {
+      if (event.title && event.title.includes('null')) {
+        const originalTx = transactionsMap.get(event.id);
+        if (originalTx) {
+          event.type = originalTx.type;
+          event.title = `Отмена (${originalTx.title})`; // Указываем, что именно было отменено
+        }
+      }
+
       if (event.payment_title === 'СБП') {
         const eventTimeNum = event.idForSort;
 
-        const matchingShift = shifts.find(
+        // 1. Сначала ищем точное совпадение (активную смену)
+        let matchingShift = shifts.find(
           (shift) =>
             eventTimeNum >= shift.start_at_num &&
             eventTimeNum <= shift.finished_at_num
         );
 
+        // 2. Если активная смена не найдена, ищем ближайшую завершившуюся
+        if (!matchingShift) {
+          // Отбираем все смены, которые закончились до момента платежа
+          const previousShifts = shifts.filter(
+            (s) => s.finished_at_num < eventTimeNum
+          );
+
+          if (previousShifts.length > 0) {
+            // Так как массив shifts отсортирован, последняя смена в этом отфильтрованном списке - самая последняя по времени
+            matchingShift = previousShifts[previousShifts.length - 1];
+          }
+        }
+
         if (matchingShift && matchingShift.operatorName) {
           event.operator = matchingShift.operatorName;
         } else {
+          // Эта надпись теперь появится только если смен не было вообще
           event.operator = 'Смена не найдена';
         }
       }
@@ -1022,7 +1055,7 @@ const getPaymentRefundData = async (startDate, endDate, managerBearer) => {
                 payment.timestamp.split(' ')[0].split('-').join('') +
                   payment.timestamp.split(' ')[1].split(':').join('')
               ),
-              id: 0,
+              id: payment.payment.id,
               type: payment.payment_items[i].entity_type,
               date: `${payment.timestamp.split(' ')[0].split('-')[2]}.${
                 payment.timestamp.split(' ')[0].split('-')[1]
@@ -1085,7 +1118,7 @@ const getPaymentRefundData = async (startDate, endDate, managerBearer) => {
                     payment.timestamp.split(' ')[0].split('-').join('') +
                       payment.timestamp.split(' ')[1].split(':').join('')
                   ),
-                  id: 0,
+                  id: payment.payment.id,
                   type: payment.payment_items[i].entity_type,
                   date: `${payment.timestamp.split(' ')[0].split('-')[2]}.${
                     payment.timestamp.split(' ')[0].split('-')[1]
