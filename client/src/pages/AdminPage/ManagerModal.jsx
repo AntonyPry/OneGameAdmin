@@ -1,4 +1,12 @@
-import { Checkbox, Divider, Form, Input, message, Modal, notification } from 'antd';
+import {
+  Checkbox,
+  Divider,
+  Form,
+  Input,
+  message,
+  Modal,
+  notification,
+} from 'antd';
 import axios from 'axios';
 import { useState } from 'react';
 
@@ -49,10 +57,14 @@ const ManagerModal = ({ modalOpen, setModalOpen }) => {
     ['quickVkAnswers', 'Оперативные ответы вк'],
     ['quickPhoneAnswers', 'Оперативные ответы телефон'],
     ['workspaceCleanliness', 'Порядок на рабочем месте'],
-    ['noStrangersNearTheWorkspace', 'Отсутствие посторонних за стойкой или около неё'],
+    [
+      'noStrangersNearTheWorkspace',
+      'Отсутствие посторонних за стойкой или около неё',
+    ],
     ['clubClimateControl', 'Климат-контроль клуба'],
     ['refrigeratorOccupancy', 'Заполняемость холодильников'],
     ['foulLanguage', 'Маты'],
+    ['reportsDuringDay', 'Отчёты в течение дня'], // Новый пункт
   ];
 
   return (
@@ -73,12 +85,14 @@ const ManagerModal = ({ modalOpen, setModalOpen }) => {
         }}
         width={600}
       >
-        <div style={{ height: '330px', padding: '20px 20px 0' }}>
+        <div style={{ height: '350px', padding: '20px 20px 0' }}>
           <Form name="timurManagerPassword" form={form} autoComplete="off">
             <Form.Item
               label="Пароль"
               name="password"
-              rules={[{ required: true, message: 'Необходимо указать пароль!' }]}
+              rules={[
+                { required: true, message: 'Необходимо указать пароль!' },
+              ]}
             >
               <Input.Password style={{ width: '250px' }} />
             </Form.Item>
@@ -86,11 +100,18 @@ const ManagerModal = ({ modalOpen, setModalOpen }) => {
 
           <Divider style={{ backgroundColor: '#ccc', margin: '30px 0 20px' }} />
 
-          <div style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
+          <div
+            style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}
+          >
             {checkboxes.map(([key, label]) => (
               <Checkbox
                 key={key}
-                onChange={(e) => setAdminResponsibilities((prev) => ({ ...prev, [key]: e.target.checked }))}
+                onChange={(e) =>
+                  setAdminResponsibilities((prev) => ({
+                    ...prev,
+                    [key]: e.target.checked,
+                  }))
+                }
               >
                 {label}
               </Checkbox>
