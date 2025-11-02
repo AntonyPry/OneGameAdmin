@@ -258,9 +258,7 @@ const getPaymentData = async (startDate, endDate, managerBearer) => {
               id: payment.payment.id,
               type: FAKE_PAYMENTS.includes(payment.payment.id.toString())
                 ? 'FAKE'
-                : payment?.payment_items[i]?.title?.includes('PS') ||
-                  payment?.payment_items[i]?.title?.includes('Ps') ||
-                  payment?.payment_items[i]?.title?.includes('ps')
+                : payment?.payment_items[i]?.title?.includes('PS')
                 ? 'PS'
                 : payment?.payment_items[i]?.title?.includes('Кресло')
                 ? 'RACEZONE'
@@ -325,9 +323,7 @@ const getPaymentData = async (startDate, endDate, managerBearer) => {
                   id: payment.payment.id,
                   type: FAKE_PAYMENTS.includes(payment.payment.id.toString())
                     ? 'FAKE'
-                    : payment?.payment_items[i]?.title?.includes('PS') ||
-                      payment?.payment_items[i]?.title?.includes('Ps') ||
-                      payment?.payment_items[i]?.title?.includes('ps')
+                    : payment?.payment_items[i]?.title?.includes('PS')
                     ? 'PS'
                     : payment?.payment_items[i]?.title?.includes('Кресло')
                     ? 'RACEZONE'
@@ -1594,7 +1590,7 @@ const generatePaymentsXlsx = async (data) => {
   const worksheet = workbook.addWorksheet('Payments');
 
   worksheet.columns = [
-    { header: 'ID', key: 'id', width: 9 },
+    { header: 'ID', key: 'id', width: 13 },
     { header: 'Тип', key: 'type', width: 7 },
     { header: 'Дата', key: 'date', width: 11 },
     { header: 'Время', key: 'time', width: 9 },
@@ -1643,7 +1639,7 @@ const generateSbpXlsx = async (data) => {
   const worksheet = workbook.addWorksheet('Payments');
 
   worksheet.columns = [
-    { header: 'ID', key: 'id', width: 11 },
+    { header: 'ID', key: 'id', width: 13 },
     { header: 'Дата', key: 'date', width: 11 },
     { header: 'Время', key: 'time', width: 11 },
     { header: 'Клиент', key: 'client', width: 16 },
@@ -1673,7 +1669,7 @@ const generateCashOrdersXlsx = async (data) => {
   const worksheet = workbook.addWorksheet('Payments');
 
   worksheet.columns = [
-    { header: 'ID', key: 'id', width: 11 },
+    { header: 'ID', key: 'id', width: 13 },
     { header: 'Тип', key: 'type', width: 11 },
     { header: 'Дата', key: 'date', width: 11 },
     { header: 'Время', key: 'time', width: 11 },
