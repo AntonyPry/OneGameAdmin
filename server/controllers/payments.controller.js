@@ -134,7 +134,7 @@ const getResultsArray = async (startDate, endDate, clubId) => {
           matchingShift = activeShifts[0];
         }
 
-        console.log('matching shift', matchingShift);
+        console.log('matching shift', event.title, matchingShift, activeShifts);
 
         // 2. Если активной смены нет, ищем ближайшую завершенную
         if (!matchingShift) {
