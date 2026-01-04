@@ -67,8 +67,8 @@ const getResultsArray = async (startDate, endDate, clubId) => {
       startDate.split(' ')[1]
     }`;
 
-    console.log(`Original Start: ${startDate}`);
-    console.log(`Calculated Shifts Start: ${formattedShiftsStartDate}`);
+    // console.log(`Original Start: ${startDate}`);
+    // console.log(`Calculated Shifts Start: ${formattedShiftsStartDate}`);
     // ----------------------
 
     // Запрашиваем все данные параллельно
