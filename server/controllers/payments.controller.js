@@ -134,6 +134,8 @@ const getResultsArray = async (startDate, endDate, clubId) => {
           matchingShift = activeShifts[0];
         }
 
+        console.log('matching shift', matchingShift);
+
         // 2. Если активной смены нет, ищем ближайшую завершенную
         if (!matchingShift) {
           // Отбираем все смены, которые УЖЕ закончились к моменту платежа
