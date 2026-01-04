@@ -47,20 +47,21 @@ const getResultsArray = async (startDate, endDate, clubId) => {
       return managerBearer;
     }
 
-    // --- ИЗМЕНЕНИЕ ЗДЕСЬ ---
-    // Создаем новую дату начала специально для запроса смен, сдвинув её на 1 день назад
-    const shiftsStartDate = new Date(startDate);
-    shiftsStartDate.setDate(shiftsStartDate.getDate() - 1);
-    console.log(startDate, shiftsStartDate);
-    console.log(shiftsStartDate.getMonth());
+    // // --- ИЗМЕНЕНИЕ ЗДЕСЬ ---
+    // // Создаем новую дату начала специально для запроса смен, сдвинув её на 1 день назад
+    // const shiftsStartDate = new Date(startDate);
+    // shiftsStartDate.setDate(shiftsStartDate.getDate() - 1);
+    // console.log(startDate, shiftsStartDate);
+    // console.log(shiftsStartDate.getMonth());
 
-    // Форматируем дату обратно в строку 'YYYY-MM-DD HH:MM:SS'
-    const formattedShiftsStartDate = `${shiftsStartDate.getFullYear()}-${String(
-      shiftsStartDate.getMonth() - 1
-    ).padStart(2, '0')}-${String(shiftsStartDate.getDate()).padStart(2, '0')} ${
-      startDate.split(' ')[1]
-    }`;
-    // ----------------------
+    // // Форматируем дату обратно в строку 'YYYY-MM-DD HH:MM:SS'
+    // const formattedShiftsStartDate = `${shiftsStartDate.getFullYear()}-${String(
+    //   shiftsStartDate.getMonth() - 1
+    // ).padStart(2, '0')}-${String(shiftsStartDate.getDate()).padStart(2, '0')} ${
+    //   startDate.split(' ')[1]
+    // }`;
+    // console.log(String(shiftsStartDate.getMonth() - 1));
+    // // ----------------------
 
     // Запрашиваем все данные параллельно
     const [paymentResults, shiftsData] = await Promise.all([
@@ -73,7 +74,7 @@ const getResultsArray = async (startDate, endDate, clubId) => {
         getPaymentRefundData(startDate, endDate, managerBearer),
       ]),
       // А смены запрашиваем по новой, сдвинутой дате
-      getAllShiftsForPeriod(formattedShiftsStartDate, endDate, managerBearer),
+      getAllShiftsForPeriod(startDate, endDate, managerBearer),
     ]);
 
     // Проверяем на ошибки
