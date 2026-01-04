@@ -51,6 +51,8 @@ const getResultsArray = async (startDate, endDate, clubId) => {
     // Создаем новую дату начала специально для запроса смен, сдвинув её на 1 день назад
     const shiftsStartDate = new Date(startDate);
     shiftsStartDate.setDate(shiftsStartDate.getDate() + 1);
+    console.log(startDate, shiftsStartDate);
+    console.log(shiftsStartDate.getMonth());
 
     // Форматируем дату обратно в строку 'YYYY-MM-DD HH:MM:SS'
     const formattedShiftsStartDate = `${shiftsStartDate.getFullYear()}-${String(
