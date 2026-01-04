@@ -429,6 +429,7 @@ const createSmartshellPaymentsDataRequest = (
 };
 
 const getAllShiftsForPeriod = async (startDate, endDate, managerBearer) => {
+  console.log(startDate, endDate);
   let page = 1;
   let hasMorePages = true;
   const result = [];
