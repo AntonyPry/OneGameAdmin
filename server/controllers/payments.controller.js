@@ -94,6 +94,7 @@ const getResultsArray = async (startDate, endDate, clubId) => {
     });
 
     const shifts = shiftsData.result;
+    console.log(shifts);
 
     shifts.sort((a, b) => a.start_at_num - b.start_at_num);
 
@@ -134,7 +135,7 @@ const getResultsArray = async (startDate, endDate, clubId) => {
           matchingShift = activeShifts[0];
         }
 
-        console.log('matching shift', matchingShift, activeShifts.length);
+        // console.log('matching shift', matchingShift, activeShifts.length);
 
         // 2. Если активной смены нет, ищем ближайшую завершенную
         if (!matchingShift) {
