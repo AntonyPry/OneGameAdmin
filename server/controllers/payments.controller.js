@@ -50,7 +50,7 @@ const getResultsArray = async (startDate, endDate, clubId) => {
     // --- ИЗМЕНЕНИЕ ЗДЕСЬ ---
     // Создаем новую дату начала специально для запроса смен, сдвинув её на 1 день назад
     const shiftsStartDate = new Date(startDate);
-    shiftsStartDate.setDate(shiftsStartDate.getDate() + 1);
+    shiftsStartDate.setDate(shiftsStartDate.getDate() - 1);
     console.log(startDate, shiftsStartDate);
     console.log(shiftsStartDate.getMonth());
 
