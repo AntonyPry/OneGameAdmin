@@ -98,7 +98,6 @@ const getResultsArray = async (startDate, endDate, clubId) => {
     });
 
     const shifts = shiftsData.result;
-    console.log(shifts);
 
     shifts.sort((a, b) => a.start_at_num - b.start_at_num);
 
