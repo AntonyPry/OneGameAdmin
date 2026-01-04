@@ -47,21 +47,29 @@ const getResultsArray = async (startDate, endDate, clubId) => {
       return managerBearer;
     }
 
-    // // --- ИЗМЕНЕНИЕ ЗДЕСЬ ---
-    // // Создаем новую дату начала специально для запроса смен, сдвинув её на 1 день назад
-    // const shiftsStartDate = new Date(startDate);
-    // shiftsStartDate.setDate(shiftsStartDate.getDate() - 1);
-    // console.log(startDate, shiftsStartDate);
-    // console.log(shiftsStartDate.getMonth());
+    // --- ИЗМЕНЕНИЕ ЗДЕСЬ ---
+    // 1. Создаем объект даты на основе startDate
+    const shiftsDateObj = new Date(startDate);
 
-    // // Форматируем дату обратно в строку 'YYYY-MM-DD HH:MM:SS'
-    // const formattedShiftsStartDate = `${shiftsStartDate.getFullYear()}-${String(
-    //   shiftsStartDate.getMonth() - 1
-    // ).padStart(2, '0')}-${String(shiftsStartDate.getDate()).padStart(2, '0')} ${
-    //   startDate.split(' ')[1]
-    // }`;
-    // console.log(String(shiftsStartDate.getMonth() - 1));
-    // // ----------------------
+    // 2. Отнимаем 1 день.
+    // setDate корректно обрабатывает переходы месяцев и годов.
+    shiftsDateObj.setDate(shiftsDateObj.getDate() - 1);
+
+    // 3. Форматируем обратно в строку YYYY-MM-DD
+    // Важно: getMonth() возвращает 0-11, поэтому нужно делать +1 для корректной строки
+    const prevYear = shiftsDateObj.getFullYear();
+    const prevMonth = String(shiftsDateObj.getMonth() + 1).padStart(2, '0'); // Исправлено: +1 вместо -1
+    const prevDay = String(shiftsDateObj.getDate()).padStart(2, '0');
+
+    // Собираем строку. Время берем из оригинального запроса или ставим 00:00:00,
+    // так как нам важно просто захватить начало предыдущих суток.
+    const formattedShiftsStartDate = `${prevYear}-${prevMonth}-${prevDay} ${
+      startDate.split(' ')[1]
+    }`;
+
+    console.log(`Original Start: ${startDate}`);
+    console.log(`Calculated Shifts Start: ${formattedShiftsStartDate}`);
+    // ----------------------
 
     // Запрашиваем все данные параллельно
     const [paymentResults, shiftsData] = await Promise.all([
@@ -74,7 +82,7 @@ const getResultsArray = async (startDate, endDate, clubId) => {
         getPaymentRefundData(startDate, endDate, managerBearer),
       ]),
       // А смены запрашиваем по новой, сдвинутой дате
-      getAllShiftsForPeriod(startDate, endDate, managerBearer),
+      getAllShiftsForPeriod(formattedShiftsStartDate, endDate, managerBearer),
     ]);
 
     // Проверяем на ошибки
