@@ -47,29 +47,29 @@ const getResultsArray = async (startDate, endDate, clubId) => {
       return managerBearer;
     }
 
-    // --- ИЗМЕНЕНИЕ ЗДЕСЬ ---
-    // 1. Создаем объект даты на основе startDate
-    const shiftsDateObj = new Date(startDate);
+    const shiftsStartDateObj = new Date(startDate);
+    shiftsStartDateObj.setDate(shiftsStartDateObj.getDate() - 1);
 
-    // 2. Отнимаем 1 день.
-    // setDate корректно обрабатывает переходы месяцев и годов.
-    shiftsDateObj.setDate(shiftsDateObj.getDate() - 1);
+    const startYear = shiftsStartDateObj.getFullYear();
+    const startMonth = String(shiftsStartDateObj.getMonth() + 1).padStart(
+      2,
+      '0'
+    );
+    const startDay = String(shiftsStartDateObj.getDate()).padStart(2, '0');
 
-    // 3. Форматируем обратно в строку YYYY-MM-DD
-    // Важно: getMonth() возвращает 0-11, поэтому нужно делать +1 для корректной строки
-    const prevYear = shiftsDateObj.getFullYear();
-    const prevMonth = String(shiftsDateObj.getMonth() + 1).padStart(2, '0'); // Исправлено: +1 вместо -1
-    const prevDay = String(shiftsDateObj.getDate()).padStart(2, '0');
+    // Сохраняем время как 00:00:00 для надежности захвата
+    const formattedShiftsStartDate = `${startYear}-${startMonth}-${startDay} 00:00:00`;
 
-    // Собираем строку. Время берем из оригинального запроса или ставим 00:00:00,
-    // так как нам важно просто захватить начало предыдущих суток.
-    const formattedShiftsStartDate = `${prevYear}-${prevMonth}-${prevDay} ${
-      startDate.split(' ')[1]
-    }`;
+    // 2. Сдвигаем КОНЕЦ на 1 день вперед (чтобы поймать смены, начавшиеся сегодня, но закончившиеся завтра утром)
+    const shiftsEndDateObj = new Date(endDate);
+    shiftsEndDateObj.setDate(shiftsEndDateObj.getDate() + 1);
 
-    // console.log(`Original Start: ${startDate}`);
-    // console.log(`Calculated Shifts Start: ${formattedShiftsStartDate}`);
-    // ----------------------
+    const endYear = shiftsEndDateObj.getFullYear();
+    const endMonth = String(shiftsEndDateObj.getMonth() + 1).padStart(2, '0');
+    const endDay = String(shiftsEndDateObj.getDate()).padStart(2, '0');
+
+    // Тоже берем с запасом до конца следующего дня
+    const formattedShiftsEndDate = `${endYear}-${endMonth}-${endDay} 23:59:59`;
 
     // Запрашиваем все данные параллельно
     const [paymentResults, shiftsData] = await Promise.all([
@@ -82,7 +82,11 @@ const getResultsArray = async (startDate, endDate, clubId) => {
         getPaymentRefundData(startDate, endDate, managerBearer),
       ]),
       // А смены запрашиваем по новой, сдвинутой дате
-      getAllShiftsForPeriod(formattedShiftsStartDate, endDate, managerBearer),
+      getAllShiftsForPeriod(
+        formattedShiftsStartDate,
+        formattedShiftsEndDate,
+        managerBearer
+      ),
     ]);
 
     // Проверяем на ошибки
@@ -119,39 +123,29 @@ const getResultsArray = async (startDate, endDate, clubId) => {
       if (event.payment_title === 'СБП') {
         const eventTimeNum = event.idForSort;
 
-        // 1. Приоритет: Ищем активную смену (платеж внутри смены)
-        // Используем filter, на случай если смены случайно пересеклись в базе,
-        // и берем ту, что началась позже (как наиболее актуальную)
-        const activeShifts = shifts.filter(
+        // 1. Ищем смену, внутрь которой попадает платеж.
+        // Теперь, благодаря shiftEndDate + 1 день, сюда попадет и ночная смена,
+        // которая началась в день отчета, а закончилась утром следующего дня.
+        // У нее есть finished_at_num, так что условие сработает.
+        let matchingShift = shifts.find(
           (shift) =>
             eventTimeNum >= shift.start_at_num &&
             eventTimeNum <= shift.finished_at_num
         );
 
-        // Если нашли несколько активных, берем ту, что началась последней (start_at_num больше)
-        let matchingShift = null;
-        if (activeShifts.length > 0) {
-          activeShifts.sort((a, b) => b.start_at_num - a.start_at_num);
-          matchingShift = activeShifts[0];
-        }
-
-        // console.log('matching shift', matchingShift, activeShifts.length);
-
-        // 2. Если активной смены нет, ищем ближайшую завершенную
+        // 2. Если строгого попадания нет (например, текущая активная смена, которой еще нет в базе),
+        // берем последнюю завершенную (как fallback).
         if (!matchingShift) {
-          // Отбираем все смены, которые УЖЕ закончились к моменту платежа
+          // Фильтруем только те, что закончились ДО платежа
           const previousShifts = shifts.filter(
             (s) => s.finished_at_num < eventTimeNum
           );
 
           if (previousShifts.length > 0) {
-            // ВАЖНОЕ ИЗМЕНЕНИЕ:
-            // Сортируем прошедшие смены по ВРЕМЕНИ ЗАВЕРШЕНИЯ (от больших к меньшим).
-            // Элемент [0] будет сменой, которая закончилась ближе всего к текущему моменту.
+            // Сортируем по времени окончания (от последних к ранним)
             previousShifts.sort(
               (a, b) => b.finished_at_num - a.finished_at_num
             );
-
             matchingShift = previousShifts[0];
           }
         }
@@ -159,7 +153,8 @@ const getResultsArray = async (startDate, endDate, clubId) => {
         if (matchingShift && matchingShift.operatorName) {
           event.operator = matchingShift.operatorName;
         } else {
-          event.operator = 'Смена не найдена';
+          // Это произойдет только для платежей "прямо сейчас", если текущая смена еще не закрыта
+          event.operator = 'Смена не завершена (Текущая)';
         }
       }
       return event;
