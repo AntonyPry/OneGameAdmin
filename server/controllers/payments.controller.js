@@ -118,30 +118,44 @@ const getResultsArray = async (startDate, endDate, clubId) => {
       if (event.payment_title === 'СБП') {
         const eventTimeNum = event.idForSort;
 
-        // 1. Сначала ищем точное совпадение (активную смену)
-        let matchingShift = shifts.find(
+        // 1. Приоритет: Ищем активную смену (платеж внутри смены)
+        // Используем filter, на случай если смены случайно пересеклись в базе,
+        // и берем ту, что началась позже (как наиболее актуальную)
+        const activeShifts = shifts.filter(
           (shift) =>
             eventTimeNum >= shift.start_at_num &&
             eventTimeNum <= shift.finished_at_num
         );
 
-        // 2. Если активная смена не найдена, ищем ближайшую завершившуюся
+        // Если нашли несколько активных, берем ту, что началась последней (start_at_num больше)
+        let matchingShift = null;
+        if (activeShifts.length > 0) {
+          activeShifts.sort((a, b) => b.start_at_num - a.start_at_num);
+          matchingShift = activeShifts[0];
+        }
+
+        // 2. Если активной смены нет, ищем ближайшую завершенную
         if (!matchingShift) {
-          // Отбираем все смены, которые закончились до момента платежа
+          // Отбираем все смены, которые УЖЕ закончились к моменту платежа
           const previousShifts = shifts.filter(
             (s) => s.finished_at_num < eventTimeNum
           );
 
           if (previousShifts.length > 0) {
-            // Так как массив shifts отсортирован, последняя смена в этом отфильтрованном списке - самая последняя по времени
-            matchingShift = previousShifts[previousShifts.length - 1];
+            // ВАЖНОЕ ИЗМЕНЕНИЕ:
+            // Сортируем прошедшие смены по ВРЕМЕНИ ЗАВЕРШЕНИЯ (от больших к меньшим).
+            // Элемент [0] будет сменой, которая закончилась ближе всего к текущему моменту.
+            previousShifts.sort(
+              (a, b) => b.finished_at_num - a.finished_at_num
+            );
+
+            matchingShift = previousShifts[0];
           }
         }
 
         if (matchingShift && matchingShift.operatorName) {
           event.operator = matchingShift.operatorName;
         } else {
-          // Эта надпись теперь появится только если смен не было вообще
           event.operator = 'Смена не найдена';
         }
       }
