@@ -1309,7 +1309,7 @@ const getCashOrders = async (startDate, endDate, managerBearer) => {
         result = [
           ...result,
           {
-            timestamp: payment.timestamp,
+            timestamp: order.timestamp,
             idForSort: parseInt(
               order.cash_order.created_at.split(' ')[0].split('-').join('') +
                 order.cash_order.created_at.split(' ')[1].split(':').join('')
@@ -1348,7 +1348,7 @@ const getCashOrders = async (startDate, endDate, managerBearer) => {
             result = [
               ...result,
               {
-                timestamp: payment.timestamp,
+                timestamp: order.timestamp,
                 idForSort: parseInt(
                   order.cash_order.created_at
                     .split(' ')[0]
