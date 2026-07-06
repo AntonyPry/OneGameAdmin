@@ -1,70 +1,72 @@
-// pages/HomePage/HomePage.jsx
-import React, { useEffect, useState } from 'react';
-import { Row, Col } from 'antd';
-import { Link, useNavigate } from 'react-router-dom';
-import { UserOutlined, BarChartOutlined, TableOutlined } from '@ant-design/icons';
-import styles from './HomePage.module.css';
+import React from 'react';
+import { Link } from 'react-router-dom';
+import { Building2, CalendarDays, Table, User } from 'lucide-react';
+import { useAuth } from '@/lib/auth-context';
+import {
+  CLUB_ROLES,
+  SYSTEM_ROLES,
+  hasRouteAccess,
+} from '@/lib/auth-session';
+
+const cards = [
+  {
+    to: '/dashboard',
+    title: 'Клубы и пользователи',
+    icon: Building2,
+    requiredSystemRoles: [SYSTEM_ROLES.PLATFORM_ADMIN],
+    allowPlatformAdmin: false,
+  },
+  {
+    to: '/admin',
+    title: 'Панель администратора',
+    icon: User,
+    requiredClubRoles: [
+      CLUB_ROLES.CLUB_ADMIN,
+      CLUB_ROLES.MANAGER,
+      CLUB_ROLES.OWNER,
+    ],
+    requiresActiveClub: true,
+  },
+  {
+    to: '/plans',
+    title: 'Планы продаж',
+    icon: CalendarDays,
+    requiredClubRoles: [CLUB_ROLES.OWNER, CLUB_ROLES.MANAGER],
+    requiresActiveClub: true,
+  },
+  {
+    to: '/export',
+    title: 'Экспорт статистики',
+    icon: Table,
+    requiredClubRoles: [CLUB_ROLES.OWNER, CLUB_ROLES.MANAGER],
+    requiresActiveClub: true,
+  },
+];
 
 const HomePage = () => {
-  const [accessLevel, setAccessLevel] = useState(null);
-  const navigate = useNavigate();
-
-  useEffect(() => {
-    const storedAccessLevel = sessionStorage.getItem('accessLevel');
-    if (!storedAccessLevel) {
-      navigate('/login');
-    }
-    setAccessLevel(storedAccessLevel);
-  }, [navigate]);
+  const { session } = useAuth();
+  const visibleCards = cards.filter(
+    (card) =>
+      hasRouteAccess(session, card) &&
+      (!card.requiresActiveClub || session.activeClubId),
+  );
 
   return (
-    <div className={styles.container}>
-      <Row gutter={[32, 32]}>
-        <Col xs={24} md={12}>
-          <Link to="/export" className={`${styles.activeLink} ${accessLevel !== 'full' && styles.disabledLink}`}>
-            <div
-              className={`${styles.cardContent} ${accessLevel !== 'full' && styles.disabledCard}`}
-              style={{ backgroundColor: 'rgb(194, 246, 207)' }}
-            >
-              <div>
-                <h3 className={styles.cardName}>Экспорт статистики</h3>
-                <p style={{ marginTop: '5px', color: 'grey', fontSize: 'min(5vw, 20px)' }}>
-                  {accessLevel !== 'full' && '(нет доступа)'}
-                </p>
-              </div>
-              <TableOutlined className={styles.icon} />
-            </div>
+    <div className="mx-auto max-w-6xl p-4 md:p-8">
+      <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
+        {visibleCards.map((card) => (
+          <Link
+            key={card.to}
+            to={card.to}
+            className="flex min-h-32 items-center justify-between rounded-lg border border-border bg-card p-6 shadow-sm transition-colors hover:bg-accent/40"
+          >
+            <h3 className="text-xl font-semibold tracking-tight">
+              {card.title}
+            </h3>
+            <card.icon className="h-10 w-10 shrink-0 text-muted-foreground" />
           </Link>
-        </Col>
-
-        <Col xs={24} md={12}>
-          <Link to="/dashboard" className={`${styles.activeLink} ${styles.disabledLink}`}>
-            <div
-              className={`${styles.cardContent} ${styles.disabledCard}`}
-              style={{ backgroundColor: 'rgb(216, 226, 255)' }}
-            >
-              <div>
-                <h3 className={styles.cardName}>Дашборд (скоро)</h3>
-                <p style={{ marginTop: '5px', color: 'grey', fontSize: 'min(5vw, 20px)' }}>
-                  {accessLevel !== 'full' && '(нет доступа)'}
-                </p>
-              </div>
-              <BarChartOutlined className={styles.icon} />
-            </div>
-          </Link>
-        </Col>
-      </Row>
-
-      <Row gutter={[32, 32]} style={{ marginTop: 32 }}>
-        <Col xs={24} md={12}>
-          <Link to="/admin" className={`${styles.activeLink}`}>
-            <div className={`${styles.cardContent}`} style={{ backgroundColor: 'rgb(255, 216, 216)' }}>
-              <h3 className={styles.cardName}>Панель администратора</h3>
-              <UserOutlined className={styles.icon} />
-            </div>
-          </Link>
-        </Col>
-      </Row>
+        ))}
+      </div>
     </div>
   );
 };

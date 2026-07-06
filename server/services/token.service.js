@@ -1,25 +1,41 @@
 const axios = require('axios');
 const https = require('https');
 const cron = require('node-cron');
+const { Club } = require('../models'); // Подключаем модель для поиска всех клубов
+const { getSmartshellCompanyId } = require('../utils/clubSettings');
 
-// Мы используем переменную в памяти для кэширования токена.
-// Это простое и эффективное решение для приложения с одним экземпляром.
-let managerToken = null;
-let lastError = null;
+// Cache is keyed by Smartshell company id, not by local DB Club.id.
+const tokenCache = {};
+const errorCache = {};
 
 const agent = new https.Agent({
   rejectUnauthorized: false,
 });
 
-/**
- * Эта функция содержит основную логику для получения токена.
- * Она вызывается только самим сервисом, а не контроллерами.
- */
-const fetchNewManagerToken = async (clubId = 6816) => {
-  console.log('Попытка получить новый токен Smartshell...');
+const fetchNewManagerToken = async (smartshellCompanyId) => {
+  if (!smartshellCompanyId) {
+    console.error('fetchNewManagerToken: Не передан Smartshell company id');
+    return null;
+  }
+
+  const login = process.env.SMARTSHELL_MANAGER_LOGIN;
+  const password = process.env.SMARTSHELL_MANAGER_PASSWORD;
+
+  if (!login || !password) {
+    errorCache[smartshellCompanyId] = {
+      error: true,
+      message: 'Smartshell credentials are not configured.',
+    };
+    return null;
+  }
+
+  console.log(
+    `Попытка получить токен Smartshell для company ${smartshellCompanyId}...`,
+  );
+
   const dataManagerLogin = {
     query: `mutation Login {
-      login(input: { login: "79216855543", password: "Toshka3g39!", company_id: ${clubId} }) {
+      login(input: { login: ${JSON.stringify(login)}, password: ${JSON.stringify(password)}, company_id: ${smartshellCompanyId} }) {
         access_token
       }
     }`,
@@ -35,68 +51,91 @@ const fetchNewManagerToken = async (clubId = 6816) => {
 
     if (res.data.errors) {
       const errorMessage = res.data.errors.map((e) => e.message).join(', ');
-      console.error('TOKEN_FETCH_ERROR ->', errorMessage);
-      lastError = { error: true, message: `Не удалось получить токен от Smartshell: ${errorMessage}` };
+      console.error(
+        `TOKEN_FETCH_ERROR [Smartshell company ${smartshellCompanyId}] ->`,
+        errorMessage,
+      );
+      errorCache[smartshellCompanyId] = {
+        error: true,
+        message: `Ошибка Smartshell: ${errorMessage}`,
+      };
       return null;
     } else {
-      console.log('✅ Токен Smartshell успешно получен и закэширован.');
-      lastError = null; // Очищаем последнюю ошибку при успехе
+      console.log(
+        `Токен Smartshell для company ${smartshellCompanyId} успешно закэширован.`,
+      );
+      delete errorCache[smartshellCompanyId];
       return res.data.data.login.access_token;
     }
   } catch (error) {
-    console.error('TOKEN_FETCH_AXIOS_ERROR ->', error.message);
-    lastError = { error: true, message: 'Внутренняя ошибка сервера при получении токена.' };
+    console.error(
+      `TOKEN_FETCH_AXIOS_ERROR [Smartshell company ${smartshellCompanyId}] ->`,
+      error.message,
+    );
+    errorCache[smartshellCompanyId] = {
+      error: true,
+      message: 'Внутренняя ошибка сервера при получении токена.',
+    };
     return null;
   }
 };
 
-/**
- * Это основная функция, которую будут использовать контроллеры.
- * Она возвращает кэшированный токен или пытается получить новый, если кэш пуст.
- */
-const getManagerToken = async (clubId = 6816) => {
-  if (managerToken) {
-    return managerToken;
+const getManagerToken = async (smartshellCompanyId) => {
+  // 1. Если токен есть в кэше для этого клуба — отдаем его
+  if (tokenCache[smartshellCompanyId]) {
+    return tokenCache[smartshellCompanyId];
   }
 
-  // Если токен отсутствует (например, при запуске сервера или после сбоя cron),
-  // пытаемся получить его немедленно в качестве запасного варианта.
-  console.warn('Кэшированный токен не найден. Выполняется запрос по требованию...');
-  const newToken = await fetchNewManagerToken(clubId);
+  // 2. Если кэш пуст — пытаемся получить немедленно
+  console.warn(
+    `Кэш пуст для Smartshell company ${smartshellCompanyId}. Выполняется запрос по требованию...`,
+  );
+  const newToken = await fetchNewManagerToken(smartshellCompanyId);
+
   if (newToken) {
-    managerToken = newToken;
-    return managerToken;
+    tokenCache[smartshellCompanyId] = newToken;
+    return newToken;
   }
 
-  // Если получить новый токен не удалось, возвращаем последнюю известную ошибку.
-  return lastError || { error: true, message: 'Токен недоступен.' };
+  // 3. Если и сейчас не вышло — отдаем ошибку
+  return (
+    errorCache[smartshellCompanyId] || {
+      error: true,
+      message: 'Токен недоступен.',
+    }
+  );
 };
 
-/**
- * Задача, которую будет выполнять cron.
- */
-const refreshTokenTask = async () => {
-  const token = await fetchNewManagerToken();
-  if (token) {
-    managerToken = token;
+// Функция для массового обновления токенов всех клубов
+const refreshAllTokens = async () => {
+  try {
+    const clubs = await Club.findAll({ attributes: ['smartshell_id', 'settings'] });
+
+    if (clubs.length === 0) {
+      console.log('В базе нет клубов для обновления токенов.');
+      return;
+    }
+
+    for (const club of clubs) {
+      const smartshellCompanyId = getSmartshellCompanyId(club);
+      const token = await fetchNewManagerToken(smartshellCompanyId);
+      if (token) {
+        tokenCache[smartshellCompanyId] = token;
+      }
+    }
+  } catch (error) {
+    console.error('Ошибка при массовом обновлении токенов:', error.message);
   }
 };
 
-/**
- * Инициализация сервиса: запуск cron-задачи и первоначальное получение токена.
- */
 const initializeTokenService = () => {
-  // Запускаем задачу дважды в день: в 8:00 и 20:00.
-  // '0 8,20 * * *' означает "в 0 минут, в 8 и 20 часов, каждый день".
-  cron.schedule('0 8,20 * * *', refreshTokenTask, {
+  cron.schedule('0 8,20 * * *', refreshAllTokens, {
     scheduled: true,
-    timezone: 'Europe/Chisinau', // Укажите ваш часовой пояс
+    timezone: 'Europe/Chisinau',
   });
 
-  // Также получаем токен один раз при запуске приложения,
-  // чтобы не ждать первого запроса от пользователя.
-  console.log('Инициализация сервиса токенов...');
-  refreshTokenTask();
+  console.log('Инициализация SaaS сервиса токенов...');
+  refreshAllTokens();
 };
 
 module.exports = {
