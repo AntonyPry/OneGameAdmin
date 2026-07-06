@@ -88,4 +88,40 @@ assert.strictEqual(
   'second-password',
 );
 
+const motivationAndSmartshell = saveSettings(replacePassword, {
+  motivation: {
+    penalties: {
+      secretGuestFailed: 1300,
+    },
+  },
+  smartshell: {
+    managerLogin: 'manager-after-motivation@example.com',
+    managerPassword: '',
+  },
+});
+const normalizedMotivationAndSmartshell = normalizeClubSettings(
+  motivationAndSmartshell,
+  club,
+);
+assert.strictEqual(
+  normalizedMotivationAndSmartshell.motivation.penalties.secretGuestFailed,
+  1300,
+);
+assert.strictEqual(
+  normalizedMotivationAndSmartshell.smartshell.managerPasswordEncrypted,
+  replacedSmartshell.managerPasswordEncrypted,
+);
+
+assert.throws(
+  () =>
+    saveSettings(replacePassword, {
+      motivation: {
+        penalties: {
+          secretToken: 1,
+        },
+      },
+    }),
+  /похоже на секрет/,
+);
+
 console.log('smartshell settings smoke passed');

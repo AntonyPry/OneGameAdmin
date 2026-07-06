@@ -62,6 +62,10 @@ const SENSITIVE_SETTINGS_KEYS = [
   'login',
 ];
 
+const SENSITIVE_SETTINGS_KEY_ALLOWLIST = new Set([
+  'settings.motivation.penalties.secretGuestFailed',
+]);
+
 class ApiError extends Error {
   constructor(status, message, details) {
     super(message);
@@ -92,6 +96,9 @@ const isSensitiveSettingsKey = (key) =>
     normalizeKey(key).includes(sensitiveKey),
   );
 
+const isAllowedSensitiveSettingsPath = (path) =>
+  SENSITIVE_SETTINGS_KEY_ALLOWLIST.has(path);
+
 const assertNoSensitiveSettingsKeys = (value, path = 'settings') => {
   if (Array.isArray(value)) {
     value.forEach((item, index) =>
@@ -105,7 +112,10 @@ const assertNoSensitiveSettingsKeys = (value, path = 'settings') => {
   Object.entries(value).forEach(([key, nestedValue]) => {
     const nestedPath = `${path}.${key}`;
 
-    if (isSensitiveSettingsKey(key)) {
+    if (
+      isSensitiveSettingsKey(key) &&
+      !isAllowedSensitiveSettingsPath(nestedPath)
+    ) {
       throw badRequest(
         `Поле ${nestedPath} похоже на секрет и не может сохраняться в settings`,
       );
