@@ -21,7 +21,7 @@ const isUpstreamTokenError = (result) => {
 
 const sendServiceError = (res, result, fallbackStatus = 400) =>
   res
-    .status(isUpstreamTokenError(result) ? 502 : fallbackStatus)
+    .status(result.statusCode || (isUpstreamTokenError(result) ? 502 : fallbackStatus))
     .send(result);
 
 const startExportHistory = async (req, reportType, { startDate, endDate }) => {
@@ -91,7 +91,7 @@ const paymentsFromPeriod = async (req, res) => {
     const resultsArray = await paymentsService.getResultsArray(
       startDate,
       endDate,
-      req.smartshellCompanyId,
+      req.currentClub,
     );
 
     if (resultsArray.error) {
@@ -124,7 +124,7 @@ const sbpFromPeriod = async (req, res) => {
       { startDate, endDate },
     );
 
-    const managerBearer = await getManagerToken(req.smartshellCompanyId);
+    const managerBearer = await getManagerToken(req.currentClub);
     if (managerBearer.error) {
       await markExportError(exportHistory, managerBearer.message);
       return sendServiceError(res, managerBearer);
@@ -161,7 +161,7 @@ const cashOrdersFromPeriod = async (req, res) => {
       { startDate, endDate },
     );
 
-    const managerBearer = await getManagerToken(req.smartshellCompanyId);
+    const managerBearer = await getManagerToken(req.currentClub);
     if (managerBearer.error) {
       await markExportError(exportHistory, managerBearer.message);
       return sendServiceError(res, managerBearer);
@@ -218,7 +218,7 @@ const getFirstSessionsFromPeriod = async (req, res) => {
       { startDate, endDate },
     );
 
-    const managerBearer = await getManagerToken(req.smartshellCompanyId);
+    const managerBearer = await getManagerToken(req.currentClub);
     if (managerBearer.error) {
       await markExportError(exportHistory, managerBearer.message);
       return sendServiceError(res, managerBearer);

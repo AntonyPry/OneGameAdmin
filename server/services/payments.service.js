@@ -384,9 +384,9 @@ const getFirstClientSessions = async (startDate, endDate, managerBearer) => {
   return { result };
 };
 
-const getResultsArray = async (startDate, endDate, smartshellCompanyId) => {
+const getResultsArray = async (startDate, endDate, club) => {
   try {
-    const managerBearer = await getManagerToken(smartshellCompanyId);
+    const managerBearer = await getManagerToken(club);
     if (managerBearer.error) return managerBearer;
 
     const shiftsStartDateObj = new Date(startDate);

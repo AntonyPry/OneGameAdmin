@@ -1,6 +1,7 @@
 'use strict';
 
 const platformService = require('../services/platform.service');
+const { CLUB_ROLES, isPlatformAdmin } = require('../rbac/roles');
 
 const hasOwn = (object, key) =>
   Object.prototype.hasOwnProperty.call(object || {}, key);
@@ -25,7 +26,10 @@ const handleControllerError = (res, error, label) => {
 
 const getCurrentSettings = async (req, res) => {
   try {
-    const club = await platformService.getCurrentClubSettings(req.dbClubId);
+    const club = await platformService.getCurrentClubSettings(req.dbClubId, {
+      includeSmartshellManagerLogin:
+        isPlatformAdmin(req.user) || req.userClubRole === CLUB_ROLES.OWNER,
+    });
     return res.status(200).send({
       error: false,
       club,
@@ -42,6 +46,7 @@ const updateCurrentSettings = async (req, res) => {
     const club = await platformService.updateCurrentClubSettings(
       req.dbClubId,
       settingsPatch,
+      { includeSmartshellManagerLogin: true },
     );
     return res.status(200).send({
       error: false,

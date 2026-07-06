@@ -179,6 +179,9 @@ export const normalizeClubForm = (club = {}) => {
     club.smartshell_id ??
     smartshell.companyId ??
     '';
+  const hasSmartshellManagerCredentials = Boolean(
+    smartshell.hasManagerCredentials,
+  );
 
   return {
     id: club.id ? String(club.id) : null,
@@ -186,6 +189,10 @@ export const normalizeClubForm = (club = {}) => {
     address: valueToString(club.address),
     openingDate: toInputDate(club.openingDate ?? club.opening_date),
     smartshellCompanyId: valueToString(smartshellCompanyId),
+    smartshellManagerLogin: valueToString(smartshell.managerLogin),
+    smartshellManagerPassword: '',
+    hasSmartshellManagerCredentials,
+    smartshellCredentialsUpdatedAt: smartshell.credentialsUpdatedAt || null,
     settings: {
       motivation: normalizeMotivation(settings),
     },
@@ -236,6 +243,18 @@ export const validateClubSettingsForm = (
 
   if (requireSmartshell && !parsePositiveInteger(form.smartshellCompanyId)) {
     errors.smartshellCompanyId = 'Укажите положительный Smartshell company id';
+  }
+
+  if (requireSmartshell && !form.smartshellManagerLogin.trim()) {
+    errors.smartshellManagerLogin = 'Укажите Smartshell manager login';
+  }
+
+  if (
+    requireSmartshell &&
+    !form.hasSmartshellManagerCredentials &&
+    !form.smartshellManagerPassword.trim()
+  ) {
+    errors.smartshellManagerPassword = 'Укажите Smartshell manager password';
   }
 
   validateNumberFields(
@@ -376,11 +395,31 @@ const numericMotivation = (form) => {
 export const getMotivationPresetFormValues = () =>
   normalizeMotivation({ motivation: DEFAULT_MOTIVATION });
 
-const numericSettings = (form) => ({
+const smartshellSettings = (form) => {
+  const managerPassword = form.smartshellManagerPassword || '';
+  const settings = {
+    companyId: Number.parseInt(form.smartshellCompanyId, 10),
+    managerLogin: form.smartshellManagerLogin.trim(),
+  };
+
+  if (managerPassword.trim()) {
+    settings.managerPassword = managerPassword;
+  }
+
+  return settings;
+};
+
+const numericSettings = (form, { includeSmartshell = false } = {}) => ({
   motivation: numericMotivation(form),
+  ...(includeSmartshell
+    ? {
+        smartshell: smartshellSettings(form),
+      }
+    : {}),
 });
 
-export const buildSettingsPayload = (form) => numericSettings(form);
+export const buildSettingsPayload = (form, options) =>
+  numericSettings(form, options);
 
 export const buildPlatformClubPayload = (form) => ({
   name: form.name.trim(),
@@ -388,10 +427,7 @@ export const buildPlatformClubPayload = (form) => ({
   opening_date: form.openingDate || null,
   smartshellCompanyId: Number.parseInt(form.smartshellCompanyId, 10),
   settings: {
-    ...numericSettings(form),
-    smartshell: {
-      companyId: Number.parseInt(form.smartshellCompanyId, 10),
-    },
+    ...numericSettings(form, { includeSmartshell: true }),
   },
 });
 
@@ -505,6 +541,7 @@ const ClubSettingsForm = ({
   readOnly = false,
   canEditBasic = true,
   canEditSmartshell = true,
+  canViewSmartshellCredentials = canEditSmartshell,
   canEditSettings = true,
 }) => {
   const motivation = form.settings.motivation;
@@ -585,7 +622,7 @@ const ClubSettingsForm = ({
           <LockKeyhole className="mt-0.5 h-4 w-4 shrink-0" />
           <div className="space-y-1">
             <p className="font-medium text-foreground">Режим просмотра</p>
-            <p>Редактировать мотивацию может только владелец клуба.</p>
+            <p>Редактировать настройки может владелец или platform admin.</p>
           </div>
         </div>
       )}
@@ -640,6 +677,54 @@ const ClubSettingsForm = ({
           <div className="flex min-h-16 items-center gap-3 rounded-lg border border-border/70 bg-background/40 px-3 py-2 text-sm text-muted-foreground">
             <ServerCog className="h-4 w-4 shrink-0" />
             <span>Системный ID клуба в Smartshell, не сумма и не процент.</span>
+          </div>
+          {canViewSmartshellCredentials && (
+            <>
+              <TextField
+                id="club-smartshell-manager-login"
+                label="Manager login"
+                value={form.smartshellManagerLogin}
+                error={errors.smartshellManagerLogin}
+                readOnly={smartshellReadOnly}
+                onChange={(value) =>
+                  updateField('smartshellManagerLogin', value)
+                }
+              />
+              <TextField
+                id="club-smartshell-manager-password"
+                label="Manager password"
+                type="password"
+                value={form.smartshellManagerPassword}
+                error={errors.smartshellManagerPassword}
+                readOnly={smartshellReadOnly}
+                onChange={(value) =>
+                  updateField('smartshellManagerPassword', value)
+                }
+              />
+            </>
+          )}
+          <div className="flex min-h-16 items-center justify-between gap-3 rounded-lg border border-border/70 bg-background/40 px-3 py-2 text-sm">
+            <div className="min-w-0">
+              <p className="font-medium text-foreground">
+                {form.hasSmartshellManagerCredentials
+                  ? 'Пароль настроен'
+                  : 'Пароль не настроен'}
+              </p>
+              <p className="truncate text-xs text-muted-foreground">
+                {form.smartshellCredentialsUpdatedAt
+                  ? `Обновлено: ${new Date(
+                      form.smartshellCredentialsUpdatedAt,
+                    ).toLocaleString('ru-RU')}`
+                  : 'Нет даты обновления'}
+              </p>
+            </div>
+            <Badge
+              variant={
+                form.hasSmartshellManagerCredentials ? 'outline' : 'secondary'
+              }
+            >
+              {form.hasSmartshellManagerCredentials ? 'настроено' : 'пусто'}
+            </Badge>
           </div>
         </div>
       </Section>

@@ -11,6 +11,12 @@ const {
   SYSTEM_ROLES,
 } = require('../rbac/roles');
 const { normalizeClubSettings } = require('../utils/clubSettings');
+const {
+  ENCRYPTION_KEY_ENV,
+  CredentialsEncryptionError,
+  encryptCredential,
+} = require('../utils/credentialsCrypto');
+const { invalidateManagerToken } = require('./token.service');
 
 const USER_PUBLIC_ATTRIBUTES = [
   'id',
@@ -109,13 +115,77 @@ const assertNoSensitiveSettingsKeys = (value, path = 'settings') => {
   });
 };
 
-const sanitizeSettingsForResponse = (value) => {
-  if (Array.isArray(value)) return value.map(sanitizeSettingsForResponse);
+const assertNoSensitiveSettingsKeysOutsideSmartshell = (patch) => {
+  const { smartshell, ...nonSmartshellPatch } = patch || {};
+  void smartshell;
+  assertNoSensitiveSettingsKeys(nonSmartshellPatch);
+};
+
+const sanitizeSmartshellForResponse = (
+  smartshell = {},
+  { includeManagerLogin = false } = {},
+) => {
+  const safeSmartshell = {};
+
+  Object.entries(smartshell).forEach(([key, nestedValue]) => {
+    if (
+      [
+        'managerPassword',
+        'managerPasswordPlain',
+        'managerPasswordEncrypted',
+        'password',
+      ].includes(key)
+    ) {
+      return;
+    }
+
+    if (key === 'managerLogin') {
+      if (includeManagerLogin) safeSmartshell.managerLogin = nestedValue || '';
+      return;
+    }
+
+    if (!isSensitiveSettingsKey(key)) {
+      safeSmartshell[key] = sanitizeSettingsForResponse(nestedValue, {
+        includeSmartshellManagerLogin: includeManagerLogin,
+      });
+    }
+  });
+
+  safeSmartshell.companyId = smartshell.companyId ?? null;
+  safeSmartshell.hasManagerCredentials = Boolean(
+    smartshell.hasManagerCredentials,
+  );
+  safeSmartshell.credentialsUpdatedAt =
+    smartshell.credentialsUpdatedAt || null;
+
+  if (includeManagerLogin && !hasOwn(safeSmartshell, 'managerLogin')) {
+    safeSmartshell.managerLogin = '';
+  }
+
+  return safeSmartshell;
+};
+
+const sanitizeSettingsForResponse = (value, options = {}, path = 'settings') => {
+  if (Array.isArray(value)) {
+    return value.map((item, index) =>
+      sanitizeSettingsForResponse(item, options, `${path}[${index}]`),
+    );
+  }
   if (!isPlainObject(value)) return value;
+
+  if (path === 'settings.smartshell') {
+    return sanitizeSmartshellForResponse(value, {
+      includeManagerLogin: Boolean(options.includeSmartshellManagerLogin),
+    });
+  }
 
   return Object.entries(value).reduce((safeValue, [key, nestedValue]) => {
     if (!isSensitiveSettingsKey(key)) {
-      safeValue[key] = sanitizeSettingsForResponse(nestedValue);
+      safeValue[key] = sanitizeSettingsForResponse(
+        nestedValue,
+        options,
+        `${path}.${key}`,
+      );
     }
 
     return safeValue;
@@ -319,7 +389,7 @@ const serializeUserBase = (user) => {
   };
 };
 
-const serializeClubBase = (club) => {
+const serializeClubBase = (club, options = {}) => {
   const plainClub = toPlain(club);
   const settings = toCanonicalSettingsShape(
     normalizeClubSettings(plainClub.settings, plainClub),
@@ -334,7 +404,10 @@ const serializeClubBase = (club) => {
     smartshellId: plainClub.smartshell_id,
     smartshell_id: plainClub.smartshell_id,
     smartshellCompanyId: settings.smartshell.companyId,
-    settings: sanitizeSettingsForResponse(settings),
+    settings: sanitizeSettingsForResponse(settings, {
+      includeSmartshellManagerLogin:
+        options.includeSmartshellManagerLogin !== false,
+    }),
     createdAt: plainClub.createdAt,
     updatedAt: plainClub.updatedAt,
   };
@@ -869,16 +942,72 @@ const applyMotivationPatch = (currentMotivation, patchMotivation) => {
   return nextMotivation;
 };
 
+const parseOptionalSmartshellLogin = (value) =>
+  trimString(value, 'settings.smartshell.managerLogin');
+
+const parseManagerPasswordUpdate = (patchSmartshell) => {
+  if (!hasOwn(patchSmartshell, 'managerPassword')) return undefined;
+
+  const value = patchSmartshell.managerPassword;
+  if (value === undefined || value === null || value === '') return undefined;
+
+  const password = String(value);
+  if (!password.trim()) {
+    throw badRequest('settings.smartshell.managerPassword не может быть пустым');
+  }
+
+  return password;
+};
+
+const encryptSmartshellManagerPassword = (password) => {
+  try {
+    return encryptCredential(password);
+  } catch (error) {
+    if (error instanceof CredentialsEncryptionError) {
+      if (
+        [
+          'CREDENTIALS_ENCRYPTION_KEY_MISSING',
+          'CREDENTIALS_ENCRYPTION_KEY_TOO_SHORT',
+        ].includes(error.code)
+      ) {
+        throw badRequest(
+          `${ENCRYPTION_KEY_ENV} не настроен: задайте длинный случайный ключ перед сохранением Smartshell manager password`,
+        );
+      }
+
+      throw badRequest(error.message);
+    }
+
+    throw error;
+  }
+};
+
+const smartshellTokenCacheFieldsChanged = (
+  previousSettings,
+  nextSettings,
+  previousClub,
+  nextClub = previousClub,
+) => {
+  const previous = normalizeClubSettings(previousSettings, previousClub).smartshell;
+  const next = normalizeClubSettings(nextSettings, nextClub).smartshell;
+
+  return (
+    previous.companyId !== next.companyId ||
+    previous.managerLogin !== next.managerLogin ||
+    previous.managerPasswordEncrypted !== next.managerPasswordEncrypted
+  );
+};
+
 const applySmartshellPatch = (currentSmartshell, patchSmartshell) => {
   assertPlainObject(patchSmartshell, 'settings.smartshell');
 
   Object.keys(patchSmartshell).forEach((key) => {
-    if (key !== 'companyId') {
+    if (!['companyId', 'managerLogin', 'managerPassword'].includes(key)) {
       throw badRequest(`settings.smartshell.${key} не поддерживается`);
     }
   });
 
-  return {
+  const nextSmartshell = {
     ...currentSmartshell,
     ...(hasOwn(patchSmartshell, 'companyId')
       ? {
@@ -890,6 +1019,29 @@ const applySmartshellPatch = (currentSmartshell, patchSmartshell) => {
         }
       : {}),
   };
+  let credentialsChanged = hasOwn(patchSmartshell, 'companyId');
+
+  if (hasOwn(patchSmartshell, 'managerLogin')) {
+    const managerLogin = parseOptionalSmartshellLogin(
+      patchSmartshell.managerLogin,
+    );
+    credentialsChanged =
+      credentialsChanged || managerLogin !== nextSmartshell.managerLogin;
+    nextSmartshell.managerLogin = managerLogin;
+  }
+
+  const nextManagerPassword = parseManagerPasswordUpdate(patchSmartshell);
+  if (nextManagerPassword !== undefined) {
+    nextSmartshell.managerPasswordEncrypted =
+      encryptSmartshellManagerPassword(nextManagerPassword);
+    credentialsChanged = true;
+  }
+
+  if (credentialsChanged) {
+    nextSmartshell.credentialsUpdatedAt = new Date().toISOString();
+  }
+
+  return nextSmartshell;
 };
 
 const mergeSettingsPatch = ({
@@ -904,7 +1056,7 @@ const mergeSettingsPatch = ({
   }
 
   assertPlainObject(patch, 'settings');
-  assertNoSensitiveSettingsKeys(patch);
+  assertNoSensitiveSettingsKeysOutsideSmartshell(patch);
 
   const currentNormalizedSettings = normalizeClubSettings(currentSettings, club);
   const nextSettings = {
@@ -1087,7 +1239,20 @@ const updateClub = async (clubId, payload = {}) => {
     return serializeClubBase(club);
   }
 
+  const shouldInvalidateToken =
+    updatePayload.settings &&
+    smartshellTokenCacheFieldsChanged(
+      plainClub.settings,
+      updatePayload.settings,
+      plainClub,
+      {
+        ...plainClub,
+        smartshell_id: smartshellCompanyId,
+      },
+    );
   const updatedClub = await club.update(updatePayload);
+  if (shouldInvalidateToken) invalidateManagerToken(plainClub.id);
+
   return serializeClubBase(updatedClub);
 };
 
@@ -1110,33 +1275,69 @@ const updateClubSettings = async (clubId, settingsPatch = {}) => {
     allowCustomSettings: true,
   });
   nextSettings.smartshell.companyId = smartshellCompanyId;
+  const shouldInvalidateToken = smartshellTokenCacheFieldsChanged(
+    plainClub.settings,
+    nextSettings,
+    plainClub,
+    { ...plainClub, smartshell_id: smartshellCompanyId },
+  );
 
   const updatedClub = await club.update({
     smartshell_id: smartshellCompanyId,
     settings: nextSettings,
   });
+  if (shouldInvalidateToken) invalidateManagerToken(plainClub.id);
 
   return serializeClubBase(updatedClub);
 };
 
-const getCurrentClubSettings = async (clubId) => {
+const getCurrentClubSettings = async (clubId, options = {}) => {
   const club = await findClubOrThrow(clubId);
-  return serializeClubBase(club);
+  return serializeClubBase(club, options);
 };
 
-const updateCurrentClubSettings = async (clubId, settingsPatch = {}) => {
+const updateCurrentClubSettings = async (
+  clubId,
+  settingsPatch = {},
+  options = {},
+) => {
   const club = await findClubOrThrow(clubId);
   const plainClub = toPlain(club);
+  const currentNormalizedSettings = normalizeClubSettings(
+    plainClub.settings,
+    plainClub,
+  );
+  const smartshellCompanyId =
+    getPayloadSmartshellCompanyId({ settings: settingsPatch }) ||
+    currentNormalizedSettings.smartshell.companyId ||
+    plainClub.smartshell_id;
+
+  if (smartshellCompanyId !== plainClub.smartshell_id) {
+    await assertSmartshellIdAvailable(smartshellCompanyId, plainClub.id);
+  }
+
   const nextSettings = mergeSettingsPatch({
     currentSettings: plainClub.settings,
     patch: settingsPatch,
-    club: plainClub,
-    allowSmartshell: false,
+    club: { ...plainClub, smartshell_id: smartshellCompanyId },
+    allowSmartshell: true,
     allowCustomSettings: false,
   });
+  nextSettings.smartshell.companyId = smartshellCompanyId;
+  const shouldInvalidateToken = smartshellTokenCacheFieldsChanged(
+    plainClub.settings,
+    nextSettings,
+    plainClub,
+    { ...plainClub, smartshell_id: smartshellCompanyId },
+  );
 
-  const updatedClub = await club.update({ settings: nextSettings });
-  return serializeClubBase(updatedClub);
+  const updatedClub = await club.update({
+    smartshell_id: smartshellCompanyId,
+    settings: nextSettings,
+  });
+  if (shouldInvalidateToken) invalidateManagerToken(plainClub.id);
+
+  return serializeClubBase(updatedClub, options);
 };
 
 const listCurrentClubUsers = async (clubId) => {
@@ -1658,4 +1859,9 @@ module.exports = {
   upsertUserMembership,
   updateUserMembership,
   removeUserMembership,
+  __testing: {
+    mergeSettingsPatch,
+    sanitizeSettingsForResponse,
+    smartshellTokenCacheFieldsChanged,
+  },
 };

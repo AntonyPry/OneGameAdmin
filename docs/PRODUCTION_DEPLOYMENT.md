@@ -29,8 +29,7 @@ Required backend environment variables:
 - `DB_USER`
 - `DB_PASS`
 - `JWT_SECRET`
-- `SMARTSHELL_MANAGER_LOGIN`
-- `SMARTSHELL_MANAGER_PASSWORD`
+- `CREDENTIALS_ENCRYPTION_KEY`
 
 Optional backend environment variables:
 
@@ -63,6 +62,11 @@ Template files are committed as:
 
 Copy them to `.env` on the target server and replace every `CHANGE_ME` value
 there. Keep real values only on the server.
+
+Smartshell company id, manager login, and manager password are not configured
+through backend env anymore. They are stored per club and edited in the club
+settings UI. Only `CREDENTIALS_ENCRYPTION_KEY` remains in backend env so the
+backend can encrypt and decrypt stored Smartshell manager passwords.
 
 ## Fresh Server Bootstrap
 
@@ -112,9 +116,14 @@ DB_NAME=onegame_admin
 DB_USER=onegame_admin
 DB_PASS=CHANGE_ME_DB_PASSWORD
 JWT_SECRET=CHANGE_ME_LONG_RANDOM_VALUE
-SMARTSHELL_MANAGER_LOGIN=CHANGE_ME
-SMARTSHELL_MANAGER_PASSWORD=CHANGE_ME
+CREDENTIALS_ENCRYPTION_KEY=CHANGE_ME_LONG_RANDOM_32_PLUS_CHAR_VALUE
 ```
+
+Generate `CREDENTIALS_ENCRYPTION_KEY` on the server and keep it stable between
+restarts. Use a long random value, for example a 64-character hex string from
+`openssl rand -hex 32`. Do not commit the generated value. If this key is
+changed after Smartshell passwords are saved, existing encrypted passwords will
+need to be re-entered in the UI.
 
 Create client env before building:
 
@@ -149,7 +158,9 @@ CURRENT_CLUB_OPENING_DATE=2024-12-01T00:00:00Z
 ```
 
 Use `CURRENT_CLUB_SETTINGS_JSON` only for a JSON object with deliberate
-settings overrides. Secrets must not go there.
+settings overrides. Secrets must not go there. Smartshell manager login and
+password are configured per club from the platform/club settings UI; the
+password is stored encrypted with `CREDENTIALS_ENCRYPTION_KEY`.
 
 To create the first platform administrator, set
 `BOOTSTRAP_ADMIN_EMAIL` and `BOOTSTRAP_ADMIN_PASSWORD` in `server/.env`, then
@@ -161,6 +172,18 @@ npx sequelize-cli db:seed --seed 20260404095705-bootstrap-platform-admin.js
 ```
 
 After that, use the platform admin UI to create club users and memberships.
+
+Smartshell credentials bootstrap after this release:
+
+1. Deploy the updated code and run backend migrations.
+2. Set `CREDENTIALS_ENCRYPTION_KEY` in `server/.env`.
+3. Restart the backend process so the key is loaded.
+4. Sign in as a `platform_admin`.
+5. Open each club's settings UI and fill in Smartshell company id, manager
+   login, and manager password.
+
+Do not put Smartshell manager login or password into `server/.env`,
+`CURRENT_CLUB_SETTINGS_JSON`, runbook docs, logs, or commits.
 
 ## Deploy Checklist
 
@@ -188,6 +211,10 @@ cd /opt/OneGameAdmin/server
 npx sequelize-cli db:migrate
 ```
 
+Before restarting the backend, confirm `server/.env` contains
+`CREDENTIALS_ENCRYPTION_KEY` and does not rely on legacy Smartshell manager
+credential env variables.
+
 Build the client with the production backend URL configured:
 
 ```bash
@@ -202,6 +229,11 @@ pm2 restart index
 pm2 status
 pm2 logs index --lines 100
 ```
+
+After restart, sign in as `platform_admin` and verify every production club has
+Smartshell company id, manager login, and manager password saved in club
+settings. Smartshell-dependent pages will not be able to fetch real data for a
+club until those per-club credentials are present.
 
 ## Smoke Checks
 

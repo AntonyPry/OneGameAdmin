@@ -16,7 +16,6 @@ const currentStats = async (req, res) => {
       startDate,
       endDate,
       dbClubId: req.dbClubId,
-      smartshellCompanyId: req.smartshellCompanyId,
       club: req.currentClub,
     });
 
@@ -36,15 +35,15 @@ const currentStats = async (req, res) => {
 
 const getActiveWorkshift = async (req, res) => {
   try {
-    const { dbClubId, smartshellCompanyId } = req;
+    const { dbClubId } = req;
 
     const currentWorkshift =
-      await adminService.getActiveWorkshiftStartDate(smartshellCompanyId);
+      await adminService.getActiveWorkshiftStartDate(req.currentClub);
 
     if (currentWorkshift?.error) {
-      return res.status(502).send({
+      return res.status(currentWorkshift.statusCode || 502).send({
         error: true,
-        code: 'SMARTSHELL_WORKSHIFT_ERROR',
+        code: currentWorkshift.code || 'SMARTSHELL_WORKSHIFT_ERROR',
         message: currentWorkshift.message || 'Не удалось получить смену',
         currentWorkshift: null,
       });
@@ -91,7 +90,7 @@ const approveAdminResponsibilities = async (req, res) => {
     const result = await adminService.saveAdminResponsibilities({
       adminResponsibilities,
       dbClubId: req.dbClubId,
-      smartshellCompanyId: req.smartshellCompanyId,
+      club: req.currentClub,
       clubSettings: req.currentClubSettings,
     });
 

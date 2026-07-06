@@ -225,9 +225,13 @@ const getSmartshellStatus = (club) => {
     smartshell.last_error ||
     smartshell.error ||
     '';
+  const managerLogin = smartshell.managerLogin || '';
+  const hasManagerCredentials = Boolean(smartshell.hasManagerCredentials);
 
   return {
     smartshellCompanyId,
+    managerLogin,
+    hasManagerCredentials,
     lastSyncAt,
     integrationError: integrationError ? String(integrationError) : '',
   };
@@ -238,6 +242,8 @@ const getClubStatus = (club, userCount) => {
   const issues = [];
 
   if (!smartshell.smartshellCompanyId) issues.push('нет Smartshell id');
+  if (!smartshell.managerLogin) issues.push('нет manager login');
+  if (!smartshell.hasManagerCredentials) issues.push('нет manager password');
   if (smartshell.integrationError) issues.push('ошибка интеграции');
   if (!smartshell.lastSyncAt) issues.push('нет данных синхронизации');
   if (userCount < 1) issues.push('нет пользователей');

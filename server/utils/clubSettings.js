@@ -73,6 +73,10 @@ const DEFAULT_CLUB_SETTINGS = Object.freeze({
   }),
   smartshell: Object.freeze({
     companyId: null,
+    managerLogin: null,
+    managerPasswordEncrypted: null,
+    credentialsUpdatedAt: null,
+    hasManagerCredentials: false,
   }),
 });
 
@@ -99,6 +103,13 @@ const numberWithDefault = (value, fallback) => {
 const optionalInteger = (value) => {
   const number = Number(value);
   return Number.isInteger(number) && number > 0 ? number : null;
+};
+
+const optionalString = (value) => {
+  if (value === undefined || value === null) return null;
+
+  const stringValue = String(value).trim();
+  return stringValue || null;
 };
 
 const getClubValue = (club, key) => {
@@ -262,6 +273,25 @@ const normalizeClubSettings = (rawSettings, club = {}) => {
   const smartshellCompanyId = optionalInteger(
     smartshellSource.companyId ?? settings.smartshellCompanyId ?? clubSmartshellId,
   );
+  const {
+    managerPassword,
+    password,
+    managerPasswordPlain,
+    managerPasswordEncrypted,
+    credentialsUpdatedAt,
+    hasManagerCredentials,
+    ...safeSmartshellSource
+  } = smartshellSource;
+  const normalizedManagerLogin = optionalString(smartshellSource.managerLogin);
+  const normalizedManagerPasswordEncrypted = optionalString(
+    managerPasswordEncrypted,
+  );
+  const normalizedCredentialsUpdatedAt = optionalString(credentialsUpdatedAt);
+
+  void managerPassword;
+  void password;
+  void managerPasswordPlain;
+  void hasManagerCredentials;
 
   return {
     ...settings,
@@ -273,8 +303,16 @@ const normalizeClubSettings = (rawSettings, club = {}) => {
       items: normalizeResponsibilityItems(responsibilitiesSource.items),
     },
     smartshell: {
-      ...smartshellSource,
+      ...safeSmartshellSource,
       companyId: smartshellCompanyId,
+      managerLogin: normalizedManagerLogin,
+      managerPasswordEncrypted: normalizedManagerPasswordEncrypted,
+      credentialsUpdatedAt: normalizedCredentialsUpdatedAt,
+      hasManagerCredentials: Boolean(
+        smartshellCompanyId &&
+          normalizedManagerLogin &&
+          normalizedManagerPasswordEncrypted,
+      ),
     },
   };
 };

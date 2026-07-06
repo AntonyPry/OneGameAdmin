@@ -98,10 +98,9 @@ const normalizeMonthlyPlanRecord = (plan) => {
   };
 };
 
-const getActiveWorkshiftStartDate = async (smartshellCompanyId) => {
-  const managerBearer = await getManagerToken(smartshellCompanyId);
-  if (managerBearer.error)
-    return { error: true, message: managerBearer.message };
+const getActiveWorkshiftStartDate = async (club) => {
+  const managerBearer = await getManagerToken(club);
+  if (managerBearer.error) return managerBearer;
 
   const queryData = {
     query: `query ActiveWorkShift {
@@ -261,7 +260,6 @@ const calculateCurrentStats = async ({
   startDate,
   endDate,
   dbClubId,
-  smartshellCompanyId,
   club,
 }) => {
   const smena = endDate.split(' ')[1].split(':')[0] === '09' ? 'night' : 'day';
@@ -304,7 +302,7 @@ const calculateCurrentStats = async ({
   const resultsArray = await getResultsArray(
     startSmena,
     endDate,
-    smartshellCompanyId,
+    club || dbClubId,
   );
 
   if (resultsArray.error) {
@@ -356,9 +354,7 @@ const calculateCurrentStats = async ({
 
   const dbClub = club || (await Club.findByPk(dbClubId));
   const clubSettings = normalizeClubSettings(dbClub?.settings, dbClub);
-  const workshiftStart = await getActiveWorkshiftStartDate(
-    smartshellCompanyId,
-  );
+  const workshiftStart = await getActiveWorkshiftStartDate(club || dbClubId);
 
   if (workshiftStart?.error) {
     return {
@@ -398,7 +394,7 @@ const calculateCurrentStats = async ({
 const saveAdminResponsibilities = async ({
   adminResponsibilities,
   dbClubId,
-  smartshellCompanyId,
+  club,
   clubSettings,
 }) => {
   const dbClub = clubSettings ? null : await Club.findByPk(dbClubId);
@@ -411,9 +407,7 @@ const saveAdminResponsibilities = async ({
 
   if (validation.error) return validation;
 
-  const currentWorkshift = await getActiveWorkshiftStartDate(
-    smartshellCompanyId,
-  );
+  const currentWorkshift = await getActiveWorkshiftStartDate(club || dbClubId);
   if (currentWorkshift?.error) {
     return {
       ...currentWorkshift,

@@ -104,8 +104,11 @@ Legacy `salaryRates` and `bonusRates` may be normalized during migration, but ne
 Secrets policy:
 
 - Do not store real Smartshell login/password in repository docs or code.
-- For stabilization, prefer environment variables for Smartshell credentials.
-- If per-club credentials are required later, design explicit secure storage before adding UI for secrets.
+- Current secure storage decision: Smartshell company id, manager login, and
+  manager password are configured per club in the club settings UI.
+- Only the credentials encryption key belongs in backend env. Do not put
+  Smartshell manager login/password into env, `CURRENT_CLUB_SETTINGS_JSON`,
+  docs, logs, or commits.
 
 ## Feature Prompt 1: Backend Tenant And Settings Foundation
 

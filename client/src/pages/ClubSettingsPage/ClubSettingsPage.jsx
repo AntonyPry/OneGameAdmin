@@ -17,7 +17,7 @@ import {
   DialogTitle,
 } from '@/components/ui/dialog';
 import { useAuth } from '@/lib/auth-context';
-import { CLUB_ROLES, ROLE_LABELS } from '@/lib/auth-session';
+import { CLUB_ROLES, ROLE_LABELS, SYSTEM_ROLES } from '@/lib/auth-session';
 
 const ErrorBlock = ({ children }) =>
   children ? (
@@ -73,7 +73,7 @@ const ClubSettingsPage = () => {
   const { session } = useAuth();
   const [form, setForm] = useState(() => normalizeClubForm());
   const [savedSettings, setSavedSettings] = useState(() =>
-    buildSettingsPayload(normalizeClubForm()),
+    buildSettingsPayload(normalizeClubForm(), { includeSmartshell: true }),
   );
   const [errors, setErrors] = useState({});
   const [serverError, setServerError] = useState('');
@@ -84,7 +84,10 @@ const ClubSettingsPage = () => {
     settings: null,
     groups: [],
   });
-  const canEditSettings = session.activeClubRole === CLUB_ROLES.OWNER;
+  const isPlatformAdmin = session.systemRole === SYSTEM_ROLES.PLATFORM_ADMIN;
+  const canEditSettings =
+    isPlatformAdmin || session.activeClubRole === CLUB_ROLES.OWNER;
+  const canEditSmartshell = canEditSettings;
 
   const loadSettings = useCallback(async () => {
     try {
@@ -94,7 +97,9 @@ const ClubSettingsPage = () => {
       const response = await api.get('/api/clubs/current/settings');
       const nextForm = normalizeClubForm(response.data?.club || {});
       setForm(nextForm);
-      setSavedSettings(buildSettingsPayload(nextForm));
+      setSavedSettings(
+        buildSettingsPayload(nextForm, { includeSmartshell: true }),
+      );
     } catch (error) {
       setServerError(
         error.response?.data?.message || 'Не удалось загрузить настройки',
@@ -118,7 +123,9 @@ const ClubSettingsPage = () => {
       });
       const nextForm = normalizeClubForm(response.data?.club || {});
       setForm(nextForm);
-      setSavedSettings(buildSettingsPayload(nextForm));
+      setSavedSettings(
+        buildSettingsPayload(nextForm, { includeSmartshell: true }),
+      );
       setConfirmation({ open: false, settings: null, groups: [] });
       toast.success('Настройки сохранены');
     } catch (error) {
@@ -135,13 +142,17 @@ const ClubSettingsPage = () => {
 
     if (!canEditSettings) return;
 
-    const nextErrors = validateClubSettingsForm(form);
+    const nextErrors = validateClubSettingsForm(form, {
+      requireSmartshell: canEditSmartshell,
+    });
     if (Object.keys(nextErrors).length) {
       setErrors(nextErrors);
       return;
     }
 
-    const nextSettings = buildSettingsPayload(form);
+    const nextSettings = buildSettingsPayload(form, {
+      includeSmartshell: canEditSmartshell,
+    });
     const motivationChangeGroups = getMotivationChangeGroups(
       savedSettings,
       nextSettings,
@@ -184,7 +195,7 @@ const ClubSettingsPage = () => {
           <p className="mt-2 text-sm text-muted-foreground">
             {form.name || 'Текущий клуб'}
             {!canEditSettings &&
-              ` · только просмотр, редактирует ${ROLE_LABELS[CLUB_ROLES.OWNER]}`}
+              ` · только просмотр, редактирует ${ROLE_LABELS[CLUB_ROLES.OWNER]} или ${ROLE_LABELS[SYSTEM_ROLES.PLATFORM_ADMIN]}`}
           </p>
         </div>
 
@@ -209,7 +220,8 @@ const ClubSettingsPage = () => {
           }}
           errors={errors}
           canEditBasic={false}
-          canEditSmartshell={false}
+          canEditSmartshell={canEditSmartshell}
+          canViewSmartshellCredentials={canEditSmartshell}
           canEditSettings={canEditSettings}
         />
 
