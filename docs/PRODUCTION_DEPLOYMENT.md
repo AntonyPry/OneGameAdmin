@@ -135,8 +135,21 @@ Run migrations and seed the initial club:
 ```bash
 cd /opt/OneGameAdmin/server
 npx sequelize-cli db:migrate
-npx sequelize-cli db:seed --seed 20260404095704-demo-club.js
+npm run bootstrap:current-club
 ```
+
+`bootstrap:current-club` is idempotent: it creates or updates the current club
+by `CURRENT_CLUB_SMARTSHELL_ID`. Defaults match the current club:
+
+```env
+CURRENT_CLUB_SMARTSHELL_ID=6816
+CURRENT_CLUB_NAME=Основной клуб
+CURRENT_CLUB_ADDRESS=г. Москва, ул. Ленина, д. 1
+CURRENT_CLUB_OPENING_DATE=2024-12-01T00:00:00Z
+```
+
+Use `CURRENT_CLUB_SETTINGS_JSON` only for a JSON object with deliberate
+settings overrides. Secrets must not go there.
 
 To create the first platform administrator, set
 `BOOTSTRAP_ADMIN_EMAIL` and `BOOTSTRAP_ADMIN_PASSWORD` in `server/.env`, then
