@@ -1,124 +1,230 @@
-// pages/AdminPage/AdminPage.jsx
-import React, { useEffect, useState } from 'react';
-import { Button, Divider, Popover, Statistic } from 'antd';
-import { InfoCircleOutlined, CopyOutlined } from '@ant-design/icons';
-import styles from './AdminPage.module.css';
-import axios from 'axios';
-import Standarts_for_admins from './Standarts_for_admins';
-import ManagerModal from './ManagerModal';
-import AwardsForProducts from './AwardsForProducts';
+import React, { useEffect, useMemo, useState } from 'react';
+import api from '@/api';
+import { useAuth } from '@/lib/auth-context';
+import { CLUB_ROLES, isPlatformAdminSession } from '@/lib/auth-session';
+import {
+  AlertCircle,
+  CheckCircle2,
+  Copy,
+  Loader2,
+  ShieldCheck,
+  XCircle,
+} from 'lucide-react';
+import { Button } from '@/components/ui/button';
+import { Separator } from '@/components/ui/separator';
+import {
+  Card,
+  CardHeader,
+  CardTitle,
+  CardContent,
+} from '@/components/ui/card';
+import { Badge } from '@/components/ui/badge';
 
-const responsibilityMap = {
-  clubCleanliness: 'чистота клуба',
-  kitchenCleanliness: 'чистота кухни',
-  quickVkAnswers: 'ответы вк',
-  quickPhoneAnswers: 'ответы телефон',
-  workspaceCleanliness: 'чистота рабочего места',
-  noStrangersNearTheWorkspace: 'посторонние за стойкой',
-  clubClimateControl: 'климат-контроль',
-  refrigeratorOccupancy: 'холодильник не заполнен',
-  foulLanguage: 'маты',
-  reportsDuringDay: 'отчёты в течение дня', // Новый пункт
+import ManagerModal from './ManagerModal';
+
+const CHECK_LABELS = {
+  allTasksCompleted: 'Все задачи выполнены',
+  longMessageResponseCount: 'Долгие или неотвеченные сообщения',
+  uncleanClubPlacesCount: 'Неприбранные места в клубе',
+  dirtyKitchen: 'Беспорядок или грязь на кухне',
+  missedCallNoCallbackCount: 'Пропущенные звонки без перезвона',
+  messyWorkspace: 'Беспорядок на рабочем месте',
+  strangersBehindDesk: 'Посторонние за стойкой',
+  climateControlIssue: 'Проблема с климат-контролем',
+  fridgeNotFilled: 'Холодильники не заполнены',
+  loudSwearingCount: 'Громкий мат',
+  secretGuestFailed: 'Провал тайного гостя',
+};
+
+const DEFAULT_CURRENT_STATS = {
+  totalRevenue: 0,
+  barRevenue: 0,
+  goodsRevenue: 0,
+  servicesRevenue: 0,
+  psRevenue: 0,
+  psServiceRevenue: 0,
+  pcRevenue: 0,
+};
+
+const DEFAULT_PLAN_STATS = {
+  totalRevenue: 0,
+  foodRevenue: 0,
+  chocolateRevenue: 0,
+  drinksRevenue: 0,
+  psServiceRevenue: 0,
+  pcRevenue: 0,
+  isConfigured: false,
+};
+
+const DEFAULT_AWARDS = {
+  baseSalary: 0,
+  taskCompletionBonus: 0,
+  penaltiesTotal: 0,
+  penaltiesBreakdown: [],
+  barBonus: 0,
+  servicesBonus: 0,
+  planMultiplierApplied: false,
+  totalAward: 0,
+};
+
+const getErrorMessage = (error, fallback) =>
+  error.response?.data?.message || error.message || fallback;
+
+const toMoneyNumber = (value) => Math.floor(Number(value) || 0);
+
+const money = (value) => `${toMoneyNumber(value).toLocaleString('ru-RU')} ₽`;
+
+const percent = (fact, plan) =>
+  plan > 0 ? Math.floor(((Number(fact) || 0) / plan) * 100) : 0;
+
+const ratePercent = (rate) => `${Math.round((Number(rate) || 0) * 100)}%`;
+
+const Statistic = ({ title, value, subtext, isGoalMet, valueClass }) => (
+  <div className="min-w-0 space-y-1">
+    <span className="text-sm font-medium text-muted-foreground">{title}</span>
+    <div className="flex min-w-0 flex-wrap items-baseline gap-x-2 gap-y-1">
+      <span
+        className={`${valueClass || 'text-2xl font-bold'} ${isGoalMet ? 'text-green-600' : ''}`}
+      >
+        {value}
+      </span>
+      {subtext && (
+        <span className="text-sm font-medium text-muted-foreground">
+          {subtext}
+        </span>
+      )}
+    </div>
+  </div>
+);
+
+const PayoutLine = ({ label, value, tone = 'default', detail }) => {
+  const toneClass =
+    tone === 'positive'
+      ? 'text-green-600'
+      : tone === 'negative'
+        ? 'text-red-600'
+        : 'text-foreground';
+
+  return (
+    <div className="flex items-start justify-between gap-4 text-sm">
+      <div className="min-w-0">
+        <div className="font-medium">{label}</div>
+        {detail && (
+          <div className="mt-0.5 text-xs text-muted-foreground">{detail}</div>
+        )}
+      </div>
+      <div className={`shrink-0 text-right font-semibold ${toneClass}`}>
+        {value}
+      </div>
+    </div>
+  );
+};
+
+const DecisionMetric = ({ title, value, detail, tone = 'default', badge }) => {
+  const toneClass =
+    tone === 'positive'
+      ? 'text-green-600'
+      : tone === 'warning'
+        ? 'text-amber-700 dark:text-amber-300'
+        : 'text-foreground';
+
+  return (
+    <div className="min-w-0 rounded-md border border-border bg-background p-4">
+      <div className="mb-2 flex min-w-0 items-center justify-between gap-2">
+        <span className="min-w-0 text-sm font-medium text-muted-foreground">
+          {title}
+        </span>
+        {badge}
+      </div>
+      <div className={`break-words text-2xl font-bold ${toneClass}`}>
+        {value}
+      </div>
+      {detail && (
+        <div className="mt-1 text-sm text-muted-foreground">{detail}</div>
+      )}
+    </div>
+  );
 };
 
 const AdminPage = () => {
-  const [currentStatsObject, setCurrentStatsObject] = useState({
-    totalRevenue: 0, // общая выручка
-    goodsRevenue: 0, // выручка за все продукты
-    psServiceRevenue: 0, // выручка за PS5 + услуги + автосимулятор
-    pcRevenue: 0, // выручка за ПК
-  });
+  const { session } = useAuth();
+  const canConfirmChecklist =
+    isPlatformAdminSession(session) ||
+    [CLUB_ROLES.OWNER, CLUB_ROLES.MANAGER].includes(session.activeClubRole);
 
-  const [planStatsObject, setPlanStatsObject] = useState({
-    totalRevenue: 0, // общая выручка
-    foodRevenue: 0, // выручка за всю еду без шоколада
-    chocolateRevenue: 0, // выручка за шоколад
-    drinksRevenue: 0, // выручка за напитки
-    psServiceRevenue: 0, // выручка за PS5 + услуги
-    pcRevenue: 0,
-  });
-
-  const [currentAwardsObject, setCurrentAwardsObject] = useState({
-    baseSalary: 0, // гарантированный оклад
-    goodsBonus: 0, // премия за товары
-    psBonus: 0, // премия за PS5 + услуги
-    pcBonus: 0, // премия за ПК
-    totalAward: 0, // суммарное вознаграждение + фиксированное за доп обязанности
-  });
-
-  const [currentWorkshift, setCurrentWorkshift] = useState({
-    comment: '',
-    created_at: 0,
-    worker: {
-      last_name: '',
-      first_name: '',
-    },
-  });
-
-  // Состояние для модального окна
-  const [standarts_for_adminsModalOpen, setStandarts_for_adminsModalOpen] =
-    useState(false);
-  const [awardsForProductsModalOpen, setAwardsForProductsModalOpen] =
-    useState(false);
+  const [currentStatsObject, setCurrentStatsObject] =
+    useState(DEFAULT_CURRENT_STATS);
+  const [planStatsObject, setPlanStatsObject] = useState(DEFAULT_PLAN_STATS);
+  const [currentAwardsObject, setCurrentAwardsObject] =
+    useState(DEFAULT_AWARDS);
+  const [currentWorkshift, setCurrentWorkshift] = useState(null);
+  const [loadError, setLoadError] = useState('');
+  const [isInitialLoad, setIsInitialLoad] = useState(true);
+  const [isRefreshing, setIsRefreshing] = useState(false);
   const [isManagerModalOpen, setIsManagerModalOpen] = useState(false);
 
-  // Функция для форматирования даты в "YYYY-MM-DD HH:mm:ss"
   const formatDate = (date) => {
     const pad = (num) => String(num).padStart(2, '0');
-    return `${date.getFullYear()}-${pad(date.getMonth() + 1)}-${pad(
-      date.getDate()
-    )} ${pad(date.getHours())}:${pad(date.getMinutes())}:${pad(
-      date.getSeconds()
-    )}`;
+    return `${date.getFullYear()}-${pad(date.getMonth() + 1)}-${pad(date.getDate())} ${pad(date.getHours())}:${pad(date.getMinutes())}:${pad(date.getSeconds())}`;
   };
 
   const getWorkshiftDuration = () => {
-    if (!currentWorkshift.created_at) return '';
-
-    // created_at уже в МСК
+    if (!currentWorkshift?.created_at) return '—';
     const createdAtDate = new Date(
-      currentWorkshift.created_at.replace(' ', 'T') + '+03:00'
+      currentWorkshift.created_at.replace(' ', 'T') + '+03:00',
     );
-    const now = new Date(); // текущее время
-
-    const diffInMs = now - createdAtDate; // корректно сравниваем
-    const diffInMinutes = Math.floor(diffInMs / 1000 / 60);
-    const hours = Math.floor(diffInMinutes / 60);
-    const minutes = diffInMinutes % 60;
-
-    return `${hours} ч ${minutes} мин`;
+    const now = new Date();
+    const diffInMinutes = Math.floor((now - createdAtDate) / 1000 / 60);
+    return `${Math.floor(diffInMinutes / 60)} ч ${diffInMinutes % 60} мин`;
   };
 
   const getShiftType = () => {
-    if (!currentWorkshift.created_at) return '';
+    if (!currentWorkshift?.created_at) return '—';
+    const hours = new Date(
+      currentWorkshift.created_at.replace(' ', 'T') + '+03:00',
+    ).getHours();
+    return hours >= 6 && hours < 12
+      ? 'День'
+      : hours >= 18 && hours < 24
+        ? 'Ночь'
+        : '—';
+  };
 
-    const createdAt = new Date(
-      currentWorkshift.created_at.replace(' ', 'T') + '+03:00'
-    );
-    const hours = createdAt.getHours();
-
-    if (hours >= 6 && hours < 12) {
-      return 'День';
-    } else if (hours >= 18 && hours < 24) {
-      return 'Ночь';
-    } else {
-      return '—';
-    }
+  const resetShiftStats = () => {
+    setCurrentStatsObject(DEFAULT_CURRENT_STATS);
+    setPlanStatsObject(DEFAULT_PLAN_STATS);
+    setCurrentAwardsObject(DEFAULT_AWARDS);
   };
 
   const getAdminStatsData = async () => {
-    try {
-      const activeWorkshift = await axios.get(
-        `${process.env.REACT_APP_BACKEND_URL}/api/admin/getActiveWorkshift`
-      );
-      setCurrentWorkshift(activeWorkshift.data.currentWorkshift);
-      const now = new Date();
-      let startDate = activeWorkshift.data.currentWorkshift.created_at,
-        endDate;
+    if (!session.activeClubId) {
+      setCurrentWorkshift(null);
+      resetShiftStats();
+      setLoadError('Выберите активный клуб для просмотра смены');
+      setIsInitialLoad(false);
+      setIsRefreshing(false);
+      return;
+    }
 
+    try {
+      setIsRefreshing(true);
+      setLoadError('');
+      const responseWorkshift = await api.get('/api/admin/getActiveWorkshift');
+      const activeWorkshift = responseWorkshift.data?.currentWorkshift;
+
+      if (!activeWorkshift || !activeWorkshift.created_at) {
+        setCurrentWorkshift(null);
+        resetShiftStats();
+        return;
+      }
+
+      setCurrentWorkshift(activeWorkshift);
+
+      const now = new Date();
+      let startDate = activeWorkshift.created_at;
+      let endDate;
       const createdAt = new Date(
-        activeWorkshift.data.currentWorkshift.created_at.replace(' ', 'T') +
-          '+03:00'
+        activeWorkshift.created_at.replace(' ', 'T') + '+03:00',
       );
       const hours = createdAt.getHours();
 
@@ -133,779 +239,562 @@ const AdminPage = () => {
         endDate = formatDate(end);
       }
 
-      // Выполнение запроса к бэкенду с параметрами startDate и endDate
-      const response = await axios.get(
-        `${process.env.REACT_APP_BACKEND_URL}/api/admin/currentStats?startDate=${startDate}&endDate=${endDate}`
-      );
-      console.log({
-        currentStatsObject: response.data.currentStatsObject,
-        planStatsObject: response.data.planStatsObject,
-        currentAwardsObject: response.data.currentAwardsObject,
+      if (!endDate) {
+        resetShiftStats();
+        setLoadError('Текущая смена открыта вне поддерживаемого окна');
+        return;
+      }
+
+      const responseStats = await api.get('/api/admin/currentStats', {
+        params: { startDate, endDate },
       });
-      if (response?.data) {
-        setCurrentStatsObject(response.data.currentStatsObject);
-        setPlanStatsObject(response.data.planStatsObject);
-        setCurrentAwardsObject(response.data.currentAwardsObject);
+
+      if (responseStats?.data) {
+        setCurrentStatsObject({
+          ...DEFAULT_CURRENT_STATS,
+          ...(responseStats.data.currentStatsObject || {}),
+        });
+        setPlanStatsObject({
+          ...DEFAULT_PLAN_STATS,
+          ...(responseStats.data.planStatsObject || {}),
+        });
+        setCurrentAwardsObject({
+          ...DEFAULT_AWARDS,
+          ...(responseStats.data.currentAwardsObject || {}),
+        });
       }
     } catch (error) {
-      console.log('adminStats ERROR ->', error);
+      setCurrentWorkshift(null);
+      resetShiftStats();
+      setLoadError(
+        getErrorMessage(
+          error,
+          'Не удалось получить данные смены из Smartshell',
+        ),
+      );
+    } finally {
+      setIsInitialLoad(false);
+      setIsRefreshing(false);
     }
   };
 
   useEffect(() => {
+    setIsInitialLoad(true);
     getAdminStatsData();
-    const intervalId = setInterval(() => {
-      getAdminStatsData();
-    }, 60000); // интервал 1 минута
-
+    const intervalId = setInterval(getAdminStatsData, 60000);
     return () => clearInterval(intervalId);
-  }, []);
+  }, [session.activeClubId]);
 
-  const renderResponsibilityCard = () => {
-    return (
-      <div
-        className={styles.cardContent}
-        style={{ backgroundColor: 'rgb(255, 255, 255)' }}
-      >
-        <h3 className={styles.cardName}>Обязанности администратора</h3>
-        <ul
-          style={{
-            listStyle: 'none',
-            paddingLeft: 0,
-            margin: '12px 0',
-            display: 'grid',
-            gridTemplateColumns: '1fr 1fr',
-            columnGap: '16px',
-            rowGap: '4px',
-          }}
-        >
-          {Object.entries(responsibilityMap).map(([key, label]) => {
-            const check = currentAwardsObject?.responsibilitiesCheck;
-            let color = 'gray';
-
-            if (check?.status === 'ok') {
-              color = 'green';
-            } else if (check?.status === 'fail') {
-              color = check.notPassed?.includes(key) ? 'red' : 'green';
-            }
-
-            return (
-              <li
-                key={key}
-                style={{ color, fontSize: '14px', marginBottom: '4px' }}
-              >
-                ● {label}
-              </li>
-            );
-          })}
-        </ul>
-      </div>
-    );
+  const breakdown = currentAwardsObject?.payoutBreakdown || {};
+  const planBreakdown = breakdown.plan || {};
+  const bonusBreakdown = breakdown.bonuses || {};
+  const penalties = breakdown.penalties || {
+    total: currentAwardsObject.penaltiesTotal || 0,
+    items: currentAwardsObject.penaltiesBreakdown || [],
   };
+  const taskBonus = breakdown.taskCompletionBonus || {};
+  const hasPlanForShift = Boolean(
+    planStatsObject?.isConfigured || planStatsObject?.id,
+  );
+  const totalPlan = planStatsObject?.totalRevenue || 0;
+  const totalFact = currentStatsObject?.totalRevenue || 0;
+  const totalNeed = totalPlan - totalFact;
+  const remainingToX2 = Math.max(totalNeed, 0);
+  const planCompleted =
+    planBreakdown.isCompleted ||
+    (hasPlanForShift && totalPlan > 0 && totalFact >= totalPlan);
+  const planProgress = Math.min(percent(totalFact, totalPlan), 100);
+  const check = currentAwardsObject?.responsibilitiesCheck;
+  const configuredTaskBonus = toMoneyNumber(
+    taskBonus.configured ?? currentAwardsObject?.taskCompletionBonus,
+  );
+  const savedCheckList = check?.checklist || {};
+  const payoutWithoutPenalties =
+    toMoneyNumber(currentAwardsObject?.baseSalary) +
+    (savedCheckList.allTasksCompleted === true
+      ? configuredTaskBonus
+      : toMoneyNumber(currentAwardsObject?.taskCompletionBonus)) +
+    toMoneyNumber(currentAwardsObject?.barBonus) +
+    toMoneyNumber(currentAwardsObject?.servicesBonus);
+  const penaltyLoss = Math.max(
+    payoutWithoutPenalties - toMoneyNumber(currentAwardsObject?.totalAward),
+    0,
+  );
+  const x2RateDetail = planCompleted
+    ? `Бар ${ratePercent(bonusBreakdown.bar?.rate)}, услуги ${ratePercent(
+        bonusBreakdown.services?.rate,
+      )}`
+    : `После плана: бар ${ratePercent(
+        (bonusBreakdown.bar?.baseRate || 0) * (planBreakdown.multiplier || 2),
+      )}, услуги ${ratePercent(
+        (bonusBreakdown.services?.baseRate || 0) *
+          (planBreakdown.multiplier || 2),
+      )}`;
+  const notPassedItems = useMemo(() => {
+    const items = check?.notPassedItems;
+    if (Array.isArray(items) && items.length) return items;
 
-  return (
-    <div className={styles.container}>
-      <div style={{ display: 'flex', gap: '32px' }}>
-        <div
-          style={{
-            flex: 1,
-            display: 'flex',
-            flexDirection: 'column',
-            gap: '32px',
-          }}
-        >
-          <div
-            className={styles.cardContent}
-            style={{
-              backgroundColor: 'rgb(255, 255, 255)',
-              position: 'relative',
-            }}
-          >
-            <h3 className={styles.cardName}>
-              Продай еще, чтобы выполнить план:
-            </h3>
-            <div
-              style={{
-                marginTop: 16,
-                display: 'grid',
-                gridTemplateColumns: '1fr 1fr',
-                gap: '16px',
-              }}
-            >
-              <Statistic
-                title="Товары"
-                value={
-                  planStatsObject.foodRevenue +
-                    planStatsObject.drinksRevenue +
-                    planStatsObject.chocolateRevenue -
-                    currentStatsObject.goodsRevenue >
-                  0
-                    ? `${
-                        planStatsObject.foodRevenue +
-                        planStatsObject.drinksRevenue +
-                        planStatsObject.chocolateRevenue -
-                        currentStatsObject.goodsRevenue
-                      }₽`
-                    : '✅'
-                }
-                valueStyle={{
-                  fontSize: '18px',
-                  fontWeight: '600',
-                  lineHeight: '1.2',
-                }}
-              />
-              <Statistic
-                title="PS5 + услуги + автосимулятор"
-                value={
-                  planStatsObject.psServiceRevenue -
-                    currentStatsObject.psServiceRevenue >
-                  0
-                    ? `${
-                        planStatsObject.psServiceRevenue -
-                        currentStatsObject.psServiceRevenue
-                      }₽`
-                    : '✅'
-                }
-                valueStyle={{
-                  fontSize: '18px',
-                  fontWeight: '600',
-                  lineHeight: '1.2',
-                }}
-              />
-              <Statistic
-                title="ПК"
-                value={
-                  planStatsObject.pcRevenue - currentStatsObject.pcRevenue > 0
-                    ? `${
-                        planStatsObject.pcRevenue - currentStatsObject.pcRevenue
-                      }₽`
-                    : '✅'
-                }
-                valueStyle={{
-                  fontSize: '18px',
-                  fontWeight: '600',
-                  lineHeight: '1.2',
-                }}
-              />
-            </div>
-          </div>
+    return (check?.notPassed || []).map((key) => ({
+      key,
+      label: CHECK_LABELS[key] || key,
+    }));
+  }, [check]);
 
-          <div
-            className={styles.cardContent}
-            style={{
-              backgroundColor: 'rgb(255, 255, 255)',
-              position: 'relative',
-            }}
-          >
-            <h3 className={styles.cardName}>Статистика</h3>
-            <div style={{ marginTop: 16 }}>
-              <div>
-                <h4 style={{ margin: 0, marginBottom: '8px' }}>Выручка:</h4>
-                <div style={{ display: 'flex', gap: '16px' }}>
-                  <div style={{ flex: '0 0 33%' }}>
-                    <Statistic
-                      title="Факт"
-                      value={`${currentStatsObject.totalRevenue}₽`}
-                      valueStyle={{
-                        fontSize: '18px',
-                        fontWeight: '600',
-                        lineHeight: '1.2',
-                      }}
-                    />
-                  </div>
-                  <div style={{ flex: '0 0 33%' }}>
-                    <Statistic
-                      title="План"
-                      value={`${planStatsObject.totalRevenue}₽`}
-                      valueStyle={{
-                        fontSize: '18px',
-                        fontWeight: '600',
-                        lineHeight: '1.2',
-                      }}
-                    />
-                  </div>
-                  <div style={{ flex: '0 0 33%' }}>
-                    <Statistic
-                      title="Выполнение"
-                      value={
-                        planStatsObject.totalRevenue
-                          ? `${Math.floor(
-                              (currentStatsObject.totalRevenue /
-                                planStatsObject.totalRevenue) *
-                                100
-                            )}%`
-                          : '-'
-                      }
-                      valueStyle={{
-                        fontSize: '18px',
-                        fontWeight: '600',
-                        lineHeight: '1.2',
-                      }}
-                    />
-                  </div>
-                </div>
-              </div>
+  const adminName = currentWorkshift?.worker
+    ? `${currentWorkshift.worker.first_name} ${currentWorkshift.worker.last_name}`
+    : 'Неизвестный админ';
+  const shiftType = getShiftType();
+  const shiftPhrase =
+    shiftType === 'День'
+      ? 'дневная смена'
+      : shiftType === 'Ночь'
+        ? 'ночная смена'
+        : 'смена';
+  const shiftBadge =
+    shiftType === 'День'
+      ? 'Дневная смена'
+      : shiftType === 'Ночь'
+        ? 'Ночная смена'
+        : 'Смена';
 
-              <Divider style={{ backgroundColor: '#ccc', margin: '12px 0' }} />
+  const handleCopy = () => {
+    const checkStatus =
+      check?.status === 'ok'
+        ? 'пройдена'
+        : check?.status === 'fail'
+          ? `есть нарушения: ${notPassedItems.map((item) => item.label).join(', ')}`
+          : 'не подтверждена';
 
-              <div>
-                <h4 style={{ marginBottom: '8px' }}>Товары:</h4>
-                <div style={{ display: 'flex', gap: '16px' }}>
-                  <div style={{ flex: '0 0 33%' }}>
-                    <Statistic
-                      title="Факт"
-                      value={`${currentStatsObject.goodsRevenue}₽`}
-                      valueStyle={{
-                        fontSize: '18px',
-                        fontWeight: '600',
-                        lineHeight: '1.2',
-                      }}
-                    />
-                  </div>
-                  <div style={{ flex: '0 0 33%' }}>
-                    <Statistic
-                      title="План"
-                      value={`${
-                        planStatsObject.foodRevenue +
-                        planStatsObject.drinksRevenue +
-                        planStatsObject.chocolateRevenue
-                      }₽`}
-                      valueStyle={{
-                        fontSize: '18px',
-                        fontWeight: '600',
-                        lineHeight: '1.2',
-                      }}
-                    />
-                  </div>
-                  <div style={{ flex: '0 0 33%' }}>
-                    <Statistic
-                      title="Выполнение"
-                      value={
-                        planStatsObject.foodRevenue &&
-                        planStatsObject.drinksRevenue &&
-                        planStatsObject.chocolateRevenue
-                          ? `${Math.floor(
-                              (currentStatsObject.goodsRevenue /
-                                (planStatsObject.foodRevenue +
-                                  planStatsObject.drinksRevenue +
-                                  planStatsObject.chocolateRevenue)) *
-                                100
-                            )}%`
-                          : '-'
-                      }
-                      valueStyle={{
-                        fontSize: '18px',
-                        fontWeight: '600',
-                        lineHeight: '1.2',
-                      }}
-                    />
-                  </div>
-                </div>
-              </div>
-
-              {/* <Divider style={{ backgroundColor: '#ccc', margin: '12px 0' }} />
-
-              <div>
-                <h4 style={{ marginBottom: '8px' }}>Напитки:</h4>
-                <div style={{ display: 'flex', gap: '16px' }}>
-                  <div style={{ flex: '0 0 33%' }}>
-                    <Statistic
-                      title="Факт"
-                      value={`${currentStatsObject.drinksRevenue}₽`}
-                      valueStyle={{ fontSize: '20px', fontWeight: 'bold' }}
-                    />
-                  </div>
-                  <div style={{ flex: '0 0 33%' }}>
-                    <Statistic
-                      title="План"
-                      value={`${planStatsObject.drinksRevenue}₽`}
-                      valueStyle={{ fontSize: '20px', fontWeight: 'bold' }}
-                    />
-                  </div>
-                  <div style={{ flex: '0 0 33%' }}>
-                    <Statistic
-                      title="Выполнение"
-                      value={`${Math.floor((currentStatsObject.drinksRevenue / planStatsObject.drinksRevenue) * 100)}%`}
-                      valueStyle={{ fontSize: '20px', fontWeight: 'bold' }}
-                    />
-                  </div>
-                </div>
-              </div>
-
-              <Divider style={{ backgroundColor: '#ccc', margin: '12px 0' }} />
-
-              <div>
-                <h4 style={{ marginBottom: '8px' }}>Шоколад:</h4>
-                <div style={{ display: 'flex', gap: '16px' }}>
-                  <div style={{ flex: '0 0 33%' }}>
-                    <Statistic
-                      title="Факт"
-                      value={`${currentStatsObject.chocolateRevenue}₽`}
-                      valueStyle={{ fontSize: '20px', fontWeight: 'bold' }}
-                    />
-                  </div>
-                  <div style={{ flex: '0 0 33%' }}>
-                    <Statistic
-                      title="План"
-                      value={`${planStatsObject.chocolateRevenue}₽`}
-                      valueStyle={{ fontSize: '20px', fontWeight: 'bold' }}
-                    />
-                  </div>
-                  <div style={{ flex: '0 0 33%' }}>
-                    <Statistic
-                      title="Выполнение"
-                      value={`${Math.floor(
-                        (currentStatsObject.chocolateRevenue / planStatsObject.chocolateRevenue) * 100
-                      )}%`}
-                      valueStyle={{ fontSize: '20px', fontWeight: 'bold' }}
-                    />
-                  </div>
-                </div>
-              </div> */}
-
-              <div>
-                <h4 style={{ marginBottom: '8px' }}>
-                  PS5 + услуги + автосимулятор:
-                </h4>
-                <div style={{ display: 'flex', gap: '16px' }}>
-                  <div style={{ flex: '0 0 33%' }}>
-                    <Statistic
-                      title="Факт"
-                      value={`${currentStatsObject.psServiceRevenue}₽`}
-                      valueStyle={{
-                        fontSize: '18px',
-                        fontWeight: '600',
-                        lineHeight: '1.2',
-                      }}
-                    />
-                  </div>
-                  <div style={{ flex: '0 0 33%' }}>
-                    <Statistic
-                      title="План"
-                      value={`${planStatsObject.psServiceRevenue}₽`}
-                      valueStyle={{
-                        fontSize: '18px',
-                        fontWeight: '600',
-                        lineHeight: '1.2',
-                      }}
-                    />
-                  </div>
-                  <div style={{ flex: '0 0 33%' }}>
-                    <Statistic
-                      title="Выполнение"
-                      value={
-                        planStatsObject.psServiceRevenue
-                          ? `${Math.floor(
-                              (currentStatsObject.psServiceRevenue /
-                                planStatsObject.psServiceRevenue) *
-                                100
-                            )}%`
-                          : '-'
-                      }
-                      valueStyle={{
-                        fontSize: '18px',
-                        fontWeight: '600',
-                        lineHeight: '1.2',
-                      }}
-                    />
-                  </div>
-                </div>
-              </div>
-
-              <div>
-                <h4 style={{ marginBottom: '8px' }}>ПК:</h4>
-                <div style={{ display: 'flex', gap: '16px' }}>
-                  <div style={{ flex: '0 0 33%' }}>
-                    <Statistic
-                      title="Факт"
-                      value={`${currentStatsObject.pcRevenue}₽`}
-                      titleStyle={{ margin: 0 }}
-                      valueStyle={{
-                        fontSize: '18px',
-                        fontWeight: '600',
-                        lineHeight: '1.2',
-                      }}
-                    />
-                  </div>
-                  <div style={{ flex: '0 0 33%' }}>
-                    <Statistic
-                      title="План"
-                      value={`${planStatsObject.pcRevenue}₽`}
-                      valueStyle={{
-                        fontSize: '18px',
-                        fontWeight: '600',
-                        lineHeight: '1.2',
-                      }}
-                    />
-                  </div>
-                  <div style={{ flex: '0 0 33%' }}>
-                    <Statistic
-                      title="Выполнение"
-                      value={
-                        planStatsObject.pcRevenue
-                          ? `${Math.floor(
-                              (currentStatsObject.pcRevenue /
-                                planStatsObject.pcRevenue) *
-                                100
-                            )}%`
-                          : '-'
-                      }
-                      valueStyle={{
-                        fontSize: '18px',
-                        fontWeight: '600',
-                        lineHeight: '1.2',
-                      }}
-                    />
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        {/* Правая колонка: карточки 2 и 4 */}
-        <div
-          style={{
-            flex: 1,
-            display: 'flex',
-            flexDirection: 'column',
-            gap: '32px',
-          }}
-        >
-          {/* Карточка 2 */}
-          <div
-            className={styles.cardContent}
-            style={{
-              backgroundColor: 'rgb(255, 255, 255)',
-              position: 'relative',
-            }}
-          >
-            <h3 className={styles.cardName}>Текущая премия:</h3>
-            <div
-              style={{
-                marginTop: 2,
-                display: 'grid',
-                gridTemplateColumns: '1fr 1fr',
-                gap: '16px',
-              }}
-            >
-              <Statistic
-                title="Оклад"
-                value={`${currentAwardsObject.baseSalary}₽`}
-                valueStyle={{
-                  fontSize: '18px',
-                  fontWeight: '600',
-                  lineHeight: '1.2',
-                }}
-              />
-              <Statistic
-                title="За выполнение обязанностей"
-                value={'+500₽'}
-                formatter={() => (
-                  <>
-                    <span
-                      style={{
-                        color:
-                          currentAwardsObject?.responsibilitiesCheck?.status ===
-                          'ok'
-                            ? 'green'
-                            : currentAwardsObject?.responsibilitiesCheck
-                                ?.status === 'fail'
-                            ? 'red'
-                            : 'gray',
-                        textDecoration:
-                          currentAwardsObject?.responsibilitiesCheck?.status ===
-                          'fail'
-                            ? 'line-through'
-                            : 'none',
-                      }}
-                    >
-                      {'+500₽'}
-                    </span>
-                    <Popover
-                      content={
-                        <span>
-                          +500₽ при выполнении всех{' '}
-                          <a
-                            href="#"
-                            onClick={(e) => {
-                              e.preventDefault();
-                              setStandarts_for_adminsModalOpen(true);
-                            }}
-                          >
-                            обязательств
-                          </a>
-                        </span>
-                      }
-                      trigger="hover"
-                      placement="bottom"
-                      title=""
-                    >
-                      <InfoCircleOutlined
-                        style={{
-                          marginLeft: 8,
-                          cursor: 'pointer',
-                          fontSize: '16px',
-                        }}
-                      />
-                    </Popover>
-                    {/* {currentAwardsObject?.responsibilitiesCheck?.status === 'fail' &&
-                      currentAwardsObject?.responsibilitiesCheck?.notPassed?.length > 0 && (
-                        <div style={{ fontSize: '12px', color: 'red', marginTop: 4 }}>
-                          Нарушения:{' '}
-                          {currentAwardsObject?.responsibilitiesCheck?.notPassed
-                            .map((key) => responsibilityMap[key] || key)
-                            .join(', ')}
-                        </div>
-                      )} */}
-                  </>
-                )}
-                valueStyle={{
-                  fontSize: '18px',
-                  fontWeight: '600',
-                  lineHeight: '1.2',
-                }}
-              />
-              <Statistic
-                title="Товары"
-                formatter={() => (
-                  <>
-                    {`${currentAwardsObject.goodsBonus}₽`}
-                    {/* <Popover
-                      content={
-                        <span>
-                          при выполнении{' '}
-                          <a
-                            href="#"
-                            onClick={(e) => {
-                              e.preventDefault();
-                              setAwardsForProductsModalOpen(true);
-                            }}
-                          >
-                            условий
-                          </a>
-                        </span>
-                      }
-                      trigger="hover"
-                      placement="bottom"
-                      title=""
-                    >
-                      <InfoCircleOutlined style={{ marginLeft: 8, cursor: 'pointer', fontSize: '16px' }} />
-                    </Popover> */}
-                  </>
-                )}
-                valueStyle={{
-                  fontSize: '18px',
-                  fontWeight: '600',
-                  lineHeight: '1.2',
-                }}
-              />
-              <Statistic
-                title="PS, услуги, автосимулятор"
-                formatter={() => <>{`${currentAwardsObject.psBonus}₽`}</>}
-                valueStyle={{
-                  fontSize: '18px',
-                  fontWeight: '600',
-                  lineHeight: '1.2',
-                }}
-              />
-              <Statistic
-                title="ПК"
-                formatter={() => <>{`${currentAwardsObject.pcBonus}₽`}</>}
-                valueStyle={{
-                  fontSize: '18px',
-                  fontWeight: '600',
-                  lineHeight: '1.2',
-                }}
-              />
-              <Statistic
-                title="Суммарно"
-                value={`${currentAwardsObject.totalAward}₽`}
-                valueStyle={{
-                  fontSize: '18px',
-                  fontWeight: '600',
-                  lineHeight: '1.2',
-                }}
-              />
-            </div>
-            <div
-              style={{
-                marginTop: 16,
-                display: 'grid',
-                gridTemplateColumns: '1fr 1fr',
-                gap: '16px',
-              }}
-            >
-              <div style={{ display: 'flex', gap: '12px' }}>
-                <Button
-                  style={{ width: '250px', alignSelf: 'flex-end' }}
-                  onClick={(e) => {
-                    e.preventDefault();
-                    setIsManagerModalOpen(true);
-                  }}
-                >
-                  Подтвердить выполнение
-                </Button>
-                <Button
-                  style={{ alignSelf: 'flex-end' }}
-                  onClick={() => {
-                    const planGoods =
-                      planStatsObject.foodRevenue +
-                      planStatsObject.drinksRevenue +
-                      planStatsObject.chocolateRevenue;
-                    const goodsFact = currentStatsObject.goodsRevenue;
-                    const psFact = currentStatsObject.psServiceRevenue;
-                    const psPlan = planStatsObject.psServiceRevenue;
-                    const pcFact = currentStatsObject.pcRevenue;
-                    const pcPlan = planStatsObject.pcRevenue;
-                    const totalFact = currentStatsObject.totalRevenue;
-                    const totalPlan = planStatsObject.totalRevenue;
-
-                    const percent = (fact, plan) =>
-                      plan > 0 ? Math.floor((fact / plan) * 100) : 0;
-
-                    const doneEmoji = (fact, plan) =>
-                      fact >= plan ? '✅' : '❌';
-
-                    const totalPercent = percent(totalFact, totalPlan);
-                    const goodsPercent = percent(goodsFact, planGoods);
-                    const psPercent = percent(psFact, psPlan);
-                    const pcPercent = percent(pcFact, pcPlan);
-
-                    const responsibilities =
-                      currentAwardsObject.responsibilitiesCheck;
-                    let responsibilityInfo =
-                      'Выполнение обязанностей: не подтверждено';
-                    if (responsibilities?.status === 'ok') {
-                      responsibilityInfo =
-                        'Выполнение обязанностей: подтверждено ✅';
-                    } else if (responsibilities?.status === 'fail') {
-                      const failed =
-                        responsibilities.notPassed
-                          ?.map((key) => responsibilityMap[key] || key)
-                          .join(', ') || '';
-                      responsibilityInfo = `Выполнение обязанностей: не выполнено ❌\nНарушения: ${failed}`;
-                    }
-
-                    const adminName = `${currentWorkshift.worker.first_name} ${currentWorkshift.worker.last_name}`;
-
-                    const textToCopy = `
+    const textToCopy = `
 ${currentWorkshift?.created_at?.split(' ')[0] || '-'} - ${getShiftType()}
 Админ: ${adminName}
 Начало: ${currentWorkshift?.created_at?.split(' ')[1] || '-'}
 Продолжительность: ${getWorkshiftDuration()}
 
-                
 Выручка:
-Общая: ${totalFact}/${totalPlan} (${totalPercent}%) ${doneEmoji(
-                      totalFact,
-                      totalPlan
-                    )}
-Товары: ${goodsFact}/${planGoods} (${goodsPercent}%) ${doneEmoji(
-                      goodsFact,
-                      planGoods
-                    )}
-PS+услуги: ${psFact}/${psPlan} (${psPercent}%) ${doneEmoji(psFact, psPlan)}
-ПК: ${pcFact}/${pcPlan} (${pcPercent}%) ${doneEmoji(pcFact, pcPlan)}
+Общая: ${totalFact}/${totalPlan} (${percent(totalFact, totalPlan)}%)
+Бар: ${currentStatsObject?.barRevenue || currentStatsObject?.goodsRevenue || 0}
+Услуги: ${currentStatsObject?.servicesRevenue || 0}
+PS: ${currentStatsObject?.psRevenue || 0}
+ПК: ${currentStatsObject?.pcRevenue || 0}
 
-Премии:
-Оклад: ${currentAwardsObject.baseSalary}₽
-За обязанности: ${
-                      responsibilities?.status === 'ok'
-                        ? '+500₽ ✅'
-                        : responsibilities?.status === 'fail'
-                        ? '0₽ ❌ (нарушения)'
-                        : 'неизвестно'
-                    }
-Товары: ${currentAwardsObject.goodsBonus}₽
-PS+услуги: ${currentAwardsObject.psBonus}₽
-ПК: ${currentAwardsObject.pcBonus}₽
-Сумма: ${currentAwardsObject.totalAward}₽
-                
-${responsibilityInfo}
-                    `.trim();
+Выплата:
+База: ${currentAwardsObject?.baseSalary || 0}₽
+Бонус за задачи: ${currentAwardsObject?.taskCompletionBonus || 0}₽
+Бар: ${currentAwardsObject?.barBonus || 0}₽
+Услуги: ${currentAwardsObject?.servicesBonus || 0}₽
+Штрафы: ${penalties.total > 0 ? `-${penalties.total}` : 0}₽
+Итого: ${currentAwardsObject?.totalAward || 0}₽
 
-                    navigator.clipboard.writeText(textToCopy);
-                  }}
+Проверка смены: ${checkStatus}
+    `.trim();
+    navigator.clipboard.writeText(textToCopy);
+  };
+
+  const LoadingSkeleton = () => (
+    <div className="flex min-h-[50vh] items-center justify-center gap-2 p-12 text-muted-foreground">
+      <Loader2 className="h-6 w-6 animate-spin" />
+      Загрузка данных Smartshell...
+    </div>
+  );
+
+  if (isInitialLoad)
+    return (
+      <div className="space-y-8 p-4 md:p-8">
+        <LoadingSkeleton />
+      </div>
+    );
+
+  if (loadError)
+    return (
+      <div className="flex min-h-[50vh] items-center justify-center p-4 md:p-8">
+        <Card className="w-full max-w-lg p-6 text-center shadow-md">
+          <div className="mx-auto mb-4 flex h-11 w-11 items-center justify-center rounded-full bg-destructive/10 text-destructive">
+            <AlertCircle className="h-5 w-5" />
+          </div>
+          <h3 className="mb-3 text-xl font-bold">
+            Не удалось загрузить смену
+          </h3>
+          <p className="mb-4 text-sm text-muted-foreground">{loadError}</p>
+          <Button onClick={getAdminStatsData} disabled={isRefreshing}>
+            {isRefreshing && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
+            Повторить
+          </Button>
+        </Card>
+      </div>
+    );
+
+  if (!currentWorkshift)
+    return (
+      <div className="flex min-h-[50vh] items-center justify-center p-4 md:p-8">
+        <Card className="w-full max-w-md p-6 text-center shadow-md">
+          <h3 className="mb-3 text-xl font-bold">Активная смена не открыта</h3>
+          <p className="mb-4 text-sm text-muted-foreground">
+            Сейчас в Smartshell нет открытой рабочей смены для активного клуба.
+          </p>
+          <Button onClick={getAdminStatsData} disabled={isRefreshing}>
+            {isRefreshing && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
+            Обновить
+          </Button>
+        </Card>
+      </div>
+    );
+
+  return (
+    <div className="mx-auto min-h-screen max-w-7xl space-y-8 p-4 md:p-8">
+      <div>
+        <div className="flex flex-wrap items-center gap-3">
+          <h1 className="text-2xl font-bold md:text-3xl">
+            Панель администратора
+          </h1>
+          {isRefreshing && (
+            <Loader2
+              className="h-5 w-5 animate-spin text-muted-foreground"
+              title="Обновление данных..."
+            />
+          )}
+        </div>
+        <p className="mt-2 text-muted-foreground">
+          Статистика текущей смены и расчет выплаты.
+        </p>
+      </div>
+
+      <Card className="shadow-md">
+        <CardContent className="space-y-5 p-5 md:p-6">
+          <div className="flex flex-col gap-3 lg:flex-row lg:items-start lg:justify-between">
+            <div className="min-w-0">
+              <h2 className="text-xl font-bold">Главное по смене</h2>
+              <p className="mt-1 text-sm text-muted-foreground">
+                {adminName}, {shiftPhrase}, в работе {getWorkshiftDuration()}.
+              </p>
+            </div>
+            <Badge variant={planCompleted ? 'default' : 'secondary'}>
+              {planCompleted ? 'x2 применён' : 'x2 не применён'}
+            </Badge>
+          </div>
+
+          <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 xl:grid-cols-4">
+            <DecisionMetric
+              title="Текущая выплата"
+              value={money(currentAwardsObject?.totalAward)}
+              detail="Итог с учетом проверки смены"
+            />
+            <DecisionMetric
+              title="Осталось до x2"
+              value={
+                hasPlanForShift
+                  ? planCompleted
+                    ? 'x2 уже открыт'
+                    : money(remainingToX2)
+                  : 'План не задан'
+              }
+              detail={
+                hasPlanForShift
+                  ? `Общий план: ${money(totalFact)} из ${money(totalPlan)}`
+                  : 'Добавьте общий план смены'
+              }
+              tone={planCompleted ? 'positive' : 'warning'}
+            />
+            <DecisionMetric
+              title="Статус x2"
+              value={planCompleted ? 'Применён' : 'Не применён'}
+              detail={hasPlanForShift ? x2RateDetail : 'Нет общего плана'}
+              tone={planCompleted ? 'positive' : 'default'}
+            />
+            <DecisionMetric
+              title="Без штрафов"
+              value={money(payoutWithoutPenalties)}
+              detail={
+                penaltyLoss > 0
+                  ? `Штрафы снижают итог на ${money(penaltyLoss)}`
+                  : 'Штрафы не снижают итог'
+              }
+              tone={penaltyLoss > 0 ? 'warning' : 'positive'}
+            />
+          </div>
+
+          <div className="space-y-2">
+            <div className="flex flex-col gap-1 text-sm sm:flex-row sm:items-center sm:justify-between">
+              <span className="font-medium">Прогресс общего плана</span>
+              <span className="text-muted-foreground">
+                {hasPlanForShift ? `${percent(totalFact, totalPlan)}%` : '—'}
+              </span>
+            </div>
+            <div className="h-3 overflow-hidden rounded-full bg-muted">
+              <div
+                className={`h-full rounded-full ${
+                  planCompleted ? 'bg-green-500' : 'bg-primary'
+                }`}
+                style={{ width: hasPlanForShift ? `${planProgress}%` : '0%' }}
+              />
+            </div>
+          </div>
+        </CardContent>
+      </Card>
+
+      {!hasPlanForShift && (
+        <Card className="border-amber-500/40 bg-amber-500/10 shadow-sm">
+          <CardContent className="flex flex-col gap-3 p-4 sm:flex-row sm:items-center sm:justify-between">
+            <div>
+              <div className="font-semibold">План на смену не задан</div>
+              <p className="text-sm text-muted-foreground">
+                x2 процентов не применяется без общего плана на смену.
+              </p>
+            </div>
+            <Button variant="outline" onClick={getAdminStatsData}>
+              Обновить
+            </Button>
+          </CardContent>
+        </Card>
+      )}
+
+      <div className="grid grid-cols-1 gap-8 lg:grid-cols-12">
+        <div className="space-y-8 lg:col-span-7">
+          <Card className="border-border shadow-md">
+            <CardHeader>
+              <CardTitle>Сводка выручки</CardTitle>
+            </CardHeader>
+            <CardContent className="space-y-6">
+              <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
+                <Statistic
+                  title="Бар"
+                  value={money(
+                    currentStatsObject?.barRevenue ||
+                      currentStatsObject?.goodsRevenue,
+                  )}
+                />
+                <Statistic
+                  title="Услуги"
+                  value={money(currentStatsObject?.servicesRevenue)}
+                />
+                <Statistic
+                  title="PS"
+                  value={money(currentStatsObject?.psRevenue)}
+                />
+                <Statistic
+                  title="ПК"
+                  value={money(currentStatsObject?.pcRevenue)}
+                />
+              </div>
+              <Separator />
+              <div className="grid grid-cols-1 gap-4 sm:grid-cols-3">
+                <Statistic title="Общая выручка" value={money(totalFact)} />
+                <Statistic
+                  title="Общий план"
+                  value={hasPlanForShift ? money(totalPlan) : '—'}
+                />
+                <Statistic
+                  title="Выполнение"
+                  value={`${percent(totalFact, totalPlan)}%`}
+                  isGoalMet={planCompleted}
+                />
+              </div>
+            </CardContent>
+          </Card>
+        </div>
+
+        <div className="space-y-8 lg:col-span-5">
+          <Card className="border-border shadow-md">
+            <CardContent className="p-6">
+              <div className="mb-4 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+                <h4 className="min-w-0 text-lg font-semibold">{adminName}</h4>
+                <Badge variant="secondary">{shiftBadge}</Badge>
+              </div>
+              <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
+                <Statistic
+                  title="Начало"
+                  value={
+                    currentWorkshift?.created_at
+                      ? currentWorkshift.created_at.split(' ')[1]
+                      : '—'
+                  }
+                  valueClass="text-xl font-semibold"
+                />
+                <Statistic
+                  title="В работе"
+                  value={getWorkshiftDuration()}
+                  valueClass="text-xl font-semibold"
+                />
+              </div>
+            </CardContent>
+          </Card>
+
+          <Card className="shadow-md">
+            <CardHeader>
+              <CardTitle>Выплата за смену</CardTitle>
+            </CardHeader>
+            <CardContent className="space-y-5">
+              <div className="space-y-3">
+                <PayoutLine
+                  label="База смены"
+                  value={money(currentAwardsObject?.baseSalary)}
+                  detail={shiftBadge}
+                />
+                <PayoutLine
+                  label="Бонус за все задачи"
+                  value={`+${money(currentAwardsObject?.taskCompletionBonus)}`}
+                  tone={
+                    currentAwardsObject?.taskCompletionBonus > 0
+                      ? 'positive'
+                      : 'default'
+                  }
+                  detail={`Доступно ${money(taskBonus.configured || 0)}`}
+                />
+                <PayoutLine
+                  label="Бар"
+                  value={`+${money(currentAwardsObject?.barBonus)}`}
+                  tone={
+                    currentAwardsObject?.barBonus > 0 ? 'positive' : 'default'
+                  }
+                  detail={`${money(bonusBreakdown.bar?.revenue)} x ${ratePercent(bonusBreakdown.bar?.rate)}`}
+                />
+                <PayoutLine
+                  label="Услуги"
+                  value={`+${money(currentAwardsObject?.servicesBonus)}`}
+                  tone={
+                    currentAwardsObject?.servicesBonus > 0
+                      ? 'positive'
+                      : 'default'
+                  }
+                  detail={`${money(bonusBreakdown.services?.revenue)} x ${ratePercent(bonusBreakdown.services?.rate)}`}
+                />
+                <PayoutLine
+                  label="Штрафы"
+                  value={
+                    penalties.total > 0 ? `-${money(penalties.total)}` : money(0)
+                  }
+                  tone={penalties.total > 0 ? 'negative' : 'default'}
+                  detail={
+                    penalties.total > 0
+                      ? `${penalties.items?.length || 0} наруш.`
+                      : 'Нет штрафов'
+                  }
+                />
+              </div>
+
+              {penalties.items?.length > 0 && (
+                <div className="space-y-2 rounded-md border border-red-500/20 bg-red-500/5 p-3">
+                  {penalties.items.map((penalty) => (
+                    <PayoutLine
+                      key={`${penalty.key}-${penalty.count || ''}`}
+                      label={penalty.label}
+                      value={`-${money(penalty.amount)}`}
+                      tone="negative"
+                      detail={
+                        penalty.count ? `Количество: ${penalty.count}` : null
+                      }
+                    />
+                  ))}
+                </div>
+              )}
+
+              {planBreakdown.multiplierApplied && (
+                <div className="flex items-center gap-2 rounded-md border border-green-500/30 bg-green-500/10 p-3 text-sm text-green-700 dark:text-green-400">
+                  <ShieldCheck className="h-4 w-4 shrink-0" />
+                  Применен x{planBreakdown.multiplier || 2} к процентам бара и
+                  услуг
+                </div>
+              )}
+
+              <Separator />
+
+              <div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
+                <span className="text-lg font-medium">Итого к выплате:</span>
+                <span className="whitespace-nowrap text-3xl font-bold text-primary">
+                  {money(currentAwardsObject?.totalAward)}
+                </span>
+              </div>
+
+              <div className="flex flex-col gap-3 pt-2 sm:flex-row">
+                <Button
+                  className="w-full"
+                  onClick={() => setIsManagerModalOpen(true)}
+                  disabled={
+                    !currentWorkshift?.created_at || !canConfirmChecklist
+                  }
                 >
-                  <CopyOutlined />
+                  {canConfirmChecklist
+                    ? 'Проверить смену'
+                    : 'Проверка недоступна'}
+                </Button>
+                <Button
+                  variant="outline"
+                  size="icon"
+                  onClick={handleCopy}
+                  title="Скопировать отчет"
+                  disabled={!currentWorkshift?.created_at}
+                >
+                  <Copy className="h-4 w-4" />
                 </Button>
               </div>
-            </div>
-          </div>
+            </CardContent>
+          </Card>
 
-          {renderResponsibilityCard()}
-
-          {/* Карточка 4 */}
-          <div
-            className={styles.cardContent}
-            style={{
-              backgroundColor: 'rgb(255, 255, 255)',
-              position: 'relative',
-            }}
-          >
-            <div>
-              <h4 style={{ marginBottom: '8px' }}>
-                Админ:{' '}
-                {currentWorkshift.worker.first_name +
-                  ' ' +
-                  currentWorkshift.worker.last_name}
-              </h4>
-              <div style={{ display: 'flex', gap: '16px' }}>
-                <div style={{ flex: '0 0 33%' }}>
-                  <Statistic
-                    title="Смена"
-                    value={`${getShiftType()}`}
-                    titleStyle={{ margin: 0 }}
-                    valueStyle={{
-                      fontSize: '18px',
-                      fontWeight: '600',
-                      lineHeight: '1.2',
-                    }}
-                  />
-                </div>
-                <div style={{ flex: '0 0 33%' }}>
-                  <Statistic
-                    title="Начало"
-                    value={`${
-                      currentWorkshift?.created_at
-                        ? currentWorkshift.created_at.split(' ')[1]
-                        : '-'
-                    }`}
-                    valueStyle={{
-                      fontSize: '18px',
-                      fontWeight: '600',
-                      lineHeight: '1.2',
-                    }}
-                  />
-                </div>
-                <div style={{ flex: '0 0 33%' }}>
-                  <Statistic
-                    title="Продолжительность"
-                    value={`${getWorkshiftDuration()}`}
-                    valueStyle={{
-                      fontSize: '18px',
-                      fontWeight: '600',
-                      lineHeight: '1.2',
-                    }}
-                  />
-                </div>
+          <Card className="border-border shadow-md">
+            <CardHeader>
+              <CardTitle className="text-lg">Проверка смены</CardTitle>
+            </CardHeader>
+            <CardContent className="space-y-4">
+              <div className="flex items-center gap-3 text-sm">
+                {check?.status === 'ok' ? (
+                  <CheckCircle2 className="h-5 w-5 shrink-0 text-green-500" />
+                ) : check?.status === 'fail' ? (
+                  <XCircle className="h-5 w-5 shrink-0 text-red-500" />
+                ) : (
+                  <div className="h-5 w-5 shrink-0 rounded-full bg-muted" />
+                )}
+                <span className="font-medium">
+                  {check?.status === 'ok'
+                    ? 'Проверка пройдена'
+                    : check?.status === 'fail'
+                      ? 'Есть нарушения'
+                      : 'Проверка не сохранена'}
+                </span>
               </div>
-            </div>
-          </div>
+
+              {notPassedItems.length > 0 && (
+                <ul className="space-y-2">
+                  {notPassedItems.map((item) => (
+                    <li
+                      key={item.key}
+                      className="flex items-start gap-2 text-sm text-red-600"
+                    >
+                      <XCircle className="mt-0.5 h-4 w-4 shrink-0" />
+                      <span>{item.label}</span>
+                    </li>
+                  ))}
+                </ul>
+              )}
+
+              {penalties.items?.length > 0 && (
+                <>
+                  <Separator />
+                  <div className="space-y-2">
+                    {penalties.items.map((penalty) => (
+                      <PayoutLine
+                        key={`${penalty.key}-${penalty.count || ''}`}
+                        label={penalty.label}
+                        value={`-${money(penalty.amount)}`}
+                        tone="negative"
+                        detail={
+                          penalty.count ? `Количество: ${penalty.count}` : null
+                        }
+                      />
+                    ))}
+                  </div>
+                </>
+              )}
+            </CardContent>
+          </Card>
         </div>
       </div>
-      <Standarts_for_admins
-        modalOpen={standarts_for_adminsModalOpen}
-        setModalOpen={setStandarts_for_adminsModalOpen}
-      />
-      <AwardsForProducts
-        modalOpen={awardsForProductsModalOpen}
-        setModalOpen={setAwardsForProductsModalOpen}
-      />
+
       <ManagerModal
         modalOpen={isManagerModalOpen}
         setModalOpen={setIsManagerModalOpen}
+        canConfirm={canConfirmChecklist}
+        onConfirmed={getAdminStatsData}
+        currentAwardsObject={currentAwardsObject}
       />
     </div>
   );
