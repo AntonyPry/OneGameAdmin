@@ -56,6 +56,99 @@ origin, for example the same HTTPS origin that serves `/api`.
 
 Do not commit `.env` files or real credential values.
 
+Template files are committed as:
+
+- `server/.env.example`
+- `client/.env.example`
+
+Copy them to `.env` on the target server and replace every `CHANGE_ME` value
+there. Keep real values only on the server.
+
+## Fresh Server Bootstrap
+
+The SaaS stabilization release uses MySQL. If the target server did not have a
+database for this project before, install and initialize MySQL before running
+migrations.
+
+Install MySQL on Ubuntu/Debian:
+
+```bash
+apt update
+apt install -y mysql-server
+systemctl enable --now mysql
+```
+
+Create the application database and MySQL user. Use a strong password and put
+the same value into `server/.env` as `DB_PASS`.
+
+```bash
+mysql -u root
+```
+
+```sql
+CREATE DATABASE onegame_admin CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
+CREATE USER 'onegame_admin'@'localhost' IDENTIFIED BY 'CHANGE_ME_DB_PASSWORD';
+GRANT ALL PRIVILEGES ON onegame_admin.* TO 'onegame_admin'@'localhost';
+FLUSH PRIVILEGES;
+EXIT;
+```
+
+Create backend env:
+
+```bash
+cd /opt/OneGameAdmin/server
+cp .env.example .env
+nano .env
+```
+
+Minimum backend values:
+
+```env
+NODE_ENV=production
+BACKEND_PORT=5000
+CLIENT_URL=https://onegameadmin.ru,https://149.154.70.137
+DB_HOST=localhost
+DB_NAME=onegame_admin
+DB_USER=onegame_admin
+DB_PASS=CHANGE_ME_DB_PASSWORD
+JWT_SECRET=CHANGE_ME_LONG_RANDOM_VALUE
+SMARTSHELL_MANAGER_LOGIN=CHANGE_ME
+SMARTSHELL_MANAGER_PASSWORD=CHANGE_ME
+```
+
+Create client env before building:
+
+```bash
+cd /opt/OneGameAdmin/client
+cp .env.example .env
+nano .env
+```
+
+Minimum client value:
+
+```env
+VITE_BACKEND_URL=https://onegameadmin.ru
+```
+
+Run migrations and seed the initial club:
+
+```bash
+cd /opt/OneGameAdmin/server
+npx sequelize-cli db:migrate
+npx sequelize-cli db:seed --seed 20260404095704-demo-club.js
+```
+
+To create the first platform administrator, set
+`BOOTSTRAP_ADMIN_EMAIL` and `BOOTSTRAP_ADMIN_PASSWORD` in `server/.env`, then
+run:
+
+```bash
+cd /opt/OneGameAdmin/server
+npx sequelize-cli db:seed --seed 20260404095705-bootstrap-platform-admin.js
+```
+
+After that, use the platform admin UI to create club users and memberships.
+
 ## Deploy Checklist
 
 From `/opt/OneGameAdmin` on the target server:
