@@ -284,18 +284,21 @@ const validateUserForm = (form, isCreate) => {
     errors.email = 'Некорректный email';
   }
 
-  if (isCreate) {
-    const password = form.password || '';
-    const passwordConfirmation = form.passwordConfirmation || '';
+  const password = form.password || '';
+  const passwordConfirmation = form.passwordConfirmation || '';
+  const shouldValidatePassword = isCreate || password || passwordConfirmation;
 
+  if (shouldValidatePassword) {
     if (!password) {
-      errors.password = 'Пароль обязателен';
+      errors.password = isCreate ? 'Пароль обязателен' : 'Укажите новый пароль';
     } else if (password.length < 8) {
       errors.password = 'Пароль должен быть не короче 8 символов';
     }
 
     if (!passwordConfirmation) {
-      errors.passwordConfirmation = 'Повторите пароль';
+      errors.passwordConfirmation = isCreate
+        ? 'Повторите пароль'
+        : 'Повторите новый пароль';
     } else if (password && password !== passwordConfirmation) {
       errors.passwordConfirmation = 'Пароли не совпадают';
     }
@@ -335,7 +338,7 @@ const RoleBadge = ({ role }) => (
 
 const DashboardPage = () => {
   const navigate = useNavigate();
-  const { refreshSession, setActiveClubId } = useAuth();
+  const { session, refreshSession, setActiveClubId } = useAuth();
   const [activeView, setActiveView] = useState('clubs');
   const [clubs, setClubs] = useState([]);
   const [users, setUsers] = useState([]);
@@ -344,6 +347,7 @@ const DashboardPage = () => {
   const [clubStatusFilter, setClubStatusFilter] = useState('all');
   const [isLoading, setIsLoading] = useState(true);
   const [loadError, setLoadError] = useState('');
+  const [deletingUserId, setDeletingUserId] = useState('');
   const [clubDialog, setClubDialog] = useState({
     open: false,
     mode: 'create',
@@ -638,7 +642,14 @@ const DashboardPage = () => {
 
         toast.success('Пользователь создан');
       } else {
-        await api.patch(`/api/platform/users/${userId}`, payload, {
+        const updatePayload = { ...payload };
+        if (userDialog.form.password || userDialog.form.passwordConfirmation) {
+          updatePayload.password = userDialog.form.password;
+          updatePayload.passwordConfirmation =
+            userDialog.form.passwordConfirmation;
+        }
+
+        await api.patch(`/api/platform/users/${userId}`, updatePayload, {
           skipClubHeader: true,
         });
         toast.success('Пользователь обновлен');
@@ -654,6 +665,37 @@ const DashboardPage = () => {
       }));
     } finally {
       setUserDialog((current) => ({ ...current, isSaving: false }));
+    }
+  };
+
+  const removePlatformUser = async (user) => {
+    const userId = toId(user.id);
+
+    if (userId === toId(session.user?.id)) {
+      toast.error('Нельзя удалить текущего пользователя');
+      return;
+    }
+
+    if (
+      !window.confirm(
+        'Удалить пользователя с платформы? Все доступы к клубам будут удалены.',
+      )
+    ) {
+      return;
+    }
+
+    try {
+      setDeletingUserId(userId);
+      await api.delete(`/api/platform/users/${userId}`, {
+        skipClubHeader: true,
+      });
+      toast.success('Пользователь удален');
+      await refreshAfterMutation();
+      setActiveView('users');
+    } catch (error) {
+      toast.error(getServerMessage(error, 'Не удалось удалить пользователя'));
+    } finally {
+      setDeletingUserId('');
     }
   };
 
@@ -1044,7 +1086,7 @@ const DashboardPage = () => {
                     <TableHead>Пользователь</TableHead>
                     <TableHead>Системная роль</TableHead>
                     <TableHead>Доступы</TableHead>
-                    <TableHead className="w-14"></TableHead>
+                    <TableHead className="w-24"></TableHead>
                   </TableRow>
                 </TableHeader>
                 <TableBody>
@@ -1084,16 +1126,40 @@ const DashboardPage = () => {
                         </div>
                       </TableCell>
                       <TableCell>
-                        <Button
-                          type="button"
-                          data-testid={`edit-user-${user.id}`}
-                          variant="ghost"
-                          size="icon"
-                          onClick={() => openUserDialog('edit', user)}
-                          title="Редактировать пользователя"
-                        >
-                          <Pencil className="h-4 w-4" />
-                        </Button>
+                        <div className="flex justify-end gap-1">
+                          <Button
+                            type="button"
+                            data-testid={`edit-user-${user.id}`}
+                            variant="ghost"
+                            size="icon"
+                            onClick={() => openUserDialog('edit', user)}
+                            title="Редактировать пользователя"
+                          >
+                            <Pencil className="h-4 w-4" />
+                          </Button>
+                          <Button
+                            type="button"
+                            data-testid={`delete-user-${user.id}`}
+                            variant="ghost"
+                            size="icon"
+                            onClick={() => removePlatformUser(user)}
+                            disabled={
+                              Boolean(deletingUserId) ||
+                              toId(user.id) === toId(session.user?.id)
+                            }
+                            title={
+                              toId(user.id) === toId(session.user?.id)
+                                ? 'Нельзя удалить текущего пользователя'
+                                : 'Удалить пользователя с платформы'
+                            }
+                          >
+                            {deletingUserId === toId(user.id) ? (
+                              <Loader2 className="h-4 w-4 animate-spin" />
+                            ) : (
+                              <Trash2 className="h-4 w-4 text-destructive" />
+                            )}
+                          </Button>
+                        </div>
                       </TableCell>
                     </TableRow>
                   ))}
@@ -1229,10 +1295,15 @@ const DashboardPage = () => {
                   <FieldError>{userDialog.errors.lastName}</FieldError>
                 </div>
 
-                {userDialog.mode === 'create' && (
+                {(userDialog.mode === 'create' ||
+                  userDialog.mode === 'edit') && (
                   <>
                     <div className="space-y-1.5">
-                      <Label htmlFor="user-password">Пароль</Label>
+                      <Label htmlFor="user-password">
+                        {userDialog.mode === 'create'
+                          ? 'Пароль'
+                          : 'Новый пароль'}
+                      </Label>
                       <Input
                         id="user-password"
                         type="password"
@@ -1255,7 +1326,9 @@ const DashboardPage = () => {
 
                     <div className="space-y-1.5">
                       <Label htmlFor="user-password-confirmation">
-                        Повторите пароль
+                        {userDialog.mode === 'create'
+                          ? 'Повторите пароль'
+                          : 'Повторите новый пароль'}
                       </Label>
                       <Input
                         id="user-password-confirmation"

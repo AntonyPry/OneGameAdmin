@@ -126,18 +126,22 @@ const validateUserForm = (
     }
     if (!form.firstName.trim()) errors.firstName = 'Имя обязательно';
     if (!form.lastName.trim()) errors.lastName = 'Фамилия обязательна';
-    if (isCreate) {
-      const password = form.password || '';
-      const passwordConfirmation = form.passwordConfirmation || '';
 
+    const password = form.password || '';
+    const passwordConfirmation = form.passwordConfirmation || '';
+    const shouldValidatePassword = isCreate || password || passwordConfirmation;
+
+    if (shouldValidatePassword) {
       if (!password) {
-        errors.password = 'Пароль обязателен';
+        errors.password = isCreate ? 'Пароль обязателен' : 'Укажите новый пароль';
       } else if (password.length < 8) {
         errors.password = 'Пароль должен быть не короче 8 символов';
       }
 
       if (!passwordConfirmation) {
-        errors.passwordConfirmation = 'Повторите пароль';
+        errors.passwordConfirmation = isCreate
+          ? 'Повторите пароль'
+          : 'Повторите новый пароль';
       } else if (password && password !== passwordConfirmation) {
         errors.passwordConfirmation = 'Пароли не совпадают';
       }
@@ -317,7 +321,17 @@ const OwnerClubUsersPage = () => {
         toast.success('Пользователь создан');
       } else {
         if (controls.canEditProfile) {
-          await api.patch(`/api/clubs/current/users/${dialog.form.id}`, payload);
+          const updatePayload = { ...payload };
+          if (dialog.form.password || dialog.form.passwordConfirmation) {
+            updatePayload.password = dialog.form.password;
+            updatePayload.passwordConfirmation =
+              dialog.form.passwordConfirmation;
+          }
+
+          await api.patch(
+            `/api/clubs/current/users/${dialog.form.id}`,
+            updatePayload,
+          );
         }
 
         if (isRoleChanged) {
@@ -597,10 +611,13 @@ const OwnerClubUsersPage = () => {
                   <FieldError>{dialog.errors.lastName}</FieldError>
                 </div>
 
-                {dialog.mode === 'create' && (
+                {(dialog.mode === 'create' ||
+                  (dialog.mode === 'edit' && !profileDisabled)) && (
                   <>
                     <div className="space-y-1.5">
-                      <Label htmlFor="owner-user-password">Пароль</Label>
+                      <Label htmlFor="owner-user-password">
+                        {dialog.mode === 'create' ? 'Пароль' : 'Новый пароль'}
+                      </Label>
                       <Input
                         id="owner-user-password"
                         type="password"
@@ -623,7 +640,9 @@ const OwnerClubUsersPage = () => {
 
                     <div className="space-y-1.5">
                       <Label htmlFor="owner-user-password-confirmation">
-                        Повторите пароль
+                        {dialog.mode === 'create'
+                          ? 'Повторите пароль'
+                          : 'Повторите новый пароль'}
                       </Label>
                       <Input
                         id="owner-user-password-confirmation"

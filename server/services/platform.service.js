@@ -381,6 +381,13 @@ const parsePassword = (payload, { required = false } = {}) => {
   ]);
 
   if (password === undefined || password === null || password === '') {
+    if (
+      passwordConfirmation !== undefined &&
+      passwordConfirmation !== null &&
+      passwordConfirmation !== ''
+    ) {
+      throw badRequest('Пароль обязателен');
+    }
     if (required) throw badRequest('Пароль обязателен');
     return undefined;
   }
@@ -612,12 +619,6 @@ const getCurrentClubUserInclude = (clubId) => [
 const assertOwnerPayloadDoesNotEditSystemRole = (payload) => {
   if (hasOwn(payload, 'system_role') || hasOwn(payload, 'systemRole')) {
     throw badRequest('Владельцу нельзя менять системную роль пользователя');
-  }
-};
-
-const assertOwnerPayloadDoesNotEditPassword = (payload) => {
-  if (hasPasswordInput(payload)) {
-    throw badRequest('Изменение пароля не входит в этот endpoint');
   }
 };
 
@@ -1464,7 +1465,6 @@ const createCurrentClubUser = async (clubId, payload = {}) => {
 const updateCurrentClubUser = async (clubId, userId, payload = {}) => {
   assertPlainObject(payload, 'body');
   assertOwnerPayloadDoesNotEditSystemRole(payload);
-  assertOwnerPayloadDoesNotEditPassword(payload);
 
   const { user, membership, club } = await findCurrentClubUserOrThrow(
     clubId,
@@ -1475,7 +1475,7 @@ const updateCurrentClubUser = async (clubId, userId, payload = {}) => {
   const updatePayload = {};
   let membershipCount = await countUserMemberships(dbUserId);
 
-  if (hasOwnerProfilePatch(payload)) {
+  if (hasOwnerProfilePatch(payload) || hasPasswordInput(payload)) {
     membershipCount = await assertOwnerCanEditProfile(dbUserId, dbClubId);
   }
 
@@ -1497,6 +1497,11 @@ const updateCurrentClubUser = async (clubId, userId, payload = {}) => {
       payload.last_name ?? payload.lastName,
       'last_name',
     );
+  }
+
+  const password = parsePassword(payload);
+  if (password) {
+    updatePayload.password_hash = await bcrypt.hash(password, 10);
   }
 
   const updatedUser = Object.keys(updatePayload).length
@@ -1702,10 +1707,6 @@ const createUser = async (payload = {}) => {
 const updateUser = async (userId, payload = {}, { actorUserId } = {}) => {
   assertPlainObject(payload, 'body');
 
-  if (hasPasswordInput(payload)) {
-    throw badRequest('Изменение пароля не входит в этот endpoint');
-  }
-
   const user = await findUserOrThrow(userId);
   const updatePayload = {};
 
@@ -1741,12 +1742,68 @@ const updateUser = async (userId, payload = {}, { actorUserId } = {}) => {
     updatePayload.system_role = systemRole;
   }
 
+  const password = parsePassword(payload);
+  if (password) {
+    updatePayload.password_hash = await bcrypt.hash(password, 10);
+  }
+
   if (!Object.keys(updatePayload).length) {
     return serializeUserBase(user);
   }
 
   const updatedUser = await user.update(updatePayload);
   return serializeUserBase(updatedUser);
+};
+
+const removeUser = async (userId, { actorUserId } = {}) => {
+  const dbUserId = parsePositiveInteger(userId, 'userId', { required: true });
+
+  if (Number(actorUserId) === dbUserId) {
+    throw badRequest('Нельзя удалить текущего пользователя');
+  }
+
+  return sequelize.transaction(async (transaction) => {
+    const user = await User.findByPk(dbUserId, {
+      attributes: USER_PUBLIC_ATTRIBUTES,
+      transaction,
+      lock: transaction.LOCK.UPDATE,
+    });
+
+    if (!user) throw notFound('Пользователь не найден');
+
+    const plainUser = toPlain(user);
+    if (
+      normalizeSystemRole(plainUser.system_role) ===
+      SYSTEM_ROLES.PLATFORM_ADMIN
+    ) {
+      const platformAdmins = await User.findAll({
+        attributes: ['id'],
+        where: { system_role: SYSTEM_ROLES.PLATFORM_ADMIN },
+        transaction,
+        lock: transaction.LOCK.UPDATE,
+      });
+
+      if (platformAdmins.length <= 1) {
+        throw badRequest('Нельзя удалить последнего platform_admin');
+      }
+    }
+
+    const serializedUser = serializeUserBase(plainUser);
+    const deletedMembershipCount = await UserClub.destroy({
+      where: { user_id: dbUserId },
+      transaction,
+    });
+    const deletedUserCount = await User.destroy({
+      where: { id: dbUserId },
+      transaction,
+    });
+
+    return {
+      ...serializedUser,
+      deletedCount: deletedUserCount,
+      deletedMembershipCount,
+    };
+  });
 };
 
 const upsertUserMembership = async (userId, payload = {}) => {
@@ -1890,6 +1947,7 @@ module.exports = {
   getUser,
   createUser,
   updateUser,
+  removeUser,
   upsertUserMembership,
   updateUserMembership,
   removeUserMembership,

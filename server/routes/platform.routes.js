@@ -21,6 +21,7 @@ router.get('/users', platformController.listUsers);
 router.post('/users', platformController.createUser);
 router.get('/users/:userId', platformController.getUser);
 router.patch('/users/:userId', platformController.updateUser);
+router.delete('/users/:userId', platformController.removeUser);
 router.post('/users/:userId/memberships', platformController.upsertUserMembership);
 router.patch(
   '/users/:userId/memberships/:clubId',

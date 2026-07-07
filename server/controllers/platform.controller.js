@@ -115,6 +115,17 @@ const updateUser = async (req, res) => {
   }
 };
 
+const removeUser = async (req, res) => {
+  try {
+    const user = await platformService.removeUser(req.params.userId, {
+      actorUserId: req.user.id,
+    });
+    return res.status(200).send({ error: false, user });
+  } catch (error) {
+    return handleControllerError(res, error, 'platform.removeUser');
+  }
+};
+
 const upsertUserMembership = async (req, res) => {
   try {
     const membership = await platformService.upsertUserMembership(
@@ -162,6 +173,7 @@ module.exports = {
   getUser,
   createUser,
   updateUser,
+  removeUser,
   upsertUserMembership,
   updateUserMembership,
   removeUserMembership,
