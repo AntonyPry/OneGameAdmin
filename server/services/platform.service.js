@@ -293,6 +293,14 @@ const getFirstDefinedValue = (payload, fieldNames) => {
   return undefined;
 };
 
+const hasPasswordInput = (payload = {}) =>
+  [
+    'password',
+    'initialPassword',
+    'passwordConfirmation',
+    'password_confirmation',
+  ].some((fieldName) => hasOwn(payload, fieldName));
+
 const assertNoConflictingValues = (values, fieldName) => {
   const definedValues = values
     .filter(({ value }) => value !== undefined && value !== null && value !== '')
@@ -366,16 +374,32 @@ const parseEmail = (value, { required = false } = {}) => {
 };
 
 const parsePassword = (payload, { required = false } = {}) => {
-  const password = getFirstDefinedValue(payload, ['password', 'initialPassword']);
+  const password = hasOwn(payload, 'password') ? payload.password : undefined;
+  const passwordConfirmation = getFirstDefinedValue(payload, [
+    'passwordConfirmation',
+    'password_confirmation',
+  ]);
 
   if (password === undefined || password === null || password === '') {
-    if (required) throw badRequest('password обязателен при создании пользователя');
+    if (required) throw badRequest('Пароль обязателен');
     return undefined;
   }
 
   const passwordString = String(password);
   if (passwordString.length < 8) {
-    throw badRequest('password должен быть не короче 8 символов');
+    throw badRequest('Пароль должен быть не короче 8 символов');
+  }
+
+  if (
+    passwordConfirmation === undefined ||
+    passwordConfirmation === null ||
+    passwordConfirmation === ''
+  ) {
+    throw badRequest('Повторите пароль');
+  }
+
+  if (String(passwordConfirmation) !== passwordString) {
+    throw badRequest('Пароли не совпадают');
   }
 
   return passwordString;
@@ -592,7 +616,7 @@ const assertOwnerPayloadDoesNotEditSystemRole = (payload) => {
 };
 
 const assertOwnerPayloadDoesNotEditPassword = (payload) => {
-  if (hasOwn(payload, 'password') || hasOwn(payload, 'initialPassword')) {
+  if (hasPasswordInput(payload)) {
     throw badRequest('Изменение пароля не входит в этот endpoint');
   }
 };
@@ -1678,7 +1702,7 @@ const createUser = async (payload = {}) => {
 const updateUser = async (userId, payload = {}, { actorUserId } = {}) => {
   assertPlainObject(payload, 'body');
 
-  if (hasOwn(payload, 'password') || hasOwn(payload, 'initialPassword')) {
+  if (hasPasswordInput(payload)) {
     throw badRequest('Изменение пароля не входит в этот endpoint');
   }
 

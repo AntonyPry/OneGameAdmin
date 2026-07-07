@@ -22,7 +22,6 @@ import ClubSettingsForm, {
   normalizeClubForm,
   validateClubSettingsForm,
 } from '@/components/ClubSettingsForm';
-import InvitationReadyPanel from '@/components/InvitationReadyPanel';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import {
@@ -96,7 +95,8 @@ const EMPTY_USER_FORM = {
   email: '',
   firstName: '',
   lastName: '',
-  temporaryPassword: '',
+  password: '',
+  passwordConfirmation: '',
   systemRole: SYSTEM_ROLES.USER,
 };
 
@@ -111,15 +111,13 @@ const getServerMessage = (error, fallback) =>
 const toId = (value) =>
   value === null || value === undefined ? '' : String(value);
 
-const normalizeUserForm = (
-  user = {},
-  { withTemporaryPassword = false } = {},
-) => ({
+const normalizeUserForm = (user = {}) => ({
   id: user.id ? String(user.id) : null,
   email: user.email || '',
   firstName: user.firstName ?? user.first_name ?? '',
   lastName: user.lastName ?? user.last_name ?? '',
-  temporaryPassword: withTemporaryPassword ? generateTemporaryPassword() : '',
+  password: '',
+  passwordConfirmation: '',
   systemRole: user.systemRole ?? user.system_role ?? SYSTEM_ROLES.USER,
 });
 
@@ -186,24 +184,6 @@ const getUserSearchText = (user, clubsById = new Map()) => {
       .filter(Boolean)
       .join(' '),
   );
-};
-
-const generateTemporaryPassword = () => {
-  const alphabet =
-    'ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnopqrstuvwxyz23456789!@#$%';
-  const bytes = new Uint32Array(16);
-
-  if (window.crypto?.getRandomValues) {
-    window.crypto.getRandomValues(bytes);
-  } else {
-    for (let index = 0; index < bytes.length; index += 1) {
-      bytes[index] = Math.floor(Math.random() * alphabet.length);
-    }
-  }
-
-  return Array.from(bytes)
-    .map((value) => alphabet[value % alphabet.length])
-    .join('');
 };
 
 const getSmartshellStatus = (club) => {
@@ -304,8 +284,21 @@ const validateUserForm = (form, isCreate) => {
     errors.email = 'Некорректный email';
   }
 
-  if (isCreate && form.temporaryPassword.length < 8) {
-    errors.temporaryPassword = 'Временный пароль должен быть не короче 8 символов';
+  if (isCreate) {
+    const password = form.password || '';
+    const passwordConfirmation = form.passwordConfirmation || '';
+
+    if (!password) {
+      errors.password = 'Пароль обязателен';
+    } else if (password.length < 8) {
+      errors.password = 'Пароль должен быть не короче 8 символов';
+    }
+
+    if (!passwordConfirmation) {
+      errors.passwordConfirmation = 'Повторите пароль';
+    } else if (password && password !== passwordConfirmation) {
+      errors.passwordConfirmation = 'Пароли не совпадают';
+    }
   }
 
   return errors;
@@ -368,7 +361,6 @@ const DashboardPage = () => {
     isSaving: false,
     membershipDraft: { ...EMPTY_MEMBERSHIP_DRAFT },
     membershipAction: '',
-    showFallbackPassword: false,
     user: null,
   });
 
@@ -579,53 +571,18 @@ const DashboardPage = () => {
     setUserDialog({
       open: true,
       mode,
-      form: normalizeUserForm(user || {}, {
-        withTemporaryPassword: mode === 'create',
-      }),
+      form: normalizeUserForm(user || {}),
       errors: {},
       serverError: '',
       isSaving: false,
       membershipDraft: { ...EMPTY_MEMBERSHIP_DRAFT },
       membershipAction: '',
-      showFallbackPassword: false,
       user,
     });
   };
 
   const closeUserDialog = () => {
     setUserDialog((current) => ({ ...current, open: false }));
-  };
-
-  const regenerateUserTemporaryPassword = () => {
-    setUserDialog((current) => ({
-      ...current,
-      form: {
-        ...current.form,
-        temporaryPassword: generateTemporaryPassword(),
-      },
-      errors: {},
-    }));
-  };
-
-  const copyTemporaryPassword = async () => {
-    try {
-      await navigator.clipboard.writeText(
-        [
-          `Email: ${userDialog.form.email.trim()}`,
-          `Fallback: ${userDialog.form.temporaryPassword}`,
-        ].join('\n'),
-      );
-      toast.success('Доступ скопирован');
-    } catch (error) {
-      toast.error('Не удалось скопировать доступ');
-    }
-  };
-
-  const toggleFallbackPassword = () => {
-    setUserDialog((current) => ({
-      ...current,
-      showFallbackPassword: !current.showFallbackPassword,
-    }));
   };
 
   const saveUser = async (event) => {
@@ -660,7 +617,8 @@ const DashboardPage = () => {
           '/api/platform/users',
           {
             ...payload,
-            password: userDialog.form.temporaryPassword,
+            password: userDialog.form.password,
+            passwordConfirmation: userDialog.form.passwordConfirmation,
           },
           { skipClubHeader: true },
         );
@@ -1272,14 +1230,57 @@ const DashboardPage = () => {
                 </div>
 
                 {userDialog.mode === 'create' && (
-                  <InvitationReadyPanel
-                    password={userDialog.form.temporaryPassword}
-                    error={userDialog.errors.temporaryPassword}
-                    isVisible={userDialog.showFallbackPassword}
-                    onCopy={copyTemporaryPassword}
-                    onRegenerate={regenerateUserTemporaryPassword}
-                    onToggleVisible={toggleFallbackPassword}
-                  />
+                  <>
+                    <div className="space-y-1.5">
+                      <Label htmlFor="user-password">Пароль</Label>
+                      <Input
+                        id="user-password"
+                        type="password"
+                        autoComplete="new-password"
+                        value={userDialog.form.password}
+                        onChange={(event) =>
+                          setUserDialog((current) => ({
+                            ...current,
+                            form: {
+                              ...current.form,
+                              password: event.target.value,
+                            },
+                            errors: {},
+                          }))
+                        }
+                        aria-invalid={Boolean(userDialog.errors.password)}
+                      />
+                      <FieldError>{userDialog.errors.password}</FieldError>
+                    </div>
+
+                    <div className="space-y-1.5">
+                      <Label htmlFor="user-password-confirmation">
+                        Повторите пароль
+                      </Label>
+                      <Input
+                        id="user-password-confirmation"
+                        type="password"
+                        autoComplete="new-password"
+                        value={userDialog.form.passwordConfirmation}
+                        onChange={(event) =>
+                          setUserDialog((current) => ({
+                            ...current,
+                            form: {
+                              ...current.form,
+                              passwordConfirmation: event.target.value,
+                            },
+                            errors: {},
+                          }))
+                        }
+                        aria-invalid={Boolean(
+                          userDialog.errors.passwordConfirmation,
+                        )}
+                      />
+                      <FieldError>
+                        {userDialog.errors.passwordConfirmation}
+                      </FieldError>
+                    </div>
+                  </>
                 )}
 
                 <div className="space-y-1.5">

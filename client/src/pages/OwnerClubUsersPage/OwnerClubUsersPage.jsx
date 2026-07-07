@@ -1,9 +1,6 @@
 import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import {
-  Copy,
-  KeyRound,
   Loader2,
-  Mail,
   Pencil,
   Plus,
   RefreshCw,
@@ -62,7 +59,8 @@ const EMPTY_USER_FORM = {
   email: '',
   firstName: '',
   lastName: '',
-  temporaryPassword: '',
+  password: '',
+  passwordConfirmation: '',
   role: CLUB_ROLES.MANAGER,
 };
 
@@ -79,8 +77,8 @@ const getUserName = (user) => {
   return fullName || user.email || `Пользователь #${user.id}`;
 };
 
-const getMembership = (user = {}) =>
-  user.membership || (user.memberships || [])[0] || null;
+const getMembership = (user) =>
+  user?.membership || (user?.memberships || [])[0] || null;
 
 const normalizeSearchValue = (value) => String(value || '').toLowerCase();
 
@@ -99,28 +97,7 @@ const getUserSearchText = (user) => {
   );
 };
 
-const generateTemporaryPassword = () => {
-  const alphabet =
-    'ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnopqrstuvwxyz23456789!@#$%';
-  const bytes = new Uint32Array(16);
-
-  if (window.crypto?.getRandomValues) {
-    window.crypto.getRandomValues(bytes);
-  } else {
-    for (let index = 0; index < bytes.length; index += 1) {
-      bytes[index] = Math.floor(Math.random() * alphabet.length);
-    }
-  }
-
-  return Array.from(bytes)
-    .map((value) => alphabet[value % alphabet.length])
-    .join('');
-};
-
-const normalizeUserForm = (
-  user = {},
-  { withTemporaryPassword = false } = {},
-) => {
+const normalizeUserForm = (user = {}) => {
   const membership = getMembership(user);
 
   return {
@@ -128,7 +105,8 @@ const normalizeUserForm = (
     email: user.email || '',
     firstName: user.firstName ?? user.first_name ?? '',
     lastName: user.lastName ?? user.last_name ?? '',
-    temporaryPassword: withTemporaryPassword ? generateTemporaryPassword() : '',
+    password: '',
+    passwordConfirmation: '',
     role: membership?.role || CLUB_ROLES.MANAGER,
   };
 };
@@ -148,8 +126,21 @@ const validateUserForm = (
     }
     if (!form.firstName.trim()) errors.firstName = 'Имя обязательно';
     if (!form.lastName.trim()) errors.lastName = 'Фамилия обязательна';
-    if (isCreate && form.temporaryPassword.length < 8) {
-      errors.temporaryPassword = 'Временный пароль должен быть не короче 8 символов';
+    if (isCreate) {
+      const password = form.password || '';
+      const passwordConfirmation = form.passwordConfirmation || '';
+
+      if (!password) {
+        errors.password = 'Пароль обязателен';
+      } else if (password.length < 8) {
+        errors.password = 'Пароль должен быть не короче 8 символов';
+      }
+
+      if (!passwordConfirmation) {
+        errors.passwordConfirmation = 'Повторите пароль';
+      } else if (password && password !== passwordConfirmation) {
+        errors.passwordConfirmation = 'Пароли не совпадают';
+      }
     }
   }
 
@@ -264,9 +255,7 @@ const OwnerClubUsersPage = () => {
     setDialog({
       open: true,
       mode,
-      form: normalizeUserForm(user || {}, {
-        withTemporaryPassword: mode === 'create',
-      }),
+      form: normalizeUserForm(user || {}),
       errors: {},
       serverError: '',
       isSaving: false,
@@ -276,26 +265,6 @@ const OwnerClubUsersPage = () => {
 
   const closeDialog = () => {
     setDialog((current) => ({ ...current, open: false }));
-  };
-
-  const regenerateTemporaryPassword = () => {
-    setDialog((current) => ({
-      ...current,
-      form: {
-        ...current.form,
-        temporaryPassword: generateTemporaryPassword(),
-      },
-      errors: {},
-    }));
-  };
-
-  const copyTemporaryPassword = async () => {
-    try {
-      await navigator.clipboard.writeText(dialog.form.temporaryPassword);
-      toast.success('Временный пароль скопирован');
-    } catch (error) {
-      toast.error('Не удалось скопировать пароль');
-    }
   };
 
   const saveUser = async (event) => {
@@ -341,7 +310,8 @@ const OwnerClubUsersPage = () => {
       if (isCreate) {
         await api.post('/api/clubs/current/users', {
           ...payload,
-          password: dialog.form.temporaryPassword,
+          password: dialog.form.password,
+          passwordConfirmation: dialog.form.passwordConfirmation,
           role: dialog.form.role,
         });
         toast.success('Пользователь создан');
@@ -628,51 +598,57 @@ const OwnerClubUsersPage = () => {
                 </div>
 
                 {dialog.mode === 'create' && (
-                  <div className="space-y-3 rounded-lg border border-border bg-muted/30 p-3 md:col-span-2">
-                    <div className="flex gap-2">
-                      <Mail className="mt-0.5 h-4 w-4 shrink-0 text-muted-foreground" />
-                      <div className="min-w-0 text-sm">
-                        <div className="font-medium">
-                          Приглашение по email готово к подключению
-                        </div>
-                        <div className="text-muted-foreground">
-                          Пока backend не отправляет инвайты, создаётся
-                          временный пароль.
-                        </div>
-                      </div>
+                  <>
+                    <div className="space-y-1.5">
+                      <Label htmlFor="owner-user-password">Пароль</Label>
+                      <Input
+                        id="owner-user-password"
+                        type="password"
+                        autoComplete="new-password"
+                        value={dialog.form.password}
+                        onChange={(event) =>
+                          setDialog((current) => ({
+                            ...current,
+                            form: {
+                              ...current.form,
+                              password: event.target.value,
+                            },
+                            errors: {},
+                          }))
+                        }
+                        aria-invalid={Boolean(dialog.errors.password)}
+                      />
+                      <FieldError>{dialog.errors.password}</FieldError>
                     </div>
 
-                    <div className="flex flex-col gap-2 sm:flex-row">
-                      <div className="relative min-w-0 flex-1">
-                        <KeyRound className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
-                        <Input
-                          readOnly
-                          value={dialog.form.temporaryPassword}
-                          className="pl-9 font-mono"
-                          aria-invalid={Boolean(
-                            dialog.errors.temporaryPassword,
-                          )}
-                        />
-                      </div>
-                      <Button
-                        type="button"
-                        variant="outline"
-                        onClick={copyTemporaryPassword}
-                      >
-                        <Copy className="h-4 w-4" />
-                        Скопировать
-                      </Button>
-                      <Button
-                        type="button"
-                        variant="outline"
-                        onClick={regenerateTemporaryPassword}
-                      >
-                        <RefreshCw className="h-4 w-4" />
-                        Новый
-                      </Button>
+                    <div className="space-y-1.5">
+                      <Label htmlFor="owner-user-password-confirmation">
+                        Повторите пароль
+                      </Label>
+                      <Input
+                        id="owner-user-password-confirmation"
+                        type="password"
+                        autoComplete="new-password"
+                        value={dialog.form.passwordConfirmation}
+                        onChange={(event) =>
+                          setDialog((current) => ({
+                            ...current,
+                            form: {
+                              ...current.form,
+                              passwordConfirmation: event.target.value,
+                            },
+                            errors: {},
+                          }))
+                        }
+                        aria-invalid={Boolean(
+                          dialog.errors.passwordConfirmation,
+                        )}
+                      />
+                      <FieldError>
+                        {dialog.errors.passwordConfirmation}
+                      </FieldError>
                     </div>
-                    <FieldError>{dialog.errors.temporaryPassword}</FieldError>
-                  </div>
+                  </>
                 )}
 
                 <div className="space-y-1.5">
