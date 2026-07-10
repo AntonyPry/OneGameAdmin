@@ -1,0 +1,9452 @@
+[
+  {
+    "name": "AccessToken",
+    "fieldCount": 5,
+    "fields": [
+      {
+        "name": "token_type",
+        "type": "String!"
+      },
+      {
+        "name": "expires_in",
+        "type": "Int!"
+      },
+      {
+        "name": "access_token",
+        "type": "String!"
+      },
+      {
+        "name": "refresh_token",
+        "type": "String!"
+      },
+      {
+        "name": "metadata",
+        "type": "AccessTokenMetadata"
+      }
+    ]
+  },
+  {
+    "name": "AccessTokenMetadata",
+    "fieldCount": 1,
+    "fields": [
+      {
+        "name": "first_time_login",
+        "type": "Boolean!"
+      }
+    ]
+  },
+  {
+    "name": "Achievement",
+    "fieldCount": 8,
+    "fields": [
+      {
+        "name": "id",
+        "type": "String!"
+      },
+      {
+        "name": "name",
+        "type": "String!"
+      },
+      {
+        "name": "icon_url",
+        "type": "String"
+      },
+      {
+        "name": "conditions",
+        "type": "[Condition]!"
+      },
+      {
+        "name": "rewards",
+        "type": "[Reward]!"
+      },
+      {
+        "name": "created_at",
+        "type": "String!"
+      },
+      {
+        "name": "status",
+        "type": "AchievementStatus!"
+      },
+      {
+        "name": "assigned_count",
+        "type": "Int!"
+      }
+    ]
+  },
+  {
+    "name": "ActiveClient",
+    "fieldCount": 7,
+    "fields": [
+      {
+        "name": "client_uuid",
+        "type": "String!"
+      },
+      {
+        "name": "nickname",
+        "type": "String!"
+      },
+      {
+        "name": "avatar_url",
+        "type": "String"
+      },
+      {
+        "name": "payments",
+        "type": "Decimal!"
+      },
+      {
+        "name": "total_seconds",
+        "type": "Int!"
+      },
+      {
+        "name": "last_client_activity",
+        "type": "DateTime"
+      },
+      {
+        "name": "roles",
+        "type": "[Role]!"
+      }
+    ]
+  },
+  {
+    "name": "AdditionalPaymentData",
+    "fieldCount": 6,
+    "fields": [
+      {
+        "name": "public_id",
+        "type": "String"
+      },
+      {
+        "name": "org_id",
+        "type": "Int!"
+      },
+      {
+        "name": "amount",
+        "type": "Decimal!"
+      },
+      {
+        "name": "description",
+        "type": "String!"
+      },
+      {
+        "name": "currency",
+        "type": "Currency!"
+      },
+      {
+        "name": "data",
+        "type": "String"
+      }
+    ]
+  },
+  {
+    "name": "AdditionalTransactionData",
+    "fieldCount": 2,
+    "fields": [
+      {
+        "name": "public_id",
+        "type": "String"
+      },
+      {
+        "name": "data",
+        "type": "String"
+      }
+    ]
+  },
+  {
+    "name": "AgeRating",
+    "fieldCount": 2,
+    "fields": [
+      {
+        "name": "alias",
+        "type": "String!"
+      },
+      {
+        "name": "value",
+        "type": "Int!"
+      }
+    ]
+  },
+  {
+    "name": "Article",
+    "fieldCount": 6,
+    "fields": [
+      {
+        "name": "id",
+        "type": "String!"
+      },
+      {
+        "name": "content",
+        "type": "String!"
+      },
+      {
+        "name": "title",
+        "type": "String!"
+      },
+      {
+        "name": "preview",
+        "type": "String!"
+      },
+      {
+        "name": "url",
+        "type": "String!"
+      },
+      {
+        "name": "createdAt",
+        "type": "String!"
+      }
+    ]
+  },
+  {
+    "name": "ArticleLink",
+    "fieldCount": 2,
+    "fields": [
+      {
+        "name": "label",
+        "type": "String!"
+      },
+      {
+        "name": "url",
+        "type": "String!"
+      }
+    ]
+  },
+  {
+    "name": "Beneficiary",
+    "fieldCount": 19,
+    "fields": [
+      {
+        "name": "id",
+        "type": "String!"
+      },
+      {
+        "name": "organization_id",
+        "type": "Int!"
+      },
+      {
+        "name": "type",
+        "type": "BeneficiaryType!"
+      },
+      {
+        "name": "opf",
+        "type": "OpfType"
+      },
+      {
+        "name": "full_name",
+        "type": "String!"
+      },
+      {
+        "name": "phone",
+        "type": "String"
+      },
+      {
+        "name": "email",
+        "type": "String"
+      },
+      {
+        "name": "inn",
+        "type": "String!"
+      },
+      {
+        "name": "status",
+        "type": "String!"
+      },
+      {
+        "name": "balance",
+        "type": "Decimal!"
+      },
+      {
+        "name": "tax",
+        "type": "Tax!"
+      },
+      {
+        "name": "service_name",
+        "type": "String"
+      },
+      {
+        "name": "bank_details",
+        "type": "String"
+      },
+      {
+        "name": "bank_details_data",
+        "type": "BeneficiaryBankDetails"
+      },
+      {
+        "name": "companies",
+        "type": "[LiteCompany]!"
+      },
+      {
+        "name": "counterparty_data",
+        "type": "CounterpartyData"
+      },
+      {
+        "name": "locked_by",
+        "type": "BeneficiaryDeal"
+      },
+      {
+        "name": "error",
+        "type": "String"
+      },
+      {
+        "name": "created_at",
+        "type": "DateTime!"
+      }
+    ]
+  },
+  {
+    "name": "BeneficiaryBalance",
+    "fieldCount": 5,
+    "fields": [
+      {
+        "name": "balance",
+        "type": "Decimal!"
+      },
+      {
+        "name": "commission",
+        "type": "Decimal!"
+      },
+      {
+        "name": "sum",
+        "type": "Decimal!"
+      },
+      {
+        "name": "net_sum",
+        "type": "Decimal!"
+      },
+      {
+        "name": "locked",
+        "type": "Boolean!"
+      }
+    ]
+  },
+  {
+    "name": "BeneficiaryBankDetails",
+    "fieldCount": 5,
+    "fields": [
+      {
+        "name": "bank_name",
+        "type": "String!"
+      },
+      {
+        "name": "bik",
+        "type": "String!"
+      },
+      {
+        "name": "account",
+        "type": "String!"
+      },
+      {
+        "name": "correspondent_account",
+        "type": "String!"
+      },
+      {
+        "name": "kpp",
+        "type": "String"
+      }
+    ]
+  },
+  {
+    "name": "BeneficiaryDeal",
+    "fieldCount": 11,
+    "fields": [
+      {
+        "name": "id",
+        "type": "String!"
+      },
+      {
+        "name": "sum",
+        "type": "Decimal!"
+      },
+      {
+        "name": "total_sum",
+        "type": "Decimal!"
+      },
+      {
+        "name": "beneficiary",
+        "type": "Beneficiary!"
+      },
+      {
+        "name": "commission",
+        "type": "Decimal!"
+      },
+      {
+        "name": "commission_details",
+        "type": "CommissionDetails"
+      },
+      {
+        "name": "status",
+        "type": "String!"
+      },
+      {
+        "name": "error",
+        "type": "String"
+      },
+      {
+        "name": "auto_withdraw",
+        "type": "Boolean!"
+      },
+      {
+        "name": "created_at",
+        "type": "DateTime!"
+      },
+      {
+        "name": "updated_at",
+        "type": "DateTime!"
+      }
+    ]
+  },
+  {
+    "name": "BonusHistory",
+    "fieldCount": 2,
+    "fields": [
+      {
+        "name": "paginatorInfo",
+        "type": "PaginatorInfo!"
+      },
+      {
+        "name": "data",
+        "type": "[BonusHistoryItem]!"
+      }
+    ]
+  },
+  {
+    "name": "BonusHistoryItem",
+    "fieldCount": 9,
+    "fields": [
+      {
+        "name": "delta",
+        "type": "Decimal!"
+      },
+      {
+        "name": "old_value",
+        "type": "Decimal!"
+      },
+      {
+        "name": "new_value",
+        "type": "Decimal!"
+      },
+      {
+        "name": "type",
+        "type": "String!"
+      },
+      {
+        "name": "type_id",
+        "type": "Int!"
+      },
+      {
+        "name": "add",
+        "type": "Boolean!"
+      },
+      {
+        "name": "worker_first_name",
+        "type": "String"
+      },
+      {
+        "name": "worker_last_name",
+        "type": "String"
+      },
+      {
+        "name": "created_at",
+        "type": "DateTime!"
+      }
+    ]
+  },
+  {
+    "name": "Booking",
+    "fieldCount": 10,
+    "fields": [
+      {
+        "name": "id",
+        "type": "Int!"
+      },
+      {
+        "name": "hosts",
+        "type": "[Int]!"
+      },
+      {
+        "name": "client",
+        "type": "User"
+      },
+      {
+        "name": "from",
+        "type": "DateTime!"
+      },
+      {
+        "name": "to",
+        "type": "DateTime!"
+      },
+      {
+        "name": "comment",
+        "type": "String"
+      },
+      {
+        "name": "status",
+        "type": "BookingStatus!"
+      },
+      {
+        "name": "startsIn",
+        "type": "Int!"
+      },
+      {
+        "name": "group",
+        "type": "String"
+      },
+      {
+        "name": "byClient",
+        "type": "Boolean!"
+      }
+    ]
+  },
+  {
+    "name": "BookingPaginated",
+    "fieldCount": 2,
+    "fields": [
+      {
+        "name": "paginatorInfo",
+        "type": "PaginatorInfo"
+      },
+      {
+        "name": "data",
+        "type": "[Booking]!"
+      }
+    ]
+  },
+  {
+    "name": "BookingSettings",
+    "fieldCount": 7,
+    "fields": [
+      {
+        "name": "self_cancellation_enabled",
+        "type": "Boolean!"
+      },
+      {
+        "name": "cancellation_penalty",
+        "type": "Int!"
+      },
+      {
+        "name": "cancellation_free_headroom",
+        "type": "Int!"
+      },
+      {
+        "name": "online_booking_discount",
+        "type": "Int!"
+      },
+      {
+        "name": "booking_min_duration",
+        "type": "Int!"
+      },
+      {
+        "name": "booking_max_duration",
+        "type": "Int!"
+      },
+      {
+        "name": "multiple_hosts_enabled",
+        "type": "Boolean!"
+      }
+    ]
+  },
+  {
+    "name": "CashOrder",
+    "fieldCount": 6,
+    "fields": [
+      {
+        "name": "id",
+        "type": "Int!"
+      },
+      {
+        "name": "work_shift",
+        "type": "WorkShift!"
+      },
+      {
+        "name": "type",
+        "type": "CashOrderType!"
+      },
+      {
+        "name": "sum",
+        "type": "Decimal!"
+      },
+      {
+        "name": "comment",
+        "type": "String!"
+      },
+      {
+        "name": "created_at",
+        "type": "DateTime!"
+      }
+    ]
+  },
+  {
+    "name": "CashOrderData",
+    "fieldCount": 2,
+    "fields": [
+      {
+        "name": "rko",
+        "type": "Decimal!"
+      },
+      {
+        "name": "pko",
+        "type": "Decimal!"
+      }
+    ]
+  },
+  {
+    "name": "Category",
+    "fieldCount": 7,
+    "fields": [
+      {
+        "name": "id",
+        "type": "Int!"
+      },
+      {
+        "name": "company_id",
+        "type": "Int!"
+      },
+      {
+        "name": "title",
+        "type": "String!"
+      },
+      {
+        "name": "goods",
+        "type": "[Good]!"
+      },
+      {
+        "name": "show_in_shell",
+        "type": "Boolean!"
+      },
+      {
+        "name": "sell_periods",
+        "type": "[CategoryPeriod]!"
+      },
+      {
+        "name": "age_rating",
+        "type": "AgeRating"
+      }
+    ]
+  },
+  {
+    "name": "CategoryPeriod",
+    "fieldCount": 2,
+    "fields": [
+      {
+        "name": "start",
+        "type": "Int!"
+      },
+      {
+        "name": "end",
+        "type": "Int!"
+      }
+    ]
+  },
+  {
+    "name": "ClientBooking",
+    "fieldCount": 9,
+    "fields": [
+      {
+        "name": "id",
+        "type": "Int!"
+      },
+      {
+        "name": "club",
+        "type": "ClientClub!"
+      },
+      {
+        "name": "hosts",
+        "type": "[ClientHost]!"
+      },
+      {
+        "name": "from",
+        "type": "DateTime!"
+      },
+      {
+        "name": "to",
+        "type": "DateTime!"
+      },
+      {
+        "name": "comment",
+        "type": "String"
+      },
+      {
+        "name": "status",
+        "type": "BookingStatus!"
+      },
+      {
+        "name": "startsIn",
+        "type": "Int!"
+      },
+      {
+        "name": "can_cancel",
+        "type": "Boolean!"
+      }
+    ]
+  },
+  {
+    "name": "ClientBookingPenaltyData",
+    "fieldCount": 2,
+    "fields": [
+      {
+        "name": "cost",
+        "type": "Decimal!"
+      },
+      {
+        "name": "currency",
+        "type": "Currency!"
+      }
+    ]
+  },
+  {
+    "name": "ClientClub",
+    "fieldCount": 48,
+    "fields": [
+      {
+        "name": "id",
+        "type": "Int!"
+      },
+      {
+        "name": "name",
+        "type": "String!"
+      },
+      {
+        "name": "address",
+        "type": "String!"
+      },
+      {
+        "name": "city",
+        "type": "String!"
+      },
+      {
+        "name": "deposit",
+        "type": "Decimal!"
+      },
+      {
+        "name": "discount",
+        "type": "Int!"
+      },
+      {
+        "name": "hours",
+        "type": "Int!"
+      },
+      {
+        "name": "visits",
+        "type": "[ClientClubVisit]!"
+      },
+      {
+        "name": "last_visited_at",
+        "type": "DateTime!"
+      },
+      {
+        "name": "accept_payments",
+        "type": "Boolean!"
+      },
+      {
+        "name": "accept_sbp",
+        "type": "Boolean!"
+      },
+      {
+        "name": "accept_kaspi",
+        "type": "Boolean!"
+      },
+      {
+        "name": "booking_enabled",
+        "type": "Boolean!"
+      },
+      {
+        "name": "booking_settings",
+        "type": "BookingSettings"
+      },
+      {
+        "name": "currency",
+        "type": "Currency!"
+      },
+      {
+        "name": "rules",
+        "type": "String!"
+      },
+      {
+        "name": "achievements",
+        "type": "UserAchievements!"
+      },
+      {
+        "name": "feedback_available",
+        "type": "Boolean!"
+      },
+      {
+        "name": "club_phone",
+        "type": "String!"
+      },
+      {
+        "name": "url",
+        "type": "String"
+      },
+      {
+        "name": "vk_url",
+        "type": "String!"
+      },
+      {
+        "name": "telegram_url",
+        "type": "String!"
+      },
+      {
+        "name": "whats_up_url",
+        "type": "String!"
+      },
+      {
+        "name": "region",
+        "type": "String!"
+      },
+      {
+        "name": "comment",
+        "type": "String!"
+      },
+      {
+        "name": "country",
+        "type": "String!"
+      },
+      {
+        "name": "lat",
+        "type": "Float!"
+      },
+      {
+        "name": "lng",
+        "type": "Float!"
+      },
+      {
+        "name": "work_schedule",
+        "type": "[ClubWorkSchedule]!"
+      },
+      {
+        "name": "work_schedule_247",
+        "type": "Boolean!"
+      },
+      {
+        "name": "hardware",
+        "type": "[ClubHardware]!"
+      },
+      {
+        "name": "logo_url",
+        "type": "String!"
+      },
+      {
+        "name": "header_url",
+        "type": "String!"
+      },
+      {
+        "name": "pricelist_urls",
+        "type": "[String]!"
+      },
+      {
+        "name": "interior_urls",
+        "type": "[String]!"
+      },
+      {
+        "name": "services",
+        "type": "ClubServices!"
+      },
+      {
+        "name": "info",
+        "type": "String!"
+      },
+      {
+        "name": "host_count",
+        "type": "Int!"
+      },
+      {
+        "name": "available_host_count",
+        "type": "Int!"
+      },
+      {
+        "name": "cashback",
+        "type": "[ClientClubCashback]!"
+      },
+      {
+        "name": "user_bonus",
+        "type": "Decimal!"
+      },
+      {
+        "name": "club_settings",
+        "type": "ClientClubSettings!"
+      },
+      {
+        "name": "deposit_transfer_enabled",
+        "type": "Boolean!"
+      },
+      {
+        "name": "goods",
+        "type": "[ClientClubGood]!"
+      },
+      {
+        "name": "current_session",
+        "type": "ClientClubSession"
+      },
+      {
+        "name": "owner",
+        "type": "LiteOwner"
+      },
+      {
+        "name": "key_hash",
+        "type": "String!"
+      },
+      {
+        "name": "metro",
+        "type": "String!"
+      }
+    ]
+  },
+  {
+    "name": "ClientClubCashback",
+    "fieldCount": 3,
+    "fields": [
+      {
+        "name": "amount",
+        "type": "Decimal!"
+      },
+      {
+        "name": "is_percent",
+        "type": "Boolean!"
+      },
+      {
+        "name": "value",
+        "type": "Decimal!"
+      }
+    ]
+  },
+  {
+    "name": "ClientClubGood",
+    "fieldCount": 6,
+    "fields": [
+      {
+        "name": "id",
+        "type": "Int!"
+      },
+      {
+        "name": "title",
+        "type": "String!"
+      },
+      {
+        "name": "cost",
+        "type": "Float!"
+      },
+      {
+        "name": "comment",
+        "type": "String!"
+      },
+      {
+        "name": "image",
+        "type": "String!"
+      },
+      {
+        "name": "category",
+        "type": "ClientClubGoodCategory"
+      }
+    ]
+  },
+  {
+    "name": "ClientClubGoodCategory",
+    "fieldCount": 2,
+    "fields": [
+      {
+        "name": "id",
+        "type": "Int!"
+      },
+      {
+        "name": "title",
+        "type": "String!"
+      }
+    ]
+  },
+  {
+    "name": "ClientClubOnMap",
+    "fieldCount": 6,
+    "fields": [
+      {
+        "name": "id",
+        "type": "Int!"
+      },
+      {
+        "name": "name",
+        "type": "String!"
+      },
+      {
+        "name": "address",
+        "type": "String!"
+      },
+      {
+        "name": "city",
+        "type": "String!"
+      },
+      {
+        "name": "lat",
+        "type": "Float!"
+      },
+      {
+        "name": "lng",
+        "type": "Float!"
+      }
+    ]
+  },
+  {
+    "name": "ClientClubSession",
+    "fieldCount": 5,
+    "fields": [
+      {
+        "name": "time_left",
+        "type": "Int"
+      },
+      {
+        "name": "host",
+        "type": "ClientClubSessionHost!"
+      },
+      {
+        "name": "tariff",
+        "type": "ClientClubSessionTariff!"
+      },
+      {
+        "name": "postpaid",
+        "type": "Boolean!"
+      },
+      {
+        "name": "finished_at",
+        "type": "DateTime"
+      }
+    ]
+  },
+  {
+    "name": "ClientClubSessionHost",
+    "fieldCount": 3,
+    "fields": [
+      {
+        "name": "id",
+        "type": "Int!"
+      },
+      {
+        "name": "title",
+        "type": "String!"
+      },
+      {
+        "name": "host_group_title",
+        "type": "String!"
+      }
+    ]
+  },
+  {
+    "name": "ClientClubSessionTariff",
+    "fieldCount": 4,
+    "fields": [
+      {
+        "name": "id",
+        "type": "Int!"
+      },
+      {
+        "name": "title",
+        "type": "String!"
+      },
+      {
+        "name": "per_minute",
+        "type": "Boolean!"
+      },
+      {
+        "name": "pausable",
+        "type": "Boolean!"
+      }
+    ]
+  },
+  {
+    "name": "ClientClubSettings",
+    "fieldCount": 11,
+    "fields": [
+      {
+        "name": "accept_payments",
+        "type": "Boolean!"
+      },
+      {
+        "name": "accept_sbp",
+        "type": "Boolean!"
+      },
+      {
+        "name": "accept_kaspi",
+        "type": "Boolean!"
+      },
+      {
+        "name": "accept_stripe",
+        "type": "Boolean!"
+      },
+      {
+        "name": "accept_bepaid",
+        "type": "Boolean!"
+      },
+      {
+        "name": "booking_enabled",
+        "type": "Boolean!"
+      },
+      {
+        "name": "booking_settings",
+        "type": "BookingSettings"
+      },
+      {
+        "name": "online_booking_discount",
+        "type": "Int!"
+      },
+      {
+        "name": "goods_display_enabled",
+        "type": "Boolean"
+      },
+      {
+        "name": "online_payment_min_limit",
+        "type": "Int!"
+      },
+      {
+        "name": "host_map",
+        "type": "String!"
+      }
+    ]
+  },
+  {
+    "name": "ClientClubVisit",
+    "fieldCount": 2,
+    "fields": [
+      {
+        "name": "visited_at",
+        "type": "DateTime!"
+      },
+      {
+        "name": "client_session_id",
+        "type": "Int!"
+      }
+    ]
+  },
+  {
+    "name": "ClientHost",
+    "fieldCount": 15,
+    "fields": [
+      {
+        "name": "id",
+        "type": "Int!"
+      },
+      {
+        "name": "group_id",
+        "type": "Int!"
+      },
+      {
+        "name": "group_title",
+        "type": "String!"
+      },
+      {
+        "name": "type_id",
+        "type": "Int"
+      },
+      {
+        "name": "type",
+        "type": "HostTypeValue!"
+      },
+      {
+        "name": "position",
+        "type": "Int!"
+      },
+      {
+        "name": "alias",
+        "type": "String!"
+      },
+      {
+        "name": "coord_x",
+        "type": "Int"
+      },
+      {
+        "name": "coord_y",
+        "type": "Int"
+      },
+      {
+        "name": "is_occupied",
+        "type": "Boolean!"
+      },
+      {
+        "name": "is_booked",
+        "type": "Boolean!"
+      },
+      {
+        "name": "in_service",
+        "type": "Boolean!"
+      },
+      {
+        "name": "can_book",
+        "type": "Boolean!"
+      },
+      {
+        "name": "info",
+        "type": "HostInfo"
+      },
+      {
+        "name": "is_current_users_session",
+        "type": "Boolean!"
+      }
+    ]
+  },
+  {
+    "name": "ClientHostGroup",
+    "fieldCount": 3,
+    "fields": [
+      {
+        "name": "id",
+        "type": "Int!"
+      },
+      {
+        "name": "title",
+        "type": "String!"
+      },
+      {
+        "name": "customization",
+        "type": "HostGroupCustomization"
+      }
+    ]
+  },
+  {
+    "name": "ClientSession",
+    "fieldCount": 16,
+    "fields": [
+      {
+        "name": "id",
+        "type": "Int!"
+      },
+      {
+        "name": "client",
+        "type": "User"
+      },
+      {
+        "name": "hosts",
+        "type": "[ClientSessionHost]!"
+      },
+      {
+        "name": "duration",
+        "type": "Int!"
+      },
+      {
+        "name": "elapsed",
+        "type": "Int!"
+      },
+      {
+        "name": "payment",
+        "type": "Payment"
+      },
+      {
+        "name": "postpaid",
+        "type": "Boolean!"
+      },
+      {
+        "name": "total_cost",
+        "type": "Float!"
+      },
+      {
+        "name": "status",
+        "type": "ClientSessionType!"
+      },
+      {
+        "name": "seances",
+        "type": "[Seance]!"
+      },
+      {
+        "name": "created_at",
+        "type": "DateTime!"
+      },
+      {
+        "name": "started_at",
+        "type": "DateTime!"
+      },
+      {
+        "name": "finished_at",
+        "type": "DateTime"
+      },
+      {
+        "name": "canceled_at",
+        "type": "DateTime"
+      },
+      {
+        "name": "time_left",
+        "type": "Int"
+      },
+      {
+        "name": "booking",
+        "type": "Boolean!"
+      }
+    ]
+  },
+  {
+    "name": "ClientSessionHost",
+    "fieldCount": 4,
+    "fields": [
+      {
+        "name": "id",
+        "type": "Int!"
+      },
+      {
+        "name": "host",
+        "type": "Host!"
+      },
+      {
+        "name": "started_at",
+        "type": "DateTime!"
+      },
+      {
+        "name": "finished_at",
+        "type": "DateTime"
+      }
+    ]
+  },
+  {
+    "name": "ClientSessionOverview",
+    "fieldCount": 10,
+    "fields": [
+      {
+        "name": "id",
+        "type": "Int!"
+      },
+      {
+        "name": "duration",
+        "type": "Int!"
+      },
+      {
+        "name": "elapsed",
+        "type": "Int!"
+      },
+      {
+        "name": "time_left",
+        "type": "Int!"
+      },
+      {
+        "name": "started_at",
+        "type": "DateTime!"
+      },
+      {
+        "name": "finished_at",
+        "type": "DateTime"
+      },
+      {
+        "name": "postpaid",
+        "type": "Boolean!"
+      },
+      {
+        "name": "total_cost",
+        "type": "Decimal!"
+      },
+      {
+        "name": "seances",
+        "type": "[SeanceOverview]!"
+      },
+      {
+        "name": "booking",
+        "type": "Boolean!"
+      }
+    ]
+  },
+  {
+    "name": "ClientSessionPaginated",
+    "fieldCount": 2,
+    "fields": [
+      {
+        "name": "paginatorInfo",
+        "type": "PaginatorInfo"
+      },
+      {
+        "name": "data",
+        "type": "[ClientSession]!"
+      }
+    ]
+  },
+  {
+    "name": "ClientsPaymentReportItem",
+    "fieldCount": 6,
+    "fields": [
+      {
+        "name": "user",
+        "type": "User!"
+      },
+      {
+        "name": "shop",
+        "type": "PaymentReportItem!"
+      },
+      {
+        "name": "tariff",
+        "type": "PaymentReportItem!"
+      },
+      {
+        "name": "bonus",
+        "type": "PaymentReportItem!"
+      },
+      {
+        "name": "total",
+        "type": "PaymentReportItem!"
+      },
+      {
+        "name": "average",
+        "type": "PaymentReportItem!"
+      }
+    ]
+  },
+  {
+    "name": "ClientsPaymentReportPaginated",
+    "fieldCount": 2,
+    "fields": [
+      {
+        "name": "paginatorInfo",
+        "type": "PaginatorInfo"
+      },
+      {
+        "name": "data",
+        "type": "[ClientsPaymentReportItem]!"
+      }
+    ]
+  },
+  {
+    "name": "ClientTariffGridItem",
+    "fieldCount": 9,
+    "fields": [
+      {
+        "name": "id",
+        "type": "Int!"
+      },
+      {
+        "name": "title",
+        "type": "String!"
+      },
+      {
+        "name": "duration",
+        "type": "Int!"
+      },
+      {
+        "name": "cost",
+        "type": "Float!"
+      },
+      {
+        "name": "mobile_cost",
+        "type": "Float!"
+      },
+      {
+        "name": "has_fixed_finish_time",
+        "type": "Boolean!"
+      },
+      {
+        "name": "currency",
+        "type": "Currency!"
+      },
+      {
+        "name": "highlighted",
+        "type": "Boolean"
+      },
+      {
+        "name": "finished_at",
+        "type": "DateTime!"
+      }
+    ]
+  },
+  {
+    "name": "CloudPaymentsAccount",
+    "fieldCount": 2,
+    "fields": [
+      {
+        "name": "publicId",
+        "type": "String!"
+      },
+      {
+        "name": "secretKey",
+        "type": "String!"
+      }
+    ]
+  },
+  {
+    "name": "Club",
+    "fieldCount": 52,
+    "fields": [
+      {
+        "name": "id",
+        "type": "Int!"
+      },
+      {
+        "name": "name",
+        "type": "String!"
+      },
+      {
+        "name": "network_company",
+        "type": "NetworkCompany"
+      },
+      {
+        "name": "pc_count",
+        "type": "Int!"
+      },
+      {
+        "name": "console_count",
+        "type": "Int!"
+      },
+      {
+        "name": "distribution_type",
+        "type": "DistributionType!"
+      },
+      {
+        "name": "contact_name",
+        "type": "String!"
+      },
+      {
+        "name": "contact_type",
+        "type": "OrganizationUserType!"
+      },
+      {
+        "name": "address",
+        "type": "String"
+      },
+      {
+        "name": "city",
+        "type": "String!"
+      },
+      {
+        "name": "street",
+        "type": "String!"
+      },
+      {
+        "name": "house_number",
+        "type": "String!"
+      },
+      {
+        "name": "created_at",
+        "type": "DateTime!"
+      },
+      {
+        "name": "url",
+        "type": "String"
+      },
+      {
+        "name": "telegram",
+        "type": "String"
+      },
+      {
+        "name": "key",
+        "type": "String"
+      },
+      {
+        "name": "key_hash",
+        "type": "String!"
+      },
+      {
+        "name": "info",
+        "type": "String"
+      },
+      {
+        "name": "contact_phone",
+        "type": "String!"
+      },
+      {
+        "name": "license",
+        "type": "License"
+      },
+      {
+        "name": "licenses",
+        "type": "[License]!"
+      },
+      {
+        "name": "license_payments",
+        "type": "[LicensePaymentData]!"
+      },
+      {
+        "name": "timezone",
+        "type": "Int!"
+      },
+      {
+        "name": "country_code",
+        "type": "String!"
+      },
+      {
+        "name": "host_count",
+        "type": "Int!"
+      },
+      {
+        "name": "locked",
+        "type": "Boolean!"
+      },
+      {
+        "name": "auto_payment_enabled",
+        "type": "Boolean!"
+      },
+      {
+        "name": "organization_payment_card",
+        "type": "OrganizationPaymentCard"
+      },
+      {
+        "name": "verification_status",
+        "type": "ClubVerificationStatus!"
+      },
+      {
+        "name": "verification_status_updated_at",
+        "type": "DateTime"
+      },
+      {
+        "name": "debt",
+        "type": "Decimal!"
+      },
+      {
+        "name": "used_trial",
+        "type": "Boolean!"
+      },
+      {
+        "name": "club_phone",
+        "type": "String!"
+      },
+      {
+        "name": "vk_url",
+        "type": "String!"
+      },
+      {
+        "name": "telegram_url",
+        "type": "String!"
+      },
+      {
+        "name": "whats_up_url",
+        "type": "String!"
+      },
+      {
+        "name": "region",
+        "type": "String!"
+      },
+      {
+        "name": "comment",
+        "type": "String!"
+      },
+      {
+        "name": "country",
+        "type": "String!"
+      },
+      {
+        "name": "lat",
+        "type": "Float!"
+      },
+      {
+        "name": "lng",
+        "type": "Float!"
+      },
+      {
+        "name": "work_schedule",
+        "type": "[ClubWorkSchedule]!"
+      },
+      {
+        "name": "work_schedule_247",
+        "type": "Boolean!"
+      },
+      {
+        "name": "hardware",
+        "type": "[ClubHardware]!"
+      },
+      {
+        "name": "logo_url",
+        "type": "String!"
+      },
+      {
+        "name": "header_url",
+        "type": "String!"
+      },
+      {
+        "name": "pricelist_urls",
+        "type": "[String]!"
+      },
+      {
+        "name": "interior_urls",
+        "type": "[String]!"
+      },
+      {
+        "name": "services",
+        "type": "ClubServices!"
+      },
+      {
+        "name": "deposit_transfer_enabled",
+        "type": "Boolean!"
+      },
+      {
+        "name": "it_adviser_support",
+        "type": "Boolean!"
+      },
+      {
+        "name": "metro",
+        "type": "String!"
+      }
+    ]
+  },
+  {
+    "name": "ClubComment",
+    "fieldCount": 14,
+    "fields": [
+      {
+        "name": "id",
+        "type": "Int!"
+      },
+      {
+        "name": "client_session",
+        "type": "ClientSession!"
+      },
+      {
+        "name": "text",
+        "type": "String!"
+      },
+      {
+        "name": "author",
+        "type": "User"
+      },
+      {
+        "name": "created_at",
+        "type": "DateTime!"
+      },
+      {
+        "name": "deleted_at",
+        "type": "DateTime"
+      },
+      {
+        "name": "host_alias",
+        "type": "String!"
+      },
+      {
+        "name": "host_group_name",
+        "type": "String!"
+      },
+      {
+        "name": "grade",
+        "type": "Int!"
+      },
+      {
+        "name": "is_read",
+        "type": "Boolean!"
+      },
+      {
+        "name": "request_contact",
+        "type": "Boolean!"
+      },
+      {
+        "name": "request_contact_info",
+        "type": "String"
+      },
+      {
+        "name": "tips",
+        "type": "Int"
+      },
+      {
+        "name": "worker_name",
+        "type": "String"
+      }
+    ]
+  },
+  {
+    "name": "ClubCommentPaginated",
+    "fieldCount": 3,
+    "fields": [
+      {
+        "name": "paginatorInfo",
+        "type": "PaginatorInfo"
+      },
+      {
+        "name": "data",
+        "type": "[ClubComment]!"
+      },
+      {
+        "name": "summary",
+        "type": "ClubCommentSummary!"
+      }
+    ]
+  },
+  {
+    "name": "ClubCommentSummary",
+    "fieldCount": 7,
+    "fields": [
+      {
+        "name": "average_grade",
+        "type": "Float!"
+      },
+      {
+        "name": "unread_total",
+        "type": "Int!"
+      },
+      {
+        "name": "five",
+        "type": "Int!"
+      },
+      {
+        "name": "four",
+        "type": "Int!"
+      },
+      {
+        "name": "three",
+        "type": "Int!"
+      },
+      {
+        "name": "two",
+        "type": "Int!"
+      },
+      {
+        "name": "one",
+        "type": "Int!"
+      }
+    ]
+  },
+  {
+    "name": "ClubHardware",
+    "fieldCount": 18,
+    "fields": [
+      {
+        "name": "hall_title",
+        "type": "String!"
+      },
+      {
+        "name": "hall_type",
+        "type": "HallType!"
+      },
+      {
+        "name": "device_count",
+        "type": "Int!"
+      },
+      {
+        "name": "console_model",
+        "type": "String"
+      },
+      {
+        "name": "processor_brand",
+        "type": "String"
+      },
+      {
+        "name": "processor_model",
+        "type": "String"
+      },
+      {
+        "name": "gpu_brand",
+        "type": "String"
+      },
+      {
+        "name": "gpu_model",
+        "type": "String"
+      },
+      {
+        "name": "ram_size",
+        "type": "String"
+      },
+      {
+        "name": "ram_type",
+        "type": "String"
+      },
+      {
+        "name": "hdd_type",
+        "type": "String"
+      },
+      {
+        "name": "keyboard",
+        "type": "String"
+      },
+      {
+        "name": "mouse",
+        "type": "String"
+      },
+      {
+        "name": "speakers",
+        "type": "String"
+      },
+      {
+        "name": "chair",
+        "type": "String"
+      },
+      {
+        "name": "monitor_brand",
+        "type": "String"
+      },
+      {
+        "name": "monitor_size",
+        "type": "String"
+      },
+      {
+        "name": "monitor_hz",
+        "type": "String"
+      }
+    ]
+  },
+  {
+    "name": "ClubOption",
+    "fieldCount": 2,
+    "fields": [
+      {
+        "name": "title",
+        "type": "String!"
+      },
+      {
+        "name": "options",
+        "type": "[String]!"
+      }
+    ]
+  },
+  {
+    "name": "ClubServices",
+    "fieldCount": 25,
+    "fields": [
+      {
+        "name": "has_vr",
+        "type": "Boolean!"
+      },
+      {
+        "name": "vr_count",
+        "type": "Int!"
+      },
+      {
+        "name": "vr_model",
+        "type": "String!"
+      },
+      {
+        "name": "has_autosim",
+        "type": "Boolean!"
+      },
+      {
+        "name": "autosim_count",
+        "type": "Int!"
+      },
+      {
+        "name": "has_printer",
+        "type": "Boolean!"
+      },
+      {
+        "name": "has_lounge",
+        "type": "Boolean!"
+      },
+      {
+        "name": "has_gifts",
+        "type": "Boolean!"
+      },
+      {
+        "name": "personal_devices_allowed",
+        "type": "Boolean!"
+      },
+      {
+        "name": "has_streaming_boot",
+        "type": "Boolean!"
+      },
+      {
+        "name": "personal_food_allowed",
+        "type": "Boolean!"
+      },
+      {
+        "name": "has_tabletop_games",
+        "type": "Boolean!"
+      },
+      {
+        "name": "can_rent_projector",
+        "type": "Boolean!"
+      },
+      {
+        "name": "has_coworking",
+        "type": "Boolean!"
+      },
+      {
+        "name": "has_snacks",
+        "type": "Boolean!"
+      },
+      {
+        "name": "has_energy_drinks",
+        "type": "Boolean!"
+      },
+      {
+        "name": "has_food_to_go",
+        "type": "Boolean!"
+      },
+      {
+        "name": "has_kitchen",
+        "type": "Boolean!"
+      },
+      {
+        "name": "has_beverages",
+        "type": "Boolean!"
+      },
+      {
+        "name": "has_low_alcohol_beverages",
+        "type": "Boolean!"
+      },
+      {
+        "name": "has_food_discounts",
+        "type": "Boolean!"
+      },
+      {
+        "name": "accept_cash",
+        "type": "Boolean!"
+      },
+      {
+        "name": "accept_card",
+        "type": "Boolean!"
+      },
+      {
+        "name": "accept_qr",
+        "type": "Boolean!"
+      },
+      {
+        "name": "accept_sbp",
+        "type": "Boolean!"
+      }
+    ]
+  },
+  {
+    "name": "ClubWorkSchedule",
+    "fieldCount": 3,
+    "fields": [
+      {
+        "name": "day",
+        "type": "Int!"
+      },
+      {
+        "name": "Start",
+        "type": "String!"
+      },
+      {
+        "name": "End",
+        "type": "String!"
+      }
+    ]
+  },
+  {
+    "name": "Combo",
+    "fieldCount": 10,
+    "fields": [
+      {
+        "name": "id",
+        "type": "Int!"
+      },
+      {
+        "name": "title",
+        "type": "String!"
+      },
+      {
+        "name": "tariff",
+        "type": "Tariff"
+      },
+      {
+        "name": "host_group",
+        "type": "HostGroup"
+      },
+      {
+        "name": "items",
+        "type": "[ComboItem]!"
+      },
+      {
+        "name": "quantity",
+        "type": "Int!"
+      },
+      {
+        "name": "base_price",
+        "type": "Float!"
+      },
+      {
+        "name": "price",
+        "type": "Float!"
+      },
+      {
+        "name": "created_at",
+        "type": "DateTime!"
+      },
+      {
+        "name": "use_global_discount",
+        "type": "Boolean!"
+      }
+    ]
+  },
+  {
+    "name": "ComboItem",
+    "fieldCount": 6,
+    "fields": [
+      {
+        "name": "id",
+        "type": "Int!"
+      },
+      {
+        "name": "combo_id",
+        "type": "Int!"
+      },
+      {
+        "name": "entity",
+        "type": "ComboItemEntity!"
+      },
+      {
+        "name": "entity_type",
+        "type": "ComboItemEntityType!"
+      },
+      {
+        "name": "amount",
+        "type": "Int!"
+      },
+      {
+        "name": "price",
+        "type": "Float!"
+      }
+    ]
+  },
+  {
+    "name": "ComboListItem",
+    "fieldCount": 8,
+    "fields": [
+      {
+        "name": "id",
+        "type": "Int!"
+      },
+      {
+        "name": "title",
+        "type": "String!"
+      },
+      {
+        "name": "tariff",
+        "type": "TariffGridItem"
+      },
+      {
+        "name": "host_group",
+        "type": "HostGroup"
+      },
+      {
+        "name": "items",
+        "type": "[ComboItem]!"
+      },
+      {
+        "name": "cost",
+        "type": "Float!"
+      },
+      {
+        "name": "quantity",
+        "type": "Int!"
+      },
+      {
+        "name": "use_global_discounts",
+        "type": "Boolean!"
+      }
+    ]
+  },
+  {
+    "name": "ComboPaginated",
+    "fieldCount": 2,
+    "fields": [
+      {
+        "name": "paginatorInfo",
+        "type": "PaginatorInfo"
+      },
+      {
+        "name": "data",
+        "type": "[Combo]!"
+      }
+    ]
+  },
+  {
+    "name": "Comment",
+    "fieldCount": 12,
+    "fields": [
+      {
+        "name": "id",
+        "type": "Int!"
+      },
+      {
+        "name": "type",
+        "type": "CommentType!"
+      },
+      {
+        "name": "entity_id",
+        "type": "Int!"
+      },
+      {
+        "name": "entity",
+        "type": "CommentEntity!"
+      },
+      {
+        "name": "text",
+        "type": "String!"
+      },
+      {
+        "name": "author",
+        "type": "User"
+      },
+      {
+        "name": "created_at",
+        "type": "DateTime!"
+      },
+      {
+        "name": "deleted_at",
+        "type": "DateTime"
+      },
+      {
+        "name": "data",
+        "type": "String!"
+      },
+      {
+        "name": "request_contact",
+        "type": "Boolean!"
+      },
+      {
+        "name": "request_contact_info",
+        "type": "String"
+      },
+      {
+        "name": "is_important",
+        "type": "Boolean"
+      }
+    ]
+  },
+  {
+    "name": "CommentPaginated",
+    "fieldCount": 2,
+    "fields": [
+      {
+        "name": "paginatorInfo",
+        "type": "PaginatorInfo"
+      },
+      {
+        "name": "data",
+        "type": "[Comment]!"
+      }
+    ]
+  },
+  {
+    "name": "CommissionDetails",
+    "fieldCount": 3,
+    "fields": [
+      {
+        "name": "incoming",
+        "type": "CommissionInfo"
+      },
+      {
+        "name": "bank",
+        "type": "CommissionInfo"
+      },
+      {
+        "name": "total",
+        "type": "Decimal!"
+      }
+    ]
+  },
+  {
+    "name": "CommissionInfo",
+    "fieldCount": 3,
+    "fields": [
+      {
+        "name": "amount",
+        "type": "Decimal!"
+      },
+      {
+        "name": "rate",
+        "type": "Decimal!"
+      },
+      {
+        "name": "min",
+        "type": "Decimal"
+      }
+    ]
+  },
+  {
+    "name": "CompanyNewsArticle",
+    "fieldCount": 11,
+    "fields": [
+      {
+        "name": "id",
+        "type": "ID!"
+      },
+      {
+        "name": "title",
+        "type": "String!"
+      },
+      {
+        "name": "company",
+        "type": "LiteCompany!"
+      },
+      {
+        "name": "content",
+        "type": "String!"
+      },
+      {
+        "name": "image",
+        "type": "String"
+      },
+      {
+        "name": "link",
+        "type": "ArticleLink"
+      },
+      {
+        "name": "creator",
+        "type": "User"
+      },
+      {
+        "name": "active",
+        "type": "Boolean!"
+      },
+      {
+        "name": "publication_period",
+        "type": "PublicationPeriod"
+      },
+      {
+        "name": "created_at",
+        "type": "DateTime!"
+      },
+      {
+        "name": "updated_at",
+        "type": "DateTime!"
+      }
+    ]
+  },
+  {
+    "name": "CompanyNewsList",
+    "fieldCount": 2,
+    "fields": [
+      {
+        "name": "data",
+        "type": "[CompanyNewsArticle]!"
+      },
+      {
+        "name": "paginatorInfo",
+        "type": "PaginatorInfo!"
+      }
+    ]
+  },
+  {
+    "name": "CompanyPermissions",
+    "fieldCount": 4,
+    "fields": [
+      {
+        "name": "role_id",
+        "type": "Int!"
+      },
+      {
+        "name": "title",
+        "type": "String!"
+      },
+      {
+        "name": "description",
+        "type": "String"
+      },
+      {
+        "name": "permissions",
+        "type": "[PermissionData]"
+      }
+    ]
+  },
+  {
+    "name": "CompanyPermissionsData",
+    "fieldCount": 1,
+    "fields": [
+      {
+        "name": "companyPermissions",
+        "type": "[CompanyPermissions]"
+      }
+    ]
+  },
+  {
+    "name": "Condition",
+    "fieldCount": 2,
+    "fields": [
+      {
+        "name": "name",
+        "type": "String!"
+      },
+      {
+        "name": "value",
+        "type": "Decimal!"
+      }
+    ]
+  },
+  {
+    "name": "ConfirmationResult",
+    "fieldCount": 3,
+    "fields": [
+      {
+        "name": "token",
+        "type": "AccessToken"
+      },
+      {
+        "name": "success",
+        "type": "Boolean!"
+      },
+      {
+        "name": "hash",
+        "type": "String"
+      }
+    ]
+  },
+  {
+    "name": "Contractor",
+    "fieldCount": 8,
+    "fields": [
+      {
+        "name": "id",
+        "type": "Int!"
+      },
+      {
+        "name": "name",
+        "type": "String!"
+      },
+      {
+        "name": "inn",
+        "type": "String!"
+      },
+      {
+        "name": "ogrn",
+        "type": "String!"
+      },
+      {
+        "name": "kpp",
+        "type": "String!"
+      },
+      {
+        "name": "address",
+        "type": "String!"
+      },
+      {
+        "name": "phone",
+        "type": "String!"
+      },
+      {
+        "name": "email",
+        "type": "String!"
+      }
+    ]
+  },
+  {
+    "name": "CounterpartyData",
+    "fieldCount": 7,
+    "fields": [
+      {
+        "name": "type",
+        "type": "BeneficiaryType!"
+      },
+      {
+        "name": "full_name",
+        "type": "String!"
+      },
+      {
+        "name": "inn",
+        "type": "String!"
+      },
+      {
+        "name": "ogrn",
+        "type": "String"
+      },
+      {
+        "name": "status",
+        "type": "String!"
+      },
+      {
+        "name": "legal_address",
+        "type": "String"
+      },
+      {
+        "name": "registration_date",
+        "type": "Date!"
+      }
+    ]
+  },
+  {
+    "name": "Currency",
+    "fieldCount": 4,
+    "fields": [
+      {
+        "name": "id",
+        "type": "Int!"
+      },
+      {
+        "name": "title",
+        "type": "String!"
+      },
+      {
+        "name": "alias",
+        "type": "String!"
+      },
+      {
+        "name": "letter",
+        "type": "String!"
+      }
+    ]
+  },
+  {
+    "name": "CurrentTariff",
+    "fieldCount": 10,
+    "fields": [
+      {
+        "name": "id",
+        "type": "Int!"
+      },
+      {
+        "name": "title",
+        "type": "String!"
+      },
+      {
+        "name": "is_active",
+        "type": "Boolean!"
+      },
+      {
+        "name": "duration",
+        "type": "Int!"
+      },
+      {
+        "name": "cost",
+        "type": "Float!"
+      },
+      {
+        "name": "use_global_discounts",
+        "type": "Boolean!"
+      },
+      {
+        "name": "has_fixed_finish_time",
+        "type": "Boolean!"
+      },
+      {
+        "name": "per_minute",
+        "type": "Boolean!"
+      },
+      {
+        "name": "pausable",
+        "type": "Boolean!"
+      },
+      {
+        "name": "currency",
+        "type": "Currency!"
+      }
+    ]
+  },
+  {
+    "name": "DepositAccount",
+    "fieldCount": 4,
+    "fields": [
+      {
+        "name": "club",
+        "type": "LiteCompany!"
+      },
+      {
+        "name": "balance",
+        "type": "Decimal!"
+      },
+      {
+        "name": "current",
+        "type": "Boolean!"
+      },
+      {
+        "name": "currency",
+        "type": "Currency!"
+      }
+    ]
+  },
+  {
+    "name": "DepositCashback",
+    "fieldCount": 8,
+    "fields": [
+      {
+        "name": "id",
+        "type": "Int!"
+      },
+      {
+        "name": "amount",
+        "type": "Decimal!"
+      },
+      {
+        "name": "value",
+        "type": "Decimal!"
+      },
+      {
+        "name": "is_percent",
+        "type": "Boolean!"
+      },
+      {
+        "name": "is_active",
+        "type": "Boolean!"
+      },
+      {
+        "name": "starts_at",
+        "type": "DateTime"
+      },
+      {
+        "name": "expires_at",
+        "type": "DateTime"
+      },
+      {
+        "name": "is_expired",
+        "type": "Boolean!"
+      }
+    ]
+  },
+  {
+    "name": "DepositTransferHistory",
+    "fieldCount": 2,
+    "fields": [
+      {
+        "name": "paginatorInfo",
+        "type": "PaginatorInfo!"
+      },
+      {
+        "name": "data",
+        "type": "[DepositTransferHistoryItem]!"
+      }
+    ]
+  },
+  {
+    "name": "DepositTransferHistoryItem",
+    "fieldCount": 4,
+    "fields": [
+      {
+        "name": "type",
+        "type": "DepositTransferOperationType!"
+      },
+      {
+        "name": "club",
+        "type": "LiteCompany!"
+      },
+      {
+        "name": "sum",
+        "type": "Decimal!"
+      },
+      {
+        "name": "created_at",
+        "type": "DateTime!"
+      }
+    ]
+  },
+  {
+    "name": "DepositTransferReport",
+    "fieldCount": 3,
+    "fields": [
+      {
+        "name": "paginatorInfo",
+        "type": "PaginatorInfo!"
+      },
+      {
+        "name": "data",
+        "type": "[DepositTransferReportItem]!"
+      },
+      {
+        "name": "url",
+        "type": "String"
+      }
+    ]
+  },
+  {
+    "name": "DepositTransferReportItem",
+    "fieldCount": 2,
+    "fields": [
+      {
+        "name": "transfer",
+        "type": "DepositTransferHistoryItem!"
+      },
+      {
+        "name": "user",
+        "type": "User!"
+      }
+    ]
+  },
+  {
+    "name": "DetailedWorkShiftMoneyData",
+    "fieldCount": 13,
+    "fields": [
+      {
+        "name": "id",
+        "type": "Int!"
+      },
+      {
+        "name": "worker",
+        "type": "User!"
+      },
+      {
+        "name": "cash_on_start",
+        "type": "Decimal!"
+      },
+      {
+        "name": "total",
+        "type": "Decimal!"
+      },
+      {
+        "name": "deposit",
+        "type": "Decimal!"
+      },
+      {
+        "name": "bonus",
+        "type": "Decimal!"
+      },
+      {
+        "name": "refunded",
+        "type": "Decimal!"
+      },
+      {
+        "name": "cash",
+        "type": "MoneyData!"
+      },
+      {
+        "name": "card",
+        "type": "MoneyData!"
+      },
+      {
+        "name": "cash_orders",
+        "type": "[CashOrder]!"
+      },
+      {
+        "name": "currency",
+        "type": "Currency"
+      },
+      {
+        "name": "created_at",
+        "type": "DateTime!"
+      },
+      {
+        "name": "finished_at",
+        "type": "DateTime"
+      }
+    ]
+  },
+  {
+    "name": "Discount",
+    "fieldCount": 14,
+    "fields": [
+      {
+        "name": "id",
+        "type": "Int!"
+      },
+      {
+        "name": "author",
+        "type": "User!"
+      },
+      {
+        "name": "client",
+        "type": "User"
+      },
+      {
+        "name": "title",
+        "type": "String!"
+      },
+      {
+        "name": "value",
+        "type": "Float!"
+      },
+      {
+        "name": "entity",
+        "type": "CartEntity"
+      },
+      {
+        "name": "entity_id",
+        "type": "Int"
+      },
+      {
+        "name": "created_at",
+        "type": "DateTime!"
+      },
+      {
+        "name": "is_tracked",
+        "type": "Boolean!"
+      },
+      {
+        "name": "active",
+        "type": "Boolean!"
+      },
+      {
+        "name": "active_from",
+        "type": "DateTime"
+      },
+      {
+        "name": "active_to",
+        "type": "DateTime"
+      },
+      {
+        "name": "schedules",
+        "type": "[DiscountSchedule]!"
+      },
+      {
+        "name": "dont_use_on_holidays",
+        "type": "Boolean"
+      }
+    ]
+  },
+  {
+    "name": "DiscountPaginated",
+    "fieldCount": 2,
+    "fields": [
+      {
+        "name": "paginatorInfo",
+        "type": "PaginatorInfo"
+      },
+      {
+        "name": "data",
+        "type": "[Discount]!"
+      }
+    ]
+  },
+  {
+    "name": "DiscountSchedule",
+    "fieldCount": 2,
+    "fields": [
+      {
+        "name": "start",
+        "type": "Int!"
+      },
+      {
+        "name": "end",
+        "type": "Int!"
+      }
+    ]
+  },
+  {
+    "name": "EanEntity",
+    "fieldCount": 2,
+    "fields": [
+      {
+        "name": "entity_id",
+        "type": "Int!"
+      },
+      {
+        "name": "entity_type",
+        "type": "EanEntityType!"
+      }
+    ]
+  },
+  {
+    "name": "Event",
+    "fieldCount": 8,
+    "fields": [
+      {
+        "name": "id",
+        "type": "Int!"
+      },
+      {
+        "name": "type",
+        "type": "String!"
+      },
+      {
+        "name": "created_at",
+        "type": "DateTime!"
+      },
+      {
+        "name": "relations",
+        "type": "String"
+      },
+      {
+        "name": "workShift",
+        "type": "WorkShift"
+      },
+      {
+        "name": "initiator",
+        "type": "User"
+      },
+      {
+        "name": "initiatorHost",
+        "type": "Host"
+      },
+      {
+        "name": "description",
+        "type": "String"
+      }
+    ]
+  },
+  {
+    "name": "EventListItem",
+    "fieldCount": 56,
+    "fields": [
+      {
+        "name": "timestamp",
+        "type": "DateTime!"
+      },
+      {
+        "name": "type",
+        "type": "String!"
+      },
+      {
+        "name": "description",
+        "type": "String!"
+      },
+      {
+        "name": "settings",
+        "type": "[EventListItemAliasValues]!"
+      },
+      {
+        "name": "setting",
+        "type": "EventListItemAliasValues"
+      },
+      {
+        "name": "booking",
+        "type": "EventListItemBooking"
+      },
+      {
+        "name": "cash_order",
+        "type": "EventListItemCashOrder"
+      },
+      {
+        "name": "client_session",
+        "type": "EventListItemClientSession"
+      },
+      {
+        "name": "promocode",
+        "type": "EventListItemIdTitleValueF"
+      },
+      {
+        "name": "promo_code_item",
+        "type": "EventListItemPromoCodeEntity"
+      },
+      {
+        "name": "promo_campaign",
+        "type": "EventListItemPromoCampaignEntity"
+      },
+      {
+        "name": "discount",
+        "type": "EventListItemIdTitleValueF"
+      },
+      {
+        "name": "good",
+        "type": "EventListItemIdTitle"
+      },
+      {
+        "name": "service",
+        "type": "EventListItemIdTitle"
+      },
+      {
+        "name": "tariff",
+        "type": "EventListItemIdTitle"
+      },
+      {
+        "name": "host",
+        "type": "EventListItemIdTitleValueI"
+      },
+      {
+        "name": "host2",
+        "type": "EventListItemIdTitleValueI"
+      },
+      {
+        "name": "hosts",
+        "type": "[EventListItemIdTitleValueI]!"
+      },
+      {
+        "name": "host_group",
+        "type": "EventListItemIdTitle"
+      },
+      {
+        "name": "host_group2",
+        "type": "EventListItemIdTitle"
+      },
+      {
+        "name": "host_command",
+        "type": "EventListItemIdTitle"
+      },
+      {
+        "name": "client",
+        "type": "EventListItemUser"
+      },
+      {
+        "name": "manager",
+        "type": "EventListItemUser"
+      },
+      {
+        "name": "operator",
+        "type": "EventListItemUser"
+      },
+      {
+        "name": "worker",
+        "type": "EventListItemUser"
+      },
+      {
+        "name": "role",
+        "type": "EventListItemIdTitle"
+      },
+      {
+        "name": "role2",
+        "type": "EventListItemIdTitle"
+      },
+      {
+        "name": "user_group",
+        "type": "EventListItemIdTitleValueI"
+      },
+      {
+        "name": "user_group2",
+        "type": "EventListItemIdTitleValueI"
+      },
+      {
+        "name": "payment",
+        "type": "EventListItemIdTitleValueF"
+      },
+      {
+        "name": "payment_items",
+        "type": "[EventListItemPaymentItem]!"
+      },
+      {
+        "name": "payment_transaction",
+        "type": "EventListItemPaymentTransaction"
+      },
+      {
+        "name": "warehouse_item",
+        "type": "EventListItemWarehouseItem"
+      },
+      {
+        "name": "work_shift",
+        "type": "EventListItemIdTime"
+      },
+      {
+        "name": "worker_task",
+        "type": "EventListItemTask"
+      },
+      {
+        "name": "goods",
+        "type": "[EventListItemIdTitle]!"
+      },
+      {
+        "name": "goods_category",
+        "type": "EventListItemGoodCategory"
+      },
+      {
+        "name": "new_goods_amount",
+        "type": "[EventListItemIdValueF]!"
+      },
+      {
+        "name": "new_devices",
+        "type": "[EventListItemAliasValues]!"
+      },
+      {
+        "name": "cash_on_start",
+        "type": "Float!"
+      },
+      {
+        "name": "cashback",
+        "type": "Float!"
+      },
+      {
+        "name": "paused_type",
+        "type": "String"
+      },
+      {
+        "name": "additional_seconds",
+        "type": "Int"
+      },
+      {
+        "name": "send_code_method",
+        "type": "String"
+      },
+      {
+        "name": "penalty",
+        "type": "Int"
+      },
+      {
+        "name": "value1",
+        "type": "Float!"
+      },
+      {
+        "name": "value2",
+        "type": "Float!"
+      },
+      {
+        "name": "comment",
+        "type": "String"
+      },
+      {
+        "name": "duration",
+        "type": "Int!"
+      },
+      {
+        "name": "deposit",
+        "type": "Float!"
+      },
+      {
+        "name": "combo",
+        "type": "EventListItemCombo"
+      },
+      {
+        "name": "combo_items",
+        "type": "[EventListItemComboItem]!"
+      },
+      {
+        "name": "advertisement",
+        "type": "EventListItemAdvertisement"
+      },
+      {
+        "name": "company_news_item",
+        "type": "EventListItemNews"
+      },
+      {
+        "name": "company_news_item_changes",
+        "type": "EventListItemNews"
+      },
+      {
+        "name": "additional_data",
+        "type": "String!"
+      }
+    ]
+  },
+  {
+    "name": "EventListItemAdvertisement",
+    "fieldCount": 3,
+    "fields": [
+      {
+        "name": "id",
+        "type": "String"
+      },
+      {
+        "name": "title",
+        "type": "String"
+      },
+      {
+        "name": "status",
+        "type": "String"
+      }
+    ]
+  },
+  {
+    "name": "EventListItemAliasValues",
+    "fieldCount": 3,
+    "fields": [
+      {
+        "name": "alias",
+        "type": "String!"
+      },
+      {
+        "name": "value",
+        "type": "String!"
+      },
+      {
+        "name": "value2",
+        "type": "String!"
+      }
+    ]
+  },
+  {
+    "name": "EventListItemBooking",
+    "fieldCount": 4,
+    "fields": [
+      {
+        "name": "id",
+        "type": "Int!"
+      },
+      {
+        "name": "cost",
+        "type": "Float!"
+      },
+      {
+        "name": "from",
+        "type": "DateTime!"
+      },
+      {
+        "name": "to",
+        "type": "DateTime!"
+      }
+    ]
+  },
+  {
+    "name": "EventListItemCashOrder",
+    "fieldCount": 5,
+    "fields": [
+      {
+        "name": "id",
+        "type": "Int"
+      },
+      {
+        "name": "created_at",
+        "type": "DateTime"
+      },
+      {
+        "name": "type",
+        "type": "CashOrderType"
+      },
+      {
+        "name": "sum",
+        "type": "Float"
+      },
+      {
+        "name": "comment",
+        "type": "String"
+      }
+    ]
+  },
+  {
+    "name": "EventListItemClientSession",
+    "fieldCount": 7,
+    "fields": [
+      {
+        "name": "id",
+        "type": "Int"
+      },
+      {
+        "name": "elapsed",
+        "type": "Int"
+      },
+      {
+        "name": "finished_at",
+        "type": "DateTime"
+      },
+      {
+        "name": "time_left",
+        "type": "Int"
+      },
+      {
+        "name": "expires_at",
+        "type": "DateTime"
+      },
+      {
+        "name": "is_per_minute",
+        "type": "Boolean"
+      },
+      {
+        "name": "total_cost",
+        "type": "Float"
+      }
+    ]
+  },
+  {
+    "name": "EventListItemCombo",
+    "fieldCount": 6,
+    "fields": [
+      {
+        "name": "id",
+        "type": "Int"
+      },
+      {
+        "name": "title",
+        "type": "String"
+      },
+      {
+        "name": "host_group_id",
+        "type": "Int"
+      },
+      {
+        "name": "host_group_title",
+        "type": "String"
+      },
+      {
+        "name": "tariff_id",
+        "type": "Int"
+      },
+      {
+        "name": "tariff_title",
+        "type": "String"
+      }
+    ]
+  },
+  {
+    "name": "EventListItemComboItem",
+    "fieldCount": 6,
+    "fields": [
+      {
+        "name": "id",
+        "type": "Int"
+      },
+      {
+        "name": "entity_id",
+        "type": "Int"
+      },
+      {
+        "name": "entity_type",
+        "type": "String"
+      },
+      {
+        "name": "title",
+        "type": "String"
+      },
+      {
+        "name": "amount",
+        "type": "Int"
+      },
+      {
+        "name": "price",
+        "type": "Float"
+      }
+    ]
+  },
+  {
+    "name": "EventListItemGoodCategory",
+    "fieldCount": 4,
+    "fields": [
+      {
+        "name": "id",
+        "type": "Int"
+      },
+      {
+        "name": "title",
+        "type": "String"
+      },
+      {
+        "name": "show_in_shell",
+        "type": "Boolean"
+      },
+      {
+        "name": "sell_periods",
+        "type": "[EventListItemGoodCategorySellPeriod]!"
+      }
+    ]
+  },
+  {
+    "name": "EventListItemGoodCategorySellPeriod",
+    "fieldCount": 3,
+    "fields": [
+      {
+        "name": "weekday",
+        "type": "Int"
+      },
+      {
+        "name": "start",
+        "type": "String"
+      },
+      {
+        "name": "end",
+        "type": "String"
+      }
+    ]
+  },
+  {
+    "name": "EventListItemIdTime",
+    "fieldCount": 2,
+    "fields": [
+      {
+        "name": "id",
+        "type": "Int"
+      },
+      {
+        "name": "timestamp",
+        "type": "DateTime"
+      }
+    ]
+  },
+  {
+    "name": "EventListItemIdTitle",
+    "fieldCount": 2,
+    "fields": [
+      {
+        "name": "id",
+        "type": "Int"
+      },
+      {
+        "name": "title",
+        "type": "String"
+      }
+    ]
+  },
+  {
+    "name": "EventListItemIdTitleValueF",
+    "fieldCount": 3,
+    "fields": [
+      {
+        "name": "id",
+        "type": "Int"
+      },
+      {
+        "name": "title",
+        "type": "String"
+      },
+      {
+        "name": "value",
+        "type": "Float"
+      }
+    ]
+  },
+  {
+    "name": "EventListItemIdTitleValueI",
+    "fieldCount": 3,
+    "fields": [
+      {
+        "name": "id",
+        "type": "Int"
+      },
+      {
+        "name": "title",
+        "type": "String"
+      },
+      {
+        "name": "value",
+        "type": "Int"
+      }
+    ]
+  },
+  {
+    "name": "EventListItemIdValueF",
+    "fieldCount": 2,
+    "fields": [
+      {
+        "name": "id",
+        "type": "Int"
+      },
+      {
+        "name": "value",
+        "type": "Float"
+      }
+    ]
+  },
+  {
+    "name": "EventListItemNews",
+    "fieldCount": 9,
+    "fields": [
+      {
+        "name": "id",
+        "type": "String"
+      },
+      {
+        "name": "image",
+        "type": "String"
+      },
+      {
+        "name": "label",
+        "type": "String"
+      },
+      {
+        "name": "url",
+        "type": "String"
+      },
+      {
+        "name": "title",
+        "type": "String"
+      },
+      {
+        "name": "active",
+        "type": "Boolean"
+      },
+      {
+        "name": "active_from",
+        "type": "DateTime"
+      },
+      {
+        "name": "active_to",
+        "type": "DateTime"
+      },
+      {
+        "name": "created_at",
+        "type": "DateTime"
+      }
+    ]
+  },
+  {
+    "name": "EventListItemPaymentItem",
+    "fieldCount": 6,
+    "fields": [
+      {
+        "name": "id",
+        "type": "Int"
+      },
+      {
+        "name": "entity_id",
+        "type": "Int"
+      },
+      {
+        "name": "entity_type",
+        "type": "String"
+      },
+      {
+        "name": "title",
+        "type": "String"
+      },
+      {
+        "name": "amount",
+        "type": "Int"
+      },
+      {
+        "name": "sum",
+        "type": "Float"
+      }
+    ]
+  },
+  {
+    "name": "EventListItemPaymentTransaction",
+    "fieldCount": 4,
+    "fields": [
+      {
+        "name": "uuid",
+        "type": "String!"
+      },
+      {
+        "name": "payment_id",
+        "type": "Int!"
+      },
+      {
+        "name": "status",
+        "type": "String!"
+      },
+      {
+        "name": "service",
+        "type": "String!"
+      }
+    ]
+  },
+  {
+    "name": "EventListItemPromoCampaignEntity",
+    "fieldCount": 15,
+    "fields": [
+      {
+        "name": "id",
+        "type": "String"
+      },
+      {
+        "name": "title",
+        "type": "String"
+      },
+      {
+        "name": "description",
+        "type": "String"
+      },
+      {
+        "name": "value",
+        "type": "String"
+      },
+      {
+        "name": "applicable_params",
+        "type": "String"
+      },
+      {
+        "name": "client_scope",
+        "type": "String"
+      },
+      {
+        "name": "scopes",
+        "type": "String"
+      },
+      {
+        "name": "generation_settings",
+        "type": "String"
+      },
+      {
+        "name": "counters",
+        "type": "String"
+      },
+      {
+        "name": "active",
+        "type": "Boolean!"
+      },
+      {
+        "name": "active_from",
+        "type": "DateTime"
+      },
+      {
+        "name": "active_to",
+        "type": "DateTime"
+      },
+      {
+        "name": "is_tracked",
+        "type": "Boolean!"
+      },
+      {
+        "name": "created_at",
+        "type": "DateTime!"
+      },
+      {
+        "name": "updated_at",
+        "type": "DateTime!"
+      }
+    ]
+  },
+  {
+    "name": "EventListItemPromoCodeEntity",
+    "fieldCount": 12,
+    "fields": [
+      {
+        "name": "id",
+        "type": "Int"
+      },
+      {
+        "name": "title",
+        "type": "String"
+      },
+      {
+        "name": "description",
+        "type": "String"
+      },
+      {
+        "name": "value",
+        "type": "String"
+      },
+      {
+        "name": "applicable_params",
+        "type": "String"
+      },
+      {
+        "name": "client_scope",
+        "type": "String"
+      },
+      {
+        "name": "scopes",
+        "type": "String"
+      },
+      {
+        "name": "active",
+        "type": "Boolean!"
+      },
+      {
+        "name": "active_from",
+        "type": "DateTime"
+      },
+      {
+        "name": "active_to",
+        "type": "DateTime"
+      },
+      {
+        "name": "is_tracked",
+        "type": "Boolean!"
+      },
+      {
+        "name": "created_at",
+        "type": "DateTime!"
+      }
+    ]
+  },
+  {
+    "name": "EventListItemTask",
+    "fieldCount": 5,
+    "fields": [
+      {
+        "name": "id",
+        "type": "Int"
+      },
+      {
+        "name": "creator_uuid",
+        "type": "String"
+      },
+      {
+        "name": "assigned_to_uuid",
+        "type": "String"
+      },
+      {
+        "name": "title",
+        "type": "String"
+      },
+      {
+        "name": "deadline_at",
+        "type": "DateTime"
+      }
+    ]
+  },
+  {
+    "name": "EventListItemUser",
+    "fieldCount": 6,
+    "fields": [
+      {
+        "name": "uuid",
+        "type": "String"
+      },
+      {
+        "name": "phone",
+        "type": "String"
+      },
+      {
+        "name": "email",
+        "type": "String"
+      },
+      {
+        "name": "nickname",
+        "type": "String"
+      },
+      {
+        "name": "first_name",
+        "type": "String"
+      },
+      {
+        "name": "last_name",
+        "type": "String"
+      }
+    ]
+  },
+  {
+    "name": "EventListItemWarehouseItem",
+    "fieldCount": 6,
+    "fields": [
+      {
+        "name": "id",
+        "type": "Int"
+      },
+      {
+        "name": "entity_id",
+        "type": "Int"
+      },
+      {
+        "name": "entity_type",
+        "type": "String"
+      },
+      {
+        "name": "title",
+        "type": "String"
+      },
+      {
+        "name": "value",
+        "type": "Float"
+      },
+      {
+        "name": "value2",
+        "type": "Float"
+      }
+    ]
+  },
+  {
+    "name": "EventListPaginated",
+    "fieldCount": 2,
+    "fields": [
+      {
+        "name": "paginatorInfo",
+        "type": "PaginatorInfo"
+      },
+      {
+        "name": "data",
+        "type": "[EventListItem]!"
+      }
+    ]
+  },
+  {
+    "name": "EventPaginated",
+    "fieldCount": 2,
+    "fields": [
+      {
+        "name": "paginatorInfo",
+        "type": "PaginatorInfo"
+      },
+      {
+        "name": "data",
+        "type": "[Event]!"
+      }
+    ]
+  },
+  {
+    "name": "ExternalPaymentData",
+    "fieldCount": 2,
+    "fields": [
+      {
+        "name": "external_id",
+        "type": "String"
+      },
+      {
+        "name": "external_method",
+        "type": "String"
+      }
+    ]
+  },
+  {
+    "name": "FeatureFlags",
+    "fieldCount": 12,
+    "fields": [
+      {
+        "name": "subscription",
+        "type": "String!"
+      },
+      {
+        "name": "expires_at",
+        "type": "DateTime!"
+      },
+      {
+        "name": "modules",
+        "type": "[String]!"
+      },
+      {
+        "name": "host_count",
+        "type": "Int!"
+      },
+      {
+        "name": "used_trial",
+        "type": "Boolean!"
+      },
+      {
+        "name": "deposit_transfer_enabled",
+        "type": "Boolean!"
+      },
+      {
+        "name": "shortcuts_sync_enabled",
+        "type": "Boolean!"
+      },
+      {
+        "name": "it_adviser_support",
+        "type": "Boolean!"
+      },
+      {
+        "name": "flocktory_url",
+        "type": "String!"
+      },
+      {
+        "name": "company_owner",
+        "type": "LiteOwner"
+      },
+      {
+        "name": "company_key_hash",
+        "type": "String!"
+      },
+      {
+        "name": "verification",
+        "type": "Verification"
+      }
+    ]
+  },
+  {
+    "name": "FinancialInfo",
+    "fieldCount": 4,
+    "fields": [
+      {
+        "name": "gross_amount",
+        "type": "Decimal!"
+      },
+      {
+        "name": "net_amount",
+        "type": "Decimal!"
+      },
+      {
+        "name": "commission_amount",
+        "type": "Decimal!"
+      },
+      {
+        "name": "commission_rate",
+        "type": "Decimal!"
+      }
+    ]
+  },
+  {
+    "name": "FreeGameAccount",
+    "fieldCount": 3,
+    "fields": [
+      {
+        "name": "id",
+        "type": "Int!"
+      },
+      {
+        "name": "login",
+        "type": "String!"
+      },
+      {
+        "name": "password",
+        "type": "String!"
+      }
+    ]
+  },
+  {
+    "name": "GameAccount",
+    "fieldCount": 9,
+    "fields": [
+      {
+        "name": "id",
+        "type": "Int!"
+      },
+      {
+        "name": "login",
+        "type": "String!"
+      },
+      {
+        "name": "password",
+        "type": "String!"
+      },
+      {
+        "name": "group",
+        "type": "GameAccountGroup!"
+      },
+      {
+        "name": "host",
+        "type": "Host"
+      },
+      {
+        "name": "assignment",
+        "type": "GameAccountAssignment"
+      },
+      {
+        "name": "active",
+        "type": "Boolean!"
+      },
+      {
+        "name": "status",
+        "type": "GameAccountStatus!"
+      },
+      {
+        "name": "busy",
+        "type": "Boolean!"
+      }
+    ]
+  },
+  {
+    "name": "GameAccountAssignment",
+    "fieldCount": 1,
+    "fields": [
+      {
+        "name": "host",
+        "type": "Host"
+      }
+    ]
+  },
+  {
+    "name": "GameAccountGroup",
+    "fieldCount": 5,
+    "fields": [
+      {
+        "name": "id",
+        "type": "Int!"
+      },
+      {
+        "name": "title",
+        "type": "String!"
+      },
+      {
+        "name": "launcher",
+        "type": "GameAccountLauncher!"
+      },
+      {
+        "name": "accounts",
+        "type": "[GameAccount]!"
+      },
+      {
+        "name": "shortcuts",
+        "type": "[Shortcut]!"
+      }
+    ]
+  },
+  {
+    "name": "Good",
+    "fieldCount": 25,
+    "fields": [
+      {
+        "name": "id",
+        "type": "Int!"
+      },
+      {
+        "name": "title",
+        "type": "String!"
+      },
+      {
+        "name": "subtitle",
+        "type": "String!"
+      },
+      {
+        "name": "category",
+        "type": "Category"
+      },
+      {
+        "name": "amount",
+        "type": "Int!"
+      },
+      {
+        "name": "cost",
+        "type": "Decimal!"
+      },
+      {
+        "name": "wholesale_cost",
+        "type": "Decimal!"
+      },
+      {
+        "name": "tax_percent",
+        "type": "Decimal!"
+      },
+      {
+        "name": "unit_name",
+        "type": "String!"
+      },
+      {
+        "name": "unit_value",
+        "type": "Float!"
+      },
+      {
+        "name": "tax_system",
+        "type": "TaxSystem"
+      },
+      {
+        "name": "state",
+        "type": "WarehouseState!"
+      },
+      {
+        "name": "vat",
+        "type": "Vat"
+      },
+      {
+        "name": "eans",
+        "type": "[String]!"
+      },
+      {
+        "name": "comment",
+        "type": "String!"
+      },
+      {
+        "name": "image",
+        "type": "String!"
+      },
+      {
+        "name": "use_global_discounts",
+        "type": "Boolean!"
+      },
+      {
+        "name": "created_at",
+        "type": "DateTime!"
+      },
+      {
+        "name": "use_fair_sign",
+        "type": "Boolean!"
+      },
+      {
+        "name": "is_excise",
+        "type": "Boolean!"
+      },
+      {
+        "name": "show_in_shell",
+        "type": "Boolean!"
+      },
+      {
+        "name": "in_combo",
+        "type": "Boolean!"
+      },
+      {
+        "name": "low_stock_notification",
+        "type": "LowStockNotification"
+      },
+      {
+        "name": "highlighted",
+        "type": "Boolean!"
+      },
+      {
+        "name": "available_to_buy",
+        "type": "Boolean!"
+      }
+    ]
+  },
+  {
+    "name": "GoodHistory",
+    "fieldCount": 3,
+    "fields": [
+      {
+        "name": "paginatorInfo",
+        "type": "PaginatorInfo"
+      },
+      {
+        "name": "data",
+        "type": "[GoodHistoryItem]!"
+      },
+      {
+        "name": "url",
+        "type": "String"
+      }
+    ]
+  },
+  {
+    "name": "GoodHistoryItem",
+    "fieldCount": 6,
+    "fields": [
+      {
+        "name": "created_at",
+        "type": "DateTime!"
+      },
+      {
+        "name": "operation",
+        "type": "WarehouseOperationType!"
+      },
+      {
+        "name": "delta",
+        "type": "Int!"
+      },
+      {
+        "name": "quantity_after",
+        "type": "Int!"
+      },
+      {
+        "name": "comment",
+        "type": "String!"
+      },
+      {
+        "name": "initiator",
+        "type": "User"
+      }
+    ]
+  },
+  {
+    "name": "Host",
+    "fieldCount": 31,
+    "fields": [
+      {
+        "name": "id",
+        "type": "Int!"
+      },
+      {
+        "name": "group_id",
+        "type": "Int!"
+      },
+      {
+        "name": "group",
+        "type": "HostGroup!"
+      },
+      {
+        "name": "type_id",
+        "type": "Int"
+      },
+      {
+        "name": "type",
+        "type": "HostTypeValue!"
+      },
+      {
+        "name": "position",
+        "type": "Int"
+      },
+      {
+        "name": "alias",
+        "type": "String!"
+      },
+      {
+        "name": "comment",
+        "type": "String"
+      },
+      {
+        "name": "mac_addr",
+        "type": "MacAddress"
+      },
+      {
+        "name": "ip_addr",
+        "type": "IpAddress"
+      },
+      {
+        "name": "dns_name",
+        "type": "String"
+      },
+      {
+        "name": "coord_x",
+        "type": "Int"
+      },
+      {
+        "name": "coord_y",
+        "type": "Int"
+      },
+      {
+        "name": "is_deleted",
+        "type": "Boolean!"
+      },
+      {
+        "name": "in_service",
+        "type": "Boolean!"
+      },
+      {
+        "name": "created_at",
+        "type": "DateTime!"
+      },
+      {
+        "name": "info",
+        "type": "HostInfo"
+      },
+      {
+        "name": "counters",
+        "type": "HostCounters"
+      },
+      {
+        "name": "sessions",
+        "type": "[HostSession]!"
+      },
+      {
+        "name": "client_sessions",
+        "type": "[ClientSession]!"
+      },
+      {
+        "name": "comments",
+        "type": "[Comment]!"
+      },
+      {
+        "name": "shell_mode",
+        "type": "ShellMode!"
+      },
+      {
+        "name": "last_online",
+        "type": "DateTime"
+      },
+      {
+        "name": "online",
+        "type": "Boolean!"
+      },
+      {
+        "name": "bookings",
+        "type": "[Booking]!"
+      },
+      {
+        "name": "device_has_changed",
+        "type": "Boolean!"
+      },
+      {
+        "name": "device_updated_at",
+        "type": "DateTime"
+      },
+      {
+        "name": "device_changes",
+        "type": "[HostDevice]!"
+      },
+      {
+        "name": "locked",
+        "type": "Boolean!"
+      },
+      {
+        "name": "admin_called_at",
+        "type": "DateTime"
+      },
+      {
+        "name": "online_booking_enabled",
+        "type": "Boolean!"
+      }
+    ]
+  },
+  {
+    "name": "HostCommand",
+    "fieldCount": 4,
+    "fields": [
+      {
+        "name": "id",
+        "type": "Int!"
+      },
+      {
+        "name": "action",
+        "type": "HostCommandAction!"
+      },
+      {
+        "name": "status",
+        "type": "String"
+      },
+      {
+        "name": "param",
+        "type": "String"
+      }
+    ]
+  },
+  {
+    "name": "HostCommandList",
+    "fieldCount": 1,
+    "fields": [
+      {
+        "name": "commands",
+        "type": "[HostCommand]!"
+      }
+    ]
+  },
+  {
+    "name": "HostCommandTemplate",
+    "fieldCount": 4,
+    "fields": [
+      {
+        "name": "id",
+        "type": "Int!"
+      },
+      {
+        "name": "title",
+        "type": "String!"
+      },
+      {
+        "name": "path",
+        "type": "String!"
+      },
+      {
+        "name": "arguments",
+        "type": "String"
+      }
+    ]
+  },
+  {
+    "name": "HostCounters",
+    "fieldCount": 4,
+    "fields": [
+      {
+        "name": "cpu_temp",
+        "type": "Decimal!"
+      },
+      {
+        "name": "disk_temp",
+        "type": "Decimal!"
+      },
+      {
+        "name": "disk_status",
+        "type": "[HostDiskInfo]!"
+      },
+      {
+        "name": "active_window",
+        "type": "String"
+      }
+    ]
+  },
+  {
+    "name": "HostDevice",
+    "fieldCount": 3,
+    "fields": [
+      {
+        "name": "alias",
+        "type": "String!"
+      },
+      {
+        "name": "old",
+        "type": "String!"
+      },
+      {
+        "name": "new",
+        "type": "String!"
+      }
+    ]
+  },
+  {
+    "name": "HostDiskInfo",
+    "fieldCount": 3,
+    "fields": [
+      {
+        "name": "letter",
+        "type": "String!"
+      },
+      {
+        "name": "total",
+        "type": "Int!"
+      },
+      {
+        "name": "used",
+        "type": "Int!"
+      }
+    ]
+  },
+  {
+    "name": "HostGroup",
+    "fieldCount": 7,
+    "fields": [
+      {
+        "name": "id",
+        "type": "Int!"
+      },
+      {
+        "name": "title",
+        "type": "String!"
+      },
+      {
+        "name": "created_at",
+        "type": "DateTime!"
+      },
+      {
+        "name": "updated_at",
+        "type": "DateTime!"
+      },
+      {
+        "name": "hosts",
+        "type": "[Host]!"
+      },
+      {
+        "name": "customization",
+        "type": "HostGroupCustomization"
+      },
+      {
+        "name": "priority",
+        "type": "Int!"
+      }
+    ]
+  },
+  {
+    "name": "HostGroupCustomization",
+    "fieldCount": 3,
+    "fields": [
+      {
+        "name": "color",
+        "type": "String"
+      },
+      {
+        "name": "background",
+        "type": "String"
+      },
+      {
+        "name": "screensaver",
+        "type": "String"
+      }
+    ]
+  },
+  {
+    "name": "HostGroupOverview",
+    "fieldCount": 5,
+    "fields": [
+      {
+        "name": "id",
+        "type": "Int!"
+      },
+      {
+        "name": "title",
+        "type": "String!"
+      },
+      {
+        "name": "customization",
+        "type": "HostGroupCustomization"
+      },
+      {
+        "name": "priority",
+        "type": "Int!"
+      },
+      {
+        "name": "hosts",
+        "type": "[HostOverview]!"
+      }
+    ]
+  },
+  {
+    "name": "HostGroupTitle",
+    "fieldCount": 3,
+    "fields": [
+      {
+        "name": "id",
+        "type": "Int!"
+      },
+      {
+        "name": "title",
+        "type": "String!"
+      },
+      {
+        "name": "priority",
+        "type": "Int!"
+      }
+    ]
+  },
+  {
+    "name": "HostInfo",
+    "fieldCount": 5,
+    "fields": [
+      {
+        "name": "processor",
+        "type": "String"
+      },
+      {
+        "name": "ram",
+        "type": "String"
+      },
+      {
+        "name": "video",
+        "type": "String"
+      },
+      {
+        "name": "disc",
+        "type": "String"
+      },
+      {
+        "name": "shell_version",
+        "type": "String"
+      }
+    ]
+  },
+  {
+    "name": "HostOverview",
+    "fieldCount": 25,
+    "fields": [
+      {
+        "name": "id",
+        "type": "Int!"
+      },
+      {
+        "name": "group_id",
+        "type": "Int!"
+      },
+      {
+        "name": "type_id",
+        "type": "Int"
+      },
+      {
+        "name": "type",
+        "type": "HostTypeValue!"
+      },
+      {
+        "name": "position",
+        "type": "Int"
+      },
+      {
+        "name": "alias",
+        "type": "String!"
+      },
+      {
+        "name": "mac_addr",
+        "type": "MacAddress"
+      },
+      {
+        "name": "ip_addr",
+        "type": "IpAddress"
+      },
+      {
+        "name": "dns_name",
+        "type": "String"
+      },
+      {
+        "name": "coord_x",
+        "type": "Int"
+      },
+      {
+        "name": "coord_y",
+        "type": "Int"
+      },
+      {
+        "name": "in_service",
+        "type": "Boolean!"
+      },
+      {
+        "name": "online",
+        "type": "Boolean!"
+      },
+      {
+        "name": "info",
+        "type": "HostInfo"
+      },
+      {
+        "name": "counters",
+        "type": "HostCounters"
+      },
+      {
+        "name": "shell_mode",
+        "type": "ShellMode!"
+      },
+      {
+        "name": "device_has_changed",
+        "type": "Boolean!"
+      },
+      {
+        "name": "locked",
+        "type": "Boolean!"
+      },
+      {
+        "name": "bookings",
+        "type": "[Booking]!"
+      },
+      {
+        "name": "user",
+        "type": "User"
+      },
+      {
+        "name": "client_sessions",
+        "type": "[ClientSessionOverview]!"
+      },
+      {
+        "name": "comment",
+        "type": "String"
+      },
+      {
+        "name": "admin_called_at",
+        "type": "DateTime"
+      },
+      {
+        "name": "online_booking_enabled",
+        "type": "Boolean!"
+      },
+      {
+        "name": "qr",
+        "type": "String"
+      }
+    ]
+  },
+  {
+    "name": "HostSession",
+    "fieldCount": 8,
+    "fields": [
+      {
+        "name": "id",
+        "type": "Int!"
+      },
+      {
+        "name": "host_id",
+        "type": "Int!"
+      },
+      {
+        "name": "company_id",
+        "type": "Int!"
+      },
+      {
+        "name": "alias",
+        "type": "String"
+      },
+      {
+        "name": "user",
+        "type": "User"
+      },
+      {
+        "name": "started_at",
+        "type": "DateTime!"
+      },
+      {
+        "name": "finished_at",
+        "type": "DateTime"
+      },
+      {
+        "name": "qr",
+        "type": "String"
+      }
+    ]
+  },
+  {
+    "name": "HostStatus",
+    "fieldCount": 5,
+    "fields": [
+      {
+        "name": "client_session",
+        "type": "ClientSession"
+      },
+      {
+        "name": "pin",
+        "type": "String"
+      },
+      {
+        "name": "current_tariff",
+        "type": "CurrentTariff"
+      },
+      {
+        "name": "command",
+        "type": "HostCommand"
+      },
+      {
+        "name": "host",
+        "type": "Host!"
+      }
+    ]
+  },
+  {
+    "name": "HostType",
+    "fieldCount": 5,
+    "fields": [
+      {
+        "name": "id",
+        "type": "Int!"
+      },
+      {
+        "name": "title",
+        "type": "String!"
+      },
+      {
+        "name": "description",
+        "type": "String"
+      },
+      {
+        "name": "created_at",
+        "type": "DateTime!"
+      },
+      {
+        "name": "updated_at",
+        "type": "DateTime"
+      }
+    ]
+  },
+  {
+    "name": "Import",
+    "fieldCount": 5,
+    "fields": [
+      {
+        "name": "id",
+        "type": "Int!"
+      },
+      {
+        "name": "status",
+        "type": "ImportStatusEnum!"
+      },
+      {
+        "name": "failures",
+        "type": "[ImportFailure]!"
+      },
+      {
+        "name": "created_at",
+        "type": "DateTime!"
+      },
+      {
+        "name": "finished_at",
+        "type": "DateTime"
+      }
+    ]
+  },
+  {
+    "name": "ImportFailure",
+    "fieldCount": 4,
+    "fields": [
+      {
+        "name": "row",
+        "type": "Int"
+      },
+      {
+        "name": "errors",
+        "type": "[String]"
+      },
+      {
+        "name": "values",
+        "type": "[String]"
+      },
+      {
+        "name": "attribute",
+        "type": "String"
+      }
+    ]
+  },
+  {
+    "name": "LeaderboardUser",
+    "fieldCount": 12,
+    "fields": [
+      {
+        "name": "userId",
+        "type": "Int!"
+      },
+      {
+        "name": "totalTime",
+        "type": "Float!"
+      },
+      {
+        "name": "nickname",
+        "type": "String!"
+      },
+      {
+        "name": "name",
+        "type": "String"
+      },
+      {
+        "name": "avatarUrl",
+        "type": "String"
+      },
+      {
+        "name": "telegram_link",
+        "type": "String"
+      },
+      {
+        "name": "discord_link",
+        "type": "String"
+      },
+      {
+        "name": "steam_link",
+        "type": "String"
+      },
+      {
+        "name": "vk_link",
+        "type": "String"
+      },
+      {
+        "name": "created_at",
+        "type": "Date!"
+      },
+      {
+        "name": "place",
+        "type": "Int!"
+      },
+      {
+        "name": "current_user",
+        "type": "Boolean!"
+      }
+    ]
+  },
+  {
+    "name": "License",
+    "fieldCount": 4,
+    "fields": [
+      {
+        "name": "id",
+        "type": "Int!"
+      },
+      {
+        "name": "expires_at",
+        "type": "DateTime!"
+      },
+      {
+        "name": "starts_at",
+        "type": "DateTime!"
+      },
+      {
+        "name": "payment",
+        "type": "LicensePaymentData!"
+      }
+    ]
+  },
+  {
+    "name": "LicenseModulePrice",
+    "fieldCount": 2,
+    "fields": [
+      {
+        "name": "module_id",
+        "type": "Int!"
+      },
+      {
+        "name": "price",
+        "type": "Decimal!"
+      }
+    ]
+  },
+  {
+    "name": "LicensePayment",
+    "fieldCount": 6,
+    "fields": [
+      {
+        "name": "id",
+        "type": "String!"
+      },
+      {
+        "name": "url",
+        "type": "String!"
+      },
+      {
+        "name": "qr",
+        "type": "String"
+      },
+      {
+        "name": "license_payment_method",
+        "type": "LicensePaymentMethod!"
+      },
+      {
+        "name": "additional",
+        "type": "AdditionalPaymentData"
+      },
+      {
+        "name": "currency",
+        "type": "String!"
+      }
+    ]
+  },
+  {
+    "name": "LicensePaymentData",
+    "fieldCount": 17,
+    "fields": [
+      {
+        "name": "id",
+        "type": "Int!"
+      },
+      {
+        "name": "created_at",
+        "type": "DateTime!"
+      },
+      {
+        "name": "host_count",
+        "type": "Int!"
+      },
+      {
+        "name": "payment_method",
+        "type": "String!"
+      },
+      {
+        "name": "bill_url",
+        "type": "String"
+      },
+      {
+        "name": "license_tariff",
+        "type": "LicenseTariff!"
+      },
+      {
+        "name": "modules",
+        "type": "[LicenseTariffModule]!"
+      },
+      {
+        "name": "status",
+        "type": "LicensePaymentStatus!"
+      },
+      {
+        "name": "months",
+        "type": "Int!"
+      },
+      {
+        "name": "cost",
+        "type": "Decimal!"
+      },
+      {
+        "name": "contractor",
+        "type": "Contractor"
+      },
+      {
+        "name": "license",
+        "type": "License"
+      },
+      {
+        "name": "base_payment",
+        "type": "Int"
+      },
+      {
+        "name": "with_debt",
+        "type": "Boolean!"
+      },
+      {
+        "name": "club",
+        "type": "Club!"
+      },
+      {
+        "name": "promo_code",
+        "type": "String"
+      },
+      {
+        "name": "currency",
+        "type": "String!"
+      }
+    ]
+  },
+  {
+    "name": "LicensePrice",
+    "fieldCount": 10,
+    "fields": [
+      {
+        "name": "sum",
+        "type": "Decimal!"
+      },
+      {
+        "name": "total_sum",
+        "type": "Decimal!"
+      },
+      {
+        "name": "host_price",
+        "type": "Decimal!"
+      },
+      {
+        "name": "modules",
+        "type": "[LicenseModulePrice]!"
+      },
+      {
+        "name": "discount_value",
+        "type": "Int!"
+      },
+      {
+        "name": "loyalty_discount",
+        "type": "Int"
+      },
+      {
+        "name": "promocode_discount",
+        "type": "Int"
+      },
+      {
+        "name": "month_discount",
+        "type": "Int"
+      },
+      {
+        "name": "debt",
+        "type": "Decimal"
+      },
+      {
+        "name": "currency",
+        "type": "Currency!"
+      }
+    ]
+  },
+  {
+    "name": "LicenseTariff",
+    "fieldCount": 6,
+    "fields": [
+      {
+        "name": "id",
+        "type": "Int!"
+      },
+      {
+        "name": "name",
+        "type": "String!"
+      },
+      {
+        "name": "description",
+        "type": "String"
+      },
+      {
+        "name": "cost",
+        "type": "Decimal!"
+      },
+      {
+        "name": "module_categories",
+        "type": "[LicenseTariffCategory]"
+      },
+      {
+        "name": "currency",
+        "type": "Currency!"
+      }
+    ]
+  },
+  {
+    "name": "LicenseTariffCategory",
+    "fieldCount": 4,
+    "fields": [
+      {
+        "name": "id",
+        "type": "Int!"
+      },
+      {
+        "name": "name",
+        "type": "String!"
+      },
+      {
+        "name": "modules",
+        "type": "[LicenseTariffModule]"
+      },
+      {
+        "name": "tariff_id",
+        "type": "Int!"
+      }
+    ]
+  },
+  {
+    "name": "LicenseTariffGrid",
+    "fieldCount": 2,
+    "fields": [
+      {
+        "name": "tariffs",
+        "type": "[LicenseTariff]!"
+      },
+      {
+        "name": "modules",
+        "type": "[LicenseTariffModule]!"
+      }
+    ]
+  },
+  {
+    "name": "LicenseTariffModule",
+    "fieldCount": 6,
+    "fields": [
+      {
+        "name": "id",
+        "type": "Int!"
+      },
+      {
+        "name": "name",
+        "type": "String!"
+      },
+      {
+        "name": "description",
+        "type": "String"
+      },
+      {
+        "name": "cost",
+        "type": "Decimal!"
+      },
+      {
+        "name": "category_id",
+        "type": "Int!"
+      },
+      {
+        "name": "alias",
+        "type": "String!"
+      }
+    ]
+  },
+  {
+    "name": "ListMovementOfFundsPaginated",
+    "fieldCount": 3,
+    "fields": [
+      {
+        "name": "paginatorInfo",
+        "type": "PaginatorInfo"
+      },
+      {
+        "name": "summary",
+        "type": "MovementOfFundsSummary"
+      },
+      {
+        "name": "data",
+        "type": "[MovementOfFunds]!"
+      }
+    ]
+  },
+  {
+    "name": "LiteClient",
+    "fieldCount": 2,
+    "fields": [
+      {
+        "name": "nickname",
+        "type": "String!"
+      },
+      {
+        "name": "phone",
+        "type": "String!"
+      }
+    ]
+  },
+  {
+    "name": "LiteCompany",
+    "fieldCount": 3,
+    "fields": [
+      {
+        "name": "id",
+        "type": "Int!"
+      },
+      {
+        "name": "name",
+        "type": "String!"
+      },
+      {
+        "name": "address",
+        "type": "String"
+      }
+    ]
+  },
+  {
+    "name": "LiteOwner",
+    "fieldCount": 10,
+    "fields": [
+      {
+        "name": "uuid",
+        "type": "String!"
+      },
+      {
+        "name": "inn",
+        "type": "String!"
+      },
+      {
+        "name": "type",
+        "type": "String!"
+      },
+      {
+        "name": "name",
+        "type": "String!"
+      },
+      {
+        "name": "ogrn",
+        "type": "String!"
+      },
+      {
+        "name": "legal_address",
+        "type": "String!"
+      },
+      {
+        "name": "kpp",
+        "type": "String!"
+      },
+      {
+        "name": "policy_url",
+        "type": "String"
+      },
+      {
+        "name": "private_policy",
+        "type": "String!"
+      },
+      {
+        "name": "email",
+        "type": "Email!"
+      }
+    ]
+  },
+  {
+    "name": "LitePaymentTransaction",
+    "fieldCount": 10,
+    "fields": [
+      {
+        "name": "id",
+        "type": "String!"
+      },
+      {
+        "name": "company",
+        "type": "LiteCompany!"
+      },
+      {
+        "name": "client",
+        "type": "LiteClient!"
+      },
+      {
+        "name": "amount",
+        "type": "Decimal!"
+      },
+      {
+        "name": "sum",
+        "type": "Decimal!"
+      },
+      {
+        "name": "commission_details",
+        "type": "CommissionDetails"
+      },
+      {
+        "name": "service",
+        "type": "ServiceEnum!"
+      },
+      {
+        "name": "status",
+        "type": "String!"
+      },
+      {
+        "name": "created_at",
+        "type": "DateTime!"
+      },
+      {
+        "name": "receipt",
+        "type": "String"
+      }
+    ]
+  },
+  {
+    "name": "LowStockNotification",
+    "fieldCount": 2,
+    "fields": [
+      {
+        "name": "enabled",
+        "type": "Boolean!"
+      },
+      {
+        "name": "threshold",
+        "type": "Int!"
+      }
+    ]
+  },
+  {
+    "name": "Me",
+    "fieldCount": 33,
+    "fields": [
+      {
+        "name": "id",
+        "type": "Int!"
+      },
+      {
+        "name": "uuid",
+        "type": "String!"
+      },
+      {
+        "name": "creator",
+        "type": "User"
+      },
+      {
+        "name": "login",
+        "type": "String!"
+      },
+      {
+        "name": "nickname",
+        "type": "String!"
+      },
+      {
+        "name": "phone",
+        "type": "String!"
+      },
+      {
+        "name": "email",
+        "type": "Email"
+      },
+      {
+        "name": "dob",
+        "type": "Date!"
+      },
+      {
+        "name": "first_name",
+        "type": "String"
+      },
+      {
+        "name": "last_name",
+        "type": "String"
+      },
+      {
+        "name": "middle_name",
+        "type": "String"
+      },
+      {
+        "name": "deposit",
+        "type": "Decimal!"
+      },
+      {
+        "name": "bonus",
+        "type": "Decimal!"
+      },
+      {
+        "name": "user_discount",
+        "type": "Int"
+      },
+      {
+        "name": "group_discount",
+        "type": "Int"
+      },
+      {
+        "name": "last_client_activity",
+        "type": "DateTime"
+      },
+      {
+        "name": "last_worker_activity",
+        "type": "DateTime"
+      },
+      {
+        "name": "created_at",
+        "type": "DateTime!"
+      },
+      {
+        "name": "updated_at",
+        "type": "DateTime!"
+      },
+      {
+        "name": "banned_at",
+        "type": "DateTime"
+      },
+      {
+        "name": "roles",
+        "type": "[Role]!"
+      },
+      {
+        "name": "permissions",
+        "type": "[Permission]!"
+      },
+      {
+        "name": "pausable_info",
+        "type": "PausableClientSession"
+      },
+      {
+        "name": "pausable_sessions",
+        "type": "[PausableClientSession]!"
+      },
+      {
+        "name": "age",
+        "type": "Int!"
+      },
+      {
+        "name": "is_owner",
+        "type": "Boolean!"
+      },
+      {
+        "name": "achievements",
+        "type": "UserAchievements!"
+      },
+      {
+        "name": "avatar_url",
+        "type": "String!"
+      },
+      {
+        "name": "news_consent",
+        "type": "NewsConsent!"
+      },
+      {
+        "name": "is_private",
+        "type": "Boolean!"
+      },
+      {
+        "name": "unverified",
+        "type": "Boolean!"
+      },
+      {
+        "name": "needs_password_change",
+        "type": "Boolean!"
+      },
+      {
+        "name": "lead_source",
+        "type": "String"
+      }
+    ]
+  },
+  {
+    "name": "MoneyByTypes",
+    "fieldCount": 6,
+    "fields": [
+      {
+        "name": "cash",
+        "type": "Decimal!"
+      },
+      {
+        "name": "card",
+        "type": "Decimal!"
+      },
+      {
+        "name": "deposit",
+        "type": "Decimal!"
+      },
+      {
+        "name": "bonus",
+        "type": "Decimal!"
+      },
+      {
+        "name": "total",
+        "type": "Decimal!"
+      },
+      {
+        "name": "currency",
+        "type": "Currency"
+      }
+    ]
+  },
+  {
+    "name": "MoneyData",
+    "fieldCount": 5,
+    "fields": [
+      {
+        "name": "good",
+        "type": "Decimal!"
+      },
+      {
+        "name": "service",
+        "type": "Decimal!"
+      },
+      {
+        "name": "tariff",
+        "type": "Decimal!"
+      },
+      {
+        "name": "deposit",
+        "type": "Decimal!"
+      },
+      {
+        "name": "tips",
+        "type": "Decimal!"
+      }
+    ]
+  },
+  {
+    "name": "MovementOfFunds",
+    "fieldCount": 8,
+    "fields": [
+      {
+        "name": "operation",
+        "type": "OperationType!"
+      },
+      {
+        "name": "transaction",
+        "type": "LitePaymentTransaction"
+      },
+      {
+        "name": "deal",
+        "type": "BeneficiaryDeal"
+      },
+      {
+        "name": "confirmed",
+        "type": "Boolean!"
+      },
+      {
+        "name": "sum",
+        "type": "Decimal!"
+      },
+      {
+        "name": "financial_info",
+        "type": "FinancialInfo!"
+      },
+      {
+        "name": "created_at",
+        "type": "DateTime!"
+      },
+      {
+        "name": "updated_at",
+        "type": "DateTime!"
+      }
+    ]
+  },
+  {
+    "name": "MovementOfFundsPaginated",
+    "fieldCount": 4,
+    "fields": [
+      {
+        "name": "paginatorInfo",
+        "type": "PaginatorInfo"
+      },
+      {
+        "name": "data",
+        "type": "[MovementOfFunds]!"
+      },
+      {
+        "name": "deposit",
+        "type": "Decimal!"
+      },
+      {
+        "name": "withdrawal",
+        "type": "Decimal!"
+      }
+    ]
+  },
+  {
+    "name": "MovementOfFundsSummary",
+    "fieldCount": 2,
+    "fields": [
+      {
+        "name": "values",
+        "type": "[Decimal]!"
+      },
+      {
+        "name": "labels",
+        "type": "[String]!"
+      }
+    ]
+  },
+  {
+    "name": "Mutation",
+    "fieldCount": 219,
+    "fields": [
+      {
+        "name": "createAchievement",
+        "type": "Achievement!"
+      },
+      {
+        "name": "deleteAchievement",
+        "type": "Achievement!"
+      },
+      {
+        "name": "createBooking",
+        "type": "Booking!"
+      },
+      {
+        "name": "updateBooking",
+        "type": "Booking!"
+      },
+      {
+        "name": "setBookingStatus",
+        "type": "Booking!"
+      },
+      {
+        "name": "createClientBooking",
+        "type": "Booking!"
+      },
+      {
+        "name": "clientBookingCancel",
+        "type": "ClientBooking!"
+      },
+      {
+        "name": "createCashOrder",
+        "type": "CashOrder!"
+      },
+      {
+        "name": "changeClientSessionHost",
+        "type": "ClientSession!"
+      },
+      {
+        "name": "stopClientSession",
+        "type": "ClientSession!"
+      },
+      {
+        "name": "startClientSession",
+        "type": "ClientSession!"
+      },
+      {
+        "name": "finishClientSession",
+        "type": "ClientSession!"
+      },
+      {
+        "name": "unpauseClientSession",
+        "type": "ClientSession!"
+      },
+      {
+        "name": "createCombo",
+        "type": "Combo!"
+      },
+      {
+        "name": "updateCombo",
+        "type": "Combo!"
+      },
+      {
+        "name": "deleteCombo",
+        "type": "Combo!"
+      },
+      {
+        "name": "createComment",
+        "type": "Comment!"
+      },
+      {
+        "name": "updateComment",
+        "type": "Comment!"
+      },
+      {
+        "name": "deleteComment",
+        "type": "Comment!"
+      },
+      {
+        "name": "createClubComment",
+        "type": "ClubComment!"
+      },
+      {
+        "name": "createClientClubComment",
+        "type": "ClubComment!"
+      },
+      {
+        "name": "readAllClubComments",
+        "type": "Boolean"
+      },
+      {
+        "name": "readClubComment",
+        "type": "ClubComment!"
+      },
+      {
+        "name": "createDiscount",
+        "type": "Discount!"
+      },
+      {
+        "name": "updateDiscount",
+        "type": "Discount!"
+      },
+      {
+        "name": "deleteDiscount",
+        "type": "Discount!"
+      },
+      {
+        "name": "createGameAccount",
+        "type": "GameAccount!"
+      },
+      {
+        "name": "updateGameAccount",
+        "type": "GameAccount!"
+      },
+      {
+        "name": "deleteGameAccount",
+        "type": "GameAccount!"
+      },
+      {
+        "name": "freeGameAccount",
+        "type": "GameAccount!"
+      },
+      {
+        "name": "pickGameAccount",
+        "type": "FreeGameAccount!"
+      },
+      {
+        "name": "createGameAccountGroup",
+        "type": "GameAccountGroup!"
+      },
+      {
+        "name": "updateGameAccountGroup",
+        "type": "GameAccountGroup!"
+      },
+      {
+        "name": "deleteGameAccountGroup",
+        "type": "GameAccountGroup!"
+      },
+      {
+        "name": "createGood",
+        "type": "Good!"
+      },
+      {
+        "name": "updateGood",
+        "type": "Good!"
+      },
+      {
+        "name": "updateGoods",
+        "type": "Boolean!"
+      },
+      {
+        "name": "deleteGood",
+        "type": "Good!"
+      },
+      {
+        "name": "deleteGoods",
+        "type": "Boolean!"
+      },
+      {
+        "name": "changeGoodsQuantity",
+        "type": "Boolean!"
+      },
+      {
+        "name": "createCategory",
+        "type": "Category!"
+      },
+      {
+        "name": "updateCategory",
+        "type": "Category!"
+      },
+      {
+        "name": "deleteCategory",
+        "type": "Category!"
+      },
+      {
+        "name": "registerHost",
+        "type": "String!"
+      },
+      {
+        "name": "createHost",
+        "type": "Host!"
+      },
+      {
+        "name": "updateHost",
+        "type": "Host!"
+      },
+      {
+        "name": "updateHosts",
+        "type": "Boolean!"
+      },
+      {
+        "name": "deleteHost",
+        "type": "Host!"
+      },
+      {
+        "name": "setHostServiceMode",
+        "type": "Host!"
+      },
+      {
+        "name": "setShellMode",
+        "type": "Host!"
+      },
+      {
+        "name": "updateHostState",
+        "type": "HostStatus!"
+      },
+      {
+        "name": "penaltyHost",
+        "type": "Host!"
+      },
+      {
+        "name": "applyNewHostDevices",
+        "type": "Host!"
+      },
+      {
+        "name": "callAdmin",
+        "type": "Boolean!"
+      },
+      {
+        "name": "adminCallDone",
+        "type": "Boolean!"
+      },
+      {
+        "name": "updateHostIpAddress",
+        "type": "Host!"
+      },
+      {
+        "name": "createHostPIN",
+        "type": "String!"
+      },
+      {
+        "name": "createCommand",
+        "type": "HostCommand!"
+      },
+      {
+        "name": "createCommands",
+        "type": "HostCommandList!"
+      },
+      {
+        "name": "sendWakePacket",
+        "type": "Boolean!"
+      },
+      {
+        "name": "sendWakePackets",
+        "type": "Boolean!"
+      },
+      {
+        "name": "updateHostCommandStatus",
+        "type": "HostCommand!"
+      },
+      {
+        "name": "createHostCommandTemplate",
+        "type": "HostCommandTemplate!"
+      },
+      {
+        "name": "updateHostCommandTemplate",
+        "type": "HostCommandTemplate!"
+      },
+      {
+        "name": "deleteHostCommandTemplate",
+        "type": "Boolean!"
+      },
+      {
+        "name": "createHostGroup",
+        "type": "HostGroup!"
+      },
+      {
+        "name": "updateHostGroup",
+        "type": "HostGroup!"
+      },
+      {
+        "name": "deleteHostGroup",
+        "type": "HostGroup!"
+      },
+      {
+        "name": "startHostSession",
+        "type": "HostSession!"
+      },
+      {
+        "name": "finishHostSession",
+        "type": "HostSession!"
+      },
+      {
+        "name": "createHostType",
+        "type": "HostType!"
+      },
+      {
+        "name": "updateHostType",
+        "type": "HostType!"
+      },
+      {
+        "name": "deleteHostType",
+        "type": "HostType!"
+      },
+      {
+        "name": "createDepositCashback",
+        "type": "DepositCashback!"
+      },
+      {
+        "name": "updateDepositCashback",
+        "type": "DepositCashback!"
+      },
+      {
+        "name": "deleteDepositCashback",
+        "type": "DepositCashback!"
+      },
+      {
+        "name": "createNetwork",
+        "type": "Network!"
+      },
+      {
+        "name": "updateNetwork",
+        "type": "Network!"
+      },
+      {
+        "name": "addCompaniesToNetwork",
+        "type": "[NetworkCompany]!"
+      },
+      {
+        "name": "updateNetworkCompany",
+        "type": "NetworkCompany!"
+      },
+      {
+        "name": "deleteNetworkCompany",
+        "type": "NetworkCompany!"
+      },
+      {
+        "name": "createCompanyNews",
+        "type": "CompanyNewsArticle!"
+      },
+      {
+        "name": "updateCompanyNews",
+        "type": "CompanyNewsArticle!"
+      },
+      {
+        "name": "deleteCompanyNews",
+        "type": "CompanyNewsArticle!"
+      },
+      {
+        "name": "createBeneficiaryByInn",
+        "type": "Beneficiary!"
+      },
+      {
+        "name": "setBeneficiaryToCompany",
+        "type": "Beneficiary!"
+      },
+      {
+        "name": "updateBeneficiaryBankDetails",
+        "type": "BeneficiaryBankDetails!"
+      },
+      {
+        "name": "executeDealAndPayToCheckingAccount",
+        "type": "BeneficiaryDeal!"
+      },
+      {
+        "name": "organizationRegister",
+        "type": "Organization!"
+      },
+      {
+        "name": "organizationConfirmCode",
+        "type": "ConfirmationResult!"
+      },
+      {
+        "name": "organizationLogin",
+        "type": "AccessToken!"
+      },
+      {
+        "name": "organizationLogout",
+        "type": "Boolean!"
+      },
+      {
+        "name": "organizationStartResetPassword",
+        "type": "String!"
+      },
+      {
+        "name": "organizationResetPassword",
+        "type": "Boolean!"
+      },
+      {
+        "name": "organizationSendConfirmationCode",
+        "type": "Boolean!"
+      },
+      {
+        "name": "organizationVerifyConfirmationCode",
+        "type": "Boolean!"
+      },
+      {
+        "name": "organizationUpdate",
+        "type": "Organization!"
+      },
+      {
+        "name": "createClub",
+        "type": "Club!"
+      },
+      {
+        "name": "updateClub",
+        "type": "Club!"
+      },
+      {
+        "name": "deleteClub",
+        "type": "Club!"
+      },
+      {
+        "name": "importClub",
+        "type": "Boolean!"
+      },
+      {
+        "name": "importUsers",
+        "type": "Boolean!"
+      },
+      {
+        "name": "importUsersHours",
+        "type": "Boolean!"
+      },
+      {
+        "name": "createLicenseTariff",
+        "type": "LicenseTariff!"
+      },
+      {
+        "name": "updateLicenseTariff",
+        "type": "LicenseTariff!"
+      },
+      {
+        "name": "deleteLicenseTariff",
+        "type": "LicenseTariff!"
+      },
+      {
+        "name": "createLicenseModule",
+        "type": "LicenseTariffModule!"
+      },
+      {
+        "name": "updateLicenseModule",
+        "type": "LicenseTariffModule!"
+      },
+      {
+        "name": "deleteLicenseModule",
+        "type": "LicenseTariffModule!"
+      },
+      {
+        "name": "createLicenseModuleCategory",
+        "type": "LicenseTariffCategory!"
+      },
+      {
+        "name": "updateLicenseModuleCategory",
+        "type": "LicenseTariffCategory!"
+      },
+      {
+        "name": "deleteLicenseModuleCategory",
+        "type": "LicenseTariffCategory!"
+      },
+      {
+        "name": "createContractor",
+        "type": "Contractor!"
+      },
+      {
+        "name": "updateContractor",
+        "type": "Contractor!"
+      },
+      {
+        "name": "deleteContractor",
+        "type": "Contractor!"
+      },
+      {
+        "name": "createLicensePayment",
+        "type": "LicensePayment!"
+      },
+      {
+        "name": "createAdditionalLicensePayment",
+        "type": "LicensePayment!"
+      },
+      {
+        "name": "magicInit",
+        "type": "Boolean"
+      },
+      {
+        "name": "magicRoles",
+        "type": "Boolean"
+      },
+      {
+        "name": "magicRoles2",
+        "type": "Boolean"
+      },
+      {
+        "name": "sendClubOnVerification",
+        "type": "Club!"
+      },
+      {
+        "name": "setClubAutoPayStatus",
+        "type": "Club!"
+      },
+      {
+        "name": "setClubAutoPayCardId",
+        "type": "Club!"
+      },
+      {
+        "name": "setClubDepositTransferStatus",
+        "type": "Club!"
+      },
+      {
+        "name": "deleteOrganizationPaymentCard",
+        "type": "OrganizationPaymentCard!"
+      },
+      {
+        "name": "useDebt",
+        "type": "Boolean!"
+      },
+      {
+        "name": "activateTrial",
+        "type": "Boolean!"
+      },
+      {
+        "name": "createOwner",
+        "type": "Owner!"
+      },
+      {
+        "name": "updateOwner",
+        "type": "Owner!"
+      },
+      {
+        "name": "setCompanyOwner",
+        "type": "Owner!"
+      },
+      {
+        "name": "createPayment",
+        "type": "Payment!"
+      },
+      {
+        "name": "refundPayment",
+        "type": "Payment!"
+      },
+      {
+        "name": "processPostPayment",
+        "type": "Payment!"
+      },
+      {
+        "name": "createPaymentTransaction",
+        "type": "PaymentTransaction!"
+      },
+      {
+        "name": "connectPaymentService",
+        "type": "Boolean!"
+      },
+      {
+        "name": "disconnectPaymentService",
+        "type": "Boolean!"
+      },
+      {
+        "name": "createPromoCode",
+        "type": "PromoCode!"
+      },
+      {
+        "name": "updatePromoCode",
+        "type": "PromoCode!"
+      },
+      {
+        "name": "deletePromoCode",
+        "type": "PromoCode!"
+      },
+      {
+        "name": "updateCompanyPermissions",
+        "type": "CompanyPermissionsData!"
+      },
+      {
+        "name": "createService",
+        "type": "Service!"
+      },
+      {
+        "name": "updateService",
+        "type": "Service!"
+      },
+      {
+        "name": "deleteService",
+        "type": "Service!"
+      },
+      {
+        "name": "setSettingValue",
+        "type": "Boolean!"
+      },
+      {
+        "name": "setMultipleSettingValues",
+        "type": "Boolean!"
+      },
+      {
+        "name": "setTelegramChannel",
+        "type": "Boolean!"
+      },
+      {
+        "name": "setSetting",
+        "type": "Setting!"
+      },
+      {
+        "name": "setSettings",
+        "type": "[Setting]!"
+      },
+      {
+        "name": "setCloudPaymentsAccountToCompany",
+        "type": "CloudPaymentsAccount!"
+      },
+      {
+        "name": "updateTelegramSettings",
+        "type": "TelegramSettings!"
+      },
+      {
+        "name": "copySettings",
+        "type": "Boolean!"
+      },
+      {
+        "name": "createShortcut",
+        "type": "Shortcut!"
+      },
+      {
+        "name": "updateShortcut",
+        "type": "Shortcut!"
+      },
+      {
+        "name": "deleteShortcut",
+        "type": "Shortcut!"
+      },
+      {
+        "name": "uploadShortcutImage",
+        "type": "String"
+      },
+      {
+        "name": "updateShortcutSort",
+        "type": "Boolean!"
+      },
+      {
+        "name": "setShortcutFavorite",
+        "type": "Boolean!"
+      },
+      {
+        "name": "createShortcutGroup",
+        "type": "ShortcutGroup!"
+      },
+      {
+        "name": "createShortcutGroups",
+        "type": "[ShortcutGroup]!"
+      },
+      {
+        "name": "updateShortcutGroup",
+        "type": "ShortcutGroup!"
+      },
+      {
+        "name": "updateShortcutGroupSort",
+        "type": "Boolean!"
+      },
+      {
+        "name": "deleteShortcutGroup",
+        "type": "ShortcutGroup!"
+      },
+      {
+        "name": "processStats",
+        "type": "Boolean!"
+      },
+      {
+        "name": "shortcutClicked",
+        "type": "Boolean!"
+      },
+      {
+        "name": "createTariff",
+        "type": "Tariff!"
+      },
+      {
+        "name": "updateTariff",
+        "type": "Tariff!"
+      },
+      {
+        "name": "updateTariffSort",
+        "type": "Boolean!"
+      },
+      {
+        "name": "deleteTariff",
+        "type": "Tariff!"
+      },
+      {
+        "name": "purchaseTariffByQR",
+        "type": "Payment!"
+      },
+      {
+        "name": "verifyUser",
+        "type": "User!"
+      },
+      {
+        "name": "banClient",
+        "type": "User!"
+      },
+      {
+        "name": "setDeposit",
+        "type": "User!"
+      },
+      {
+        "name": "transferDeposit",
+        "type": "User!"
+      },
+      {
+        "name": "setBonus",
+        "type": "User!"
+      },
+      {
+        "name": "setUserDiscount",
+        "type": "User!"
+      },
+      {
+        "name": "uploadUserTable",
+        "type": "Int!"
+      },
+      {
+        "name": "forceDeleteUser",
+        "type": "User!"
+      },
+      {
+        "name": "resetUserPassword",
+        "type": "User!"
+      },
+      {
+        "name": "createWorker",
+        "type": "User!"
+      },
+      {
+        "name": "updateWorker",
+        "type": "User!"
+      },
+      {
+        "name": "disableWorker",
+        "type": "User!"
+      },
+      {
+        "name": "deleteWorker",
+        "type": "User!"
+      },
+      {
+        "name": "createUserGroup",
+        "type": "UserGroup!"
+      },
+      {
+        "name": "updateUserGroup",
+        "type": "UserGroup!"
+      },
+      {
+        "name": "deleteUserGroup",
+        "type": "UserGroup!"
+      },
+      {
+        "name": "changeUsersGroup",
+        "type": "UserGroup"
+      },
+      {
+        "name": "startWorkShift",
+        "type": "WorkShift!"
+      },
+      {
+        "name": "finishWorkShift",
+        "type": "WorkShift!"
+      },
+      {
+        "name": "forceFinishWorkShift",
+        "type": "WorkShift!"
+      },
+      {
+        "name": "createWorkerTask",
+        "type": "WorkerTask!"
+      },
+      {
+        "name": "updateWorkerTask",
+        "type": "WorkerTask!"
+      },
+      {
+        "name": "deleteWorkerTask",
+        "type": "WorkerTask!"
+      },
+      {
+        "name": "setWorkerTaskComplete",
+        "type": "WorkerTask!"
+      },
+      {
+        "name": "login",
+        "type": "AccessToken!"
+      },
+      {
+        "name": "loginQR",
+        "type": "Boolean"
+      },
+      {
+        "name": "generateQR",
+        "type": "String!"
+      },
+      {
+        "name": "validateQR",
+        "type": "Boolean!"
+      },
+      {
+        "name": "relogin",
+        "type": "AccessToken!"
+      },
+      {
+        "name": "logout",
+        "type": "Boolean!"
+      },
+      {
+        "name": "refreshToken",
+        "type": "AccessToken!"
+      },
+      {
+        "name": "register",
+        "type": "User!"
+      },
+      {
+        "name": "emailRegister",
+        "type": "User!"
+      },
+      {
+        "name": "resetPassword",
+        "type": "Me!"
+      },
+      {
+        "name": "updateMe",
+        "type": "Me!"
+      },
+      {
+        "name": "updatePassword",
+        "type": "Me!"
+      },
+      {
+        "name": "updateNewsConsent",
+        "type": "User!"
+      },
+      {
+        "name": "clientRegister",
+        "type": "User!"
+      },
+      {
+        "name": "clientLogin",
+        "type": "AccessToken!"
+      },
+      {
+        "name": "clientRefreshToken",
+        "type": "AccessToken!"
+      },
+      {
+        "name": "clientResetPassword",
+        "type": "User!"
+      },
+      {
+        "name": "clientUpdateMe",
+        "type": "User!"
+      },
+      {
+        "name": "clientUpdatePassword",
+        "type": "User!"
+      },
+      {
+        "name": "clientBuyPremium",
+        "type": "PremiumPayment!"
+      },
+      {
+        "name": "verifyClient",
+        "type": "User!"
+      },
+      {
+        "name": "verifyMe",
+        "type": "Boolean!"
+      },
+      {
+        "name": "sendConfirmationCode",
+        "type": "Boolean!"
+      },
+      {
+        "name": "sendClientConfirmationCode",
+        "type": "Boolean!"
+      },
+      {
+        "name": "sendExtendConfirmationCode",
+        "type": "Boolean!"
+      },
+      {
+        "name": "sendConfirmationCodeToEnter",
+        "type": "User!"
+      }
+    ]
+  },
+  {
+    "name": "Network",
+    "fieldCount": 5,
+    "fields": [
+      {
+        "name": "id",
+        "type": "ID!"
+      },
+      {
+        "name": "name",
+        "type": "String!"
+      },
+      {
+        "name": "description",
+        "type": "String"
+      },
+      {
+        "name": "organization",
+        "type": "Organization!"
+      },
+      {
+        "name": "companies",
+        "type": "NetworkCompaniesData!"
+      }
+    ]
+  },
+  {
+    "name": "NetworkCompaniesData",
+    "fieldCount": 2,
+    "fields": [
+      {
+        "name": "data",
+        "type": "[NetworkCompany]!"
+      },
+      {
+        "name": "total",
+        "type": "Int!"
+      }
+    ]
+  },
+  {
+    "name": "NetworkCompany",
+    "fieldCount": 7,
+    "fields": [
+      {
+        "name": "club",
+        "type": "LiteCompany!"
+      },
+      {
+        "name": "network",
+        "type": "Network!"
+      },
+      {
+        "name": "is_main",
+        "type": "Boolean!"
+      },
+      {
+        "name": "settings",
+        "type": "NetworkCompanySettings!"
+      },
+      {
+        "name": "max_discount_enabled",
+        "type": "Boolean!"
+      },
+      {
+        "name": "deposit_transfer_enabled",
+        "type": "Boolean!"
+      },
+      {
+        "name": "shortcut_sync_enabled",
+        "type": "Boolean!"
+      }
+    ]
+  },
+  {
+    "name": "NetworkCompanySettings",
+    "fieldCount": 3,
+    "fields": [
+      {
+        "name": "max_discount_enabled",
+        "type": "Boolean!"
+      },
+      {
+        "name": "deposit_transfer_enabled",
+        "type": "Boolean!"
+      },
+      {
+        "name": "shortcut_sync_enabled",
+        "type": "Boolean!"
+      }
+    ]
+  },
+  {
+    "name": "News",
+    "fieldCount": 2,
+    "fields": [
+      {
+        "name": "data",
+        "type": "[Article]!"
+      },
+      {
+        "name": "paginatorInfo",
+        "type": "PaginatorInfo!"
+      }
+    ]
+  },
+  {
+    "name": "NewsConsent",
+    "fieldCount": 3,
+    "fields": [
+      {
+        "name": "isGiven",
+        "type": "Boolean!"
+      },
+      {
+        "name": "givenAt",
+        "type": "DateTime"
+      },
+      {
+        "name": "revokedAt",
+        "type": "DateTime"
+      }
+    ]
+  },
+  {
+    "name": "NewsFeed",
+    "fieldCount": 2,
+    "fields": [
+      {
+        "name": "data",
+        "type": "[NewsFeedArticle]!"
+      },
+      {
+        "name": "paginatorInfo",
+        "type": "PaginatorInfo!"
+      }
+    ]
+  },
+  {
+    "name": "NewsFeedArticle",
+    "fieldCount": 7,
+    "fields": [
+      {
+        "name": "id",
+        "type": "ID!"
+      },
+      {
+        "name": "title",
+        "type": "String!"
+      },
+      {
+        "name": "content",
+        "type": "String!"
+      },
+      {
+        "name": "image",
+        "type": "String"
+      },
+      {
+        "name": "link",
+        "type": "ArticleLink"
+      },
+      {
+        "name": "company",
+        "type": "LiteCompany!"
+      },
+      {
+        "name": "created_at",
+        "type": "DateTime!"
+      }
+    ]
+  },
+  {
+    "name": "Organization",
+    "fieldCount": 14,
+    "fields": [
+      {
+        "name": "id",
+        "type": "Int!"
+      },
+      {
+        "name": "title",
+        "type": "String!"
+      },
+      {
+        "name": "phone",
+        "type": "String"
+      },
+      {
+        "name": "email",
+        "type": "Email"
+      },
+      {
+        "name": "address",
+        "type": "String"
+      },
+      {
+        "name": "hosts_count",
+        "type": "Int!"
+      },
+      {
+        "name": "network",
+        "type": "Network"
+      },
+      {
+        "name": "verified_at",
+        "type": "DateTime"
+      },
+      {
+        "name": "activated_at",
+        "type": "DateTime"
+      },
+      {
+        "name": "banned_at",
+        "type": "DateTime"
+      },
+      {
+        "name": "created_at",
+        "type": "DateTime!"
+      },
+      {
+        "name": "updated_at",
+        "type": "DateTime!"
+      },
+      {
+        "name": "deleted_at",
+        "type": "DateTime"
+      },
+      {
+        "name": "news_consent",
+        "type": "Boolean"
+      }
+    ]
+  },
+  {
+    "name": "OrganizationPaymentCard",
+    "fieldCount": 5,
+    "fields": [
+      {
+        "name": "id",
+        "type": "Int!"
+      },
+      {
+        "name": "card_mask",
+        "type": "String!"
+      },
+      {
+        "name": "card_payment_system",
+        "type": "String!"
+      },
+      {
+        "name": "card_expires_at",
+        "type": "String!"
+      },
+      {
+        "name": "created_at",
+        "type": "DateTime!"
+      }
+    ]
+  },
+  {
+    "name": "OverviewReport",
+    "fieldCount": 2,
+    "fields": [
+      {
+        "name": "url",
+        "type": "String"
+      },
+      {
+        "name": "data",
+        "type": "[UnifiedReport]!"
+      }
+    ]
+  },
+  {
+    "name": "Owner",
+    "fieldCount": 8,
+    "fields": [
+      {
+        "name": "id",
+        "type": "Int!"
+      },
+      {
+        "name": "type",
+        "type": "OwnerType!"
+      },
+      {
+        "name": "name",
+        "type": "String!"
+      },
+      {
+        "name": "inn",
+        "type": "String!"
+      },
+      {
+        "name": "email",
+        "type": "Email!"
+      },
+      {
+        "name": "private_policy",
+        "type": "String!"
+      },
+      {
+        "name": "private_policy_url",
+        "type": "String"
+      },
+      {
+        "name": "counterparty_data",
+        "type": "CounterpartyData"
+      }
+    ]
+  },
+  {
+    "name": "PaginatorInfo",
+    "fieldCount": 8,
+    "fields": [
+      {
+        "name": "count",
+        "type": "Int!"
+      },
+      {
+        "name": "currentPage",
+        "type": "Int!"
+      },
+      {
+        "name": "firstItem",
+        "type": "Int"
+      },
+      {
+        "name": "hasMorePages",
+        "type": "Boolean!"
+      },
+      {
+        "name": "lastItem",
+        "type": "Int"
+      },
+      {
+        "name": "lastPage",
+        "type": "Int!"
+      },
+      {
+        "name": "perPage",
+        "type": "Int!"
+      },
+      {
+        "name": "total",
+        "type": "Int!"
+      }
+    ]
+  },
+  {
+    "name": "PausableClientSession",
+    "fieldCount": 9,
+    "fields": [
+      {
+        "name": "id",
+        "type": "Int!"
+      },
+      {
+        "name": "tariff",
+        "type": "Tariff!"
+      },
+      {
+        "name": "duration",
+        "type": "Int!"
+      },
+      {
+        "name": "host_group",
+        "type": "HostGroup"
+      },
+      {
+        "name": "elapsed",
+        "type": "Int!"
+      },
+      {
+        "name": "status",
+        "type": "ClientSessionType!"
+      },
+      {
+        "name": "available",
+        "type": "Boolean!"
+      },
+      {
+        "name": "created_at",
+        "type": "DateTime!"
+      },
+      {
+        "name": "expires_at",
+        "type": "DateTime!"
+      }
+    ]
+  },
+  {
+    "name": "Payment",
+    "fieldCount": 20,
+    "fields": [
+      {
+        "name": "id",
+        "type": "Int!"
+      },
+      {
+        "name": "client",
+        "type": "User"
+      },
+      {
+        "name": "client_session",
+        "type": "ClientSession"
+      },
+      {
+        "name": "work_shift",
+        "type": "WorkShift"
+      },
+      {
+        "name": "promo_code",
+        "type": "PromoCode"
+      },
+      {
+        "name": "discount",
+        "type": "Discount"
+      },
+      {
+        "name": "method",
+        "type": "PaymentMethod!"
+      },
+      {
+        "name": "status",
+        "type": "PaymentStatus!"
+      },
+      {
+        "name": "sum",
+        "type": "Decimal!"
+      },
+      {
+        "name": "bonus",
+        "type": "Decimal!"
+      },
+      {
+        "name": "created_at",
+        "type": "DateTime!"
+      },
+      {
+        "name": "items",
+        "type": "[PaymentItem]!"
+      },
+      {
+        "name": "is_refunded",
+        "type": "Boolean!"
+      },
+      {
+        "name": "not_refundable",
+        "type": "Boolean!"
+      },
+      {
+        "name": "card_sum",
+        "type": "Decimal!"
+      },
+      {
+        "name": "cash_sum",
+        "type": "Decimal!"
+      },
+      {
+        "name": "comment",
+        "type": "String"
+      },
+      {
+        "name": "cashback",
+        "type": "Decimal!"
+      },
+      {
+        "name": "external_data",
+        "type": "ExternalPaymentData"
+      },
+      {
+        "name": "sums",
+        "type": "PaymentSums"
+      }
+    ]
+  },
+  {
+    "name": "PaymentHistory",
+    "fieldCount": 2,
+    "fields": [
+      {
+        "name": "paginatorInfo",
+        "type": "PaginatorInfo!"
+      },
+      {
+        "name": "data",
+        "type": "[PaymentHistoryItem]!"
+      }
+    ]
+  },
+  {
+    "name": "PaymentHistoryItem",
+    "fieldCount": 11,
+    "fields": [
+      {
+        "name": "created_at",
+        "type": "DateTime!"
+      },
+      {
+        "name": "title",
+        "type": "String!"
+      },
+      {
+        "name": "amount",
+        "type": "Int!"
+      },
+      {
+        "name": "sum",
+        "type": "Decimal!"
+      },
+      {
+        "name": "bonus",
+        "type": "Decimal!"
+      },
+      {
+        "name": "card_sum",
+        "type": "Decimal!"
+      },
+      {
+        "name": "cash_sum",
+        "type": "Decimal!"
+      },
+      {
+        "name": "worker",
+        "type": "User"
+      },
+      {
+        "name": "items",
+        "type": "[PaymentItem]!"
+      },
+      {
+        "name": "is_refunded",
+        "type": "Boolean!"
+      },
+      {
+        "name": "paymentMethod",
+        "type": "PaymentMethod!"
+      }
+    ]
+  },
+  {
+    "name": "PaymentItem",
+    "fieldCount": 7,
+    "fields": [
+      {
+        "name": "id",
+        "type": "Int!"
+      },
+      {
+        "name": "payment_id",
+        "type": "Int!"
+      },
+      {
+        "name": "combo_id",
+        "type": "Int"
+      },
+      {
+        "name": "type",
+        "type": "PaymentItemType!"
+      },
+      {
+        "name": "entity",
+        "type": "PaymentItemEntity"
+      },
+      {
+        "name": "amount",
+        "type": "Int!"
+      },
+      {
+        "name": "sum",
+        "type": "Float!"
+      }
+    ]
+  },
+  {
+    "name": "PaymentReportItem",
+    "fieldCount": 2,
+    "fields": [
+      {
+        "name": "value",
+        "type": "Decimal!"
+      },
+      {
+        "name": "currency",
+        "type": "Currency"
+      }
+    ]
+  },
+  {
+    "name": "PaymentSums",
+    "fieldCount": 4,
+    "fields": [
+      {
+        "name": "deposit",
+        "type": "Decimal"
+      },
+      {
+        "name": "bonus",
+        "type": "Decimal"
+      },
+      {
+        "name": "promo_code",
+        "type": "Decimal"
+      },
+      {
+        "name": "cashback",
+        "type": "Decimal"
+      }
+    ]
+  },
+  {
+    "name": "PaymentTransaction",
+    "fieldCount": 11,
+    "fields": [
+      {
+        "name": "id",
+        "type": "String!"
+      },
+      {
+        "name": "company_id",
+        "type": "Int!"
+      },
+      {
+        "name": "service",
+        "type": "ServiceEnum!"
+      },
+      {
+        "name": "amount",
+        "type": "Decimal!"
+      },
+      {
+        "name": "sum",
+        "type": "Decimal!"
+      },
+      {
+        "name": "client",
+        "type": "User!"
+      },
+      {
+        "name": "status",
+        "type": "String!"
+      },
+      {
+        "name": "additional",
+        "type": "AdditionalTransactionData"
+      },
+      {
+        "name": "created_at",
+        "type": "DateTime!"
+      },
+      {
+        "name": "vat",
+        "type": "Int"
+      },
+      {
+        "name": "label",
+        "type": "String!"
+      }
+    ]
+  },
+  {
+    "name": "PaymentTransactionPaginated",
+    "fieldCount": 2,
+    "fields": [
+      {
+        "name": "paginatorInfo",
+        "type": "PaginatorInfo!"
+      },
+      {
+        "name": "data",
+        "type": "[PaymentTransaction]!"
+      }
+    ]
+  },
+  {
+    "name": "Permission",
+    "fieldCount": 4,
+    "fields": [
+      {
+        "name": "id",
+        "type": "Int!"
+      },
+      {
+        "name": "alias",
+        "type": "String!"
+      },
+      {
+        "name": "title",
+        "type": "String!"
+      },
+      {
+        "name": "description",
+        "type": "String"
+      }
+    ]
+  },
+  {
+    "name": "PermissionData",
+    "fieldCount": 6,
+    "fields": [
+      {
+        "name": "id",
+        "type": "Int!"
+      },
+      {
+        "name": "alias",
+        "type": "String!"
+      },
+      {
+        "name": "enabled",
+        "type": "Boolean!"
+      },
+      {
+        "name": "locked",
+        "type": "Boolean!"
+      },
+      {
+        "name": "title",
+        "type": "String!"
+      },
+      {
+        "name": "description",
+        "type": "String"
+      }
+    ]
+  },
+  {
+    "name": "PremiumPayment",
+    "fieldCount": 3,
+    "fields": [
+      {
+        "name": "id",
+        "type": "Int!"
+      },
+      {
+        "name": "sum",
+        "type": "Decimal!"
+      },
+      {
+        "name": "status",
+        "type": "String!"
+      }
+    ]
+  },
+  {
+    "name": "PromoCode",
+    "fieldCount": 11,
+    "fields": [
+      {
+        "name": "id",
+        "type": "Int!"
+      },
+      {
+        "name": "author",
+        "type": "User!"
+      },
+      {
+        "name": "client",
+        "type": "User"
+      },
+      {
+        "name": "code",
+        "type": "String!"
+      },
+      {
+        "name": "value",
+        "type": "Decimal!"
+      },
+      {
+        "name": "promo_value",
+        "type": "PromoValue"
+      },
+      {
+        "name": "amount",
+        "type": "Int"
+      },
+      {
+        "name": "entity",
+        "type": "CartEntity"
+      },
+      {
+        "name": "entity_id",
+        "type": "Int"
+      },
+      {
+        "name": "created_at",
+        "type": "DateTime!"
+      },
+      {
+        "name": "is_tracked",
+        "type": "Boolean!"
+      }
+    ]
+  },
+  {
+    "name": "PromoCodePaginated",
+    "fieldCount": 2,
+    "fields": [
+      {
+        "name": "paginatorInfo",
+        "type": "PaginatorInfo"
+      },
+      {
+        "name": "data",
+        "type": "[PromoCode]!"
+      }
+    ]
+  },
+  {
+    "name": "PromoValue",
+    "fieldCount": 3,
+    "fields": [
+      {
+        "name": "type",
+        "type": "PromoValueType!"
+      },
+      {
+        "name": "value",
+        "type": "Decimal!"
+      },
+      {
+        "name": "currency",
+        "type": "Currency"
+      }
+    ]
+  },
+  {
+    "name": "PublicationPeriod",
+    "fieldCount": 2,
+    "fields": [
+      {
+        "name": "from",
+        "type": "DateTime"
+      },
+      {
+        "name": "until",
+        "type": "DateTime"
+      }
+    ]
+  },
+  {
+    "name": "Query",
+    "fieldCount": 185,
+    "fields": [
+      {
+        "name": "achievements",
+        "type": "[Achievement]!"
+      },
+      {
+        "name": "getBooking",
+        "type": "Booking!"
+      },
+      {
+        "name": "getBookings",
+        "type": "BookingPaginated!"
+      },
+      {
+        "name": "clientBookings",
+        "type": "[ClientBooking]!"
+      },
+      {
+        "name": "clientBookingCheckPenalty",
+        "type": "ClientBookingPenaltyData!"
+      },
+      {
+        "name": "cashBoxLicenseToken",
+        "type": "String!"
+      },
+      {
+        "name": "income",
+        "type": "String!"
+      },
+      {
+        "name": "myClubs",
+        "type": "[ClientClub]!"
+      },
+      {
+        "name": "myClub",
+        "type": "ClientClub!"
+      },
+      {
+        "name": "myLastVisitedClub",
+        "type": "ClientClub!"
+      },
+      {
+        "name": "searchClubs",
+        "type": "[ClientClub]!"
+      },
+      {
+        "name": "clubsOnMap",
+        "type": "[ClientClubOnMap]!"
+      },
+      {
+        "name": "canUnpauseClientSession",
+        "type": "Boolean!"
+      },
+      {
+        "name": "clientSession",
+        "type": "ClientSession!"
+      },
+      {
+        "name": "pausableClientSessions",
+        "type": "[PausableClientSession]!"
+      },
+      {
+        "name": "combo",
+        "type": "Combo!"
+      },
+      {
+        "name": "combos",
+        "type": "ComboPaginated!"
+      },
+      {
+        "name": "comboList",
+        "type": "[ComboListItem]!"
+      },
+      {
+        "name": "comments",
+        "type": "CommentPaginated!"
+      },
+      {
+        "name": "clubComments",
+        "type": "ClubCommentPaginated!"
+      },
+      {
+        "name": "discount",
+        "type": "Discount!"
+      },
+      {
+        "name": "discounts",
+        "type": "DiscountPaginated!"
+      },
+      {
+        "name": "getAvailableDiscounts",
+        "type": "[Discount]!"
+      },
+      {
+        "name": "eventList",
+        "type": "EventListPaginated!"
+      },
+      {
+        "name": "mobileEvents",
+        "type": "EventPaginated!"
+      },
+      {
+        "name": "exportUsers",
+        "type": "String!"
+      },
+      {
+        "name": "exportGoods",
+        "type": "String!"
+      },
+      {
+        "name": "exportSales",
+        "type": "String!"
+      },
+      {
+        "name": "gameAccounts",
+        "type": "[GameAccount]!"
+      },
+      {
+        "name": "gameAccount",
+        "type": "GameAccount!"
+      },
+      {
+        "name": "gameAccountGroups",
+        "type": "[GameAccountGroup]!"
+      },
+      {
+        "name": "gameAccountGroup",
+        "type": "GameAccountGroup!"
+      },
+      {
+        "name": "goods",
+        "type": "[Good]!"
+      },
+      {
+        "name": "good",
+        "type": "Good!"
+      },
+      {
+        "name": "searchByEan",
+        "type": "EanEntity"
+      },
+      {
+        "name": "category",
+        "type": "Category!"
+      },
+      {
+        "name": "categories",
+        "type": "[Category]!"
+      },
+      {
+        "name": "goodHistory",
+        "type": "GoodHistory!"
+      },
+      {
+        "name": "getGoodCategoryAgeRatings",
+        "type": "[AgeRating]!"
+      },
+      {
+        "name": "hostAccessToken",
+        "type": "String"
+      },
+      {
+        "name": "hosts",
+        "type": "[Host]!"
+      },
+      {
+        "name": "hostsByIds",
+        "type": "[Host]!"
+      },
+      {
+        "name": "host",
+        "type": "Host!"
+      },
+      {
+        "name": "freeHosts",
+        "type": "[Host]!"
+      },
+      {
+        "name": "clientHosts",
+        "type": "[ClientHost]!"
+      },
+      {
+        "name": "clientHost",
+        "type": "ClientHost!"
+      },
+      {
+        "name": "hostTokenByPIN",
+        "type": "String!"
+      },
+      {
+        "name": "currentHost",
+        "type": "Host!"
+      },
+      {
+        "name": "hostCommandTemplates",
+        "type": "[HostCommandTemplate]!"
+      },
+      {
+        "name": "hostGroups",
+        "type": "[HostGroup]!"
+      },
+      {
+        "name": "hostGroup",
+        "type": "HostGroup!"
+      },
+      {
+        "name": "clientHostGroups",
+        "type": "[ClientHostGroup]!"
+      },
+      {
+        "name": "hostGroupTitles",
+        "type": "[HostGroupTitle]!"
+      },
+      {
+        "name": "hostGroupsOverview",
+        "type": "[HostGroupOverview]!"
+      },
+      {
+        "name": "hostTypes",
+        "type": "[HostType]!"
+      },
+      {
+        "name": "hostType",
+        "type": "HostType!"
+      },
+      {
+        "name": "hostsOverview",
+        "type": "[HostOverview]!"
+      },
+      {
+        "name": "leaderboard",
+        "type": "[LeaderboardUser]!"
+      },
+      {
+        "name": "depositCashback",
+        "type": "DepositCashback!"
+      },
+      {
+        "name": "depositCashbacks",
+        "type": "[DepositCashback]!"
+      },
+      {
+        "name": "network",
+        "type": "Network"
+      },
+      {
+        "name": "news",
+        "type": "News!"
+      },
+      {
+        "name": "getNewsFeed",
+        "type": "NewsFeed!"
+      },
+      {
+        "name": "companyNewsList",
+        "type": "CompanyNewsList!"
+      },
+      {
+        "name": "companyNewsArticle",
+        "type": "CompanyNewsArticle"
+      },
+      {
+        "name": "getBeneficiaries",
+        "type": "[Beneficiary]!"
+      },
+      {
+        "name": "getCurrentBeneficiary",
+        "type": "Beneficiary"
+      },
+      {
+        "name": "getCounterpartyDataByInn",
+        "type": "CounterpartyData"
+      },
+      {
+        "name": "getBeneficiaryBankDetails",
+        "type": "BeneficiaryBankDetails"
+      },
+      {
+        "name": "getSumForWithdrawToCheckingAccount",
+        "type": "BeneficiaryBalance!"
+      },
+      {
+        "name": "getBeneficiaryDeal",
+        "type": "BeneficiaryDeal!"
+      },
+      {
+        "name": "getBeneficiaryMovementsOfFunds",
+        "type": "MovementOfFundsPaginated!"
+      },
+      {
+        "name": "listBeneficiaryMovementsOfFunds",
+        "type": "ListMovementOfFundsPaginated!"
+      },
+      {
+        "name": "getBeneficiaryMovementsOfFundsCsv",
+        "type": "String!"
+      },
+      {
+        "name": "organizationMe",
+        "type": "Organization"
+      },
+      {
+        "name": "club",
+        "type": "Club!"
+      },
+      {
+        "name": "clubs",
+        "type": "[Club]!"
+      },
+      {
+        "name": "currentClub",
+        "type": "Club!"
+      },
+      {
+        "name": "licenseTariffGrid",
+        "type": "LicenseTariffGrid!"
+      },
+      {
+        "name": "licenseTariffs",
+        "type": "[LicenseTariff]!"
+      },
+      {
+        "name": "licenseTariff",
+        "type": "LicenseTariff!"
+      },
+      {
+        "name": "licenseModuleCategory",
+        "type": "LicenseTariffCategory!"
+      },
+      {
+        "name": "licenseModule",
+        "type": "LicenseTariffModule!"
+      },
+      {
+        "name": "contractors",
+        "type": "[Contractor]!"
+      },
+      {
+        "name": "licensePrice",
+        "type": "LicensePrice!"
+      },
+      {
+        "name": "additionalLicensePrice",
+        "type": "LicensePrice!"
+      },
+      {
+        "name": "licensePayments",
+        "type": "[LicensePaymentData]!"
+      },
+      {
+        "name": "licensePayment",
+        "type": "LicensePaymentData!"
+      },
+      {
+        "name": "updateLicensePayment",
+        "type": "LicensePaymentData!"
+      },
+      {
+        "name": "magicSuperInit",
+        "type": "Boolean"
+      },
+      {
+        "name": "magicPeriods",
+        "type": "Boolean"
+      },
+      {
+        "name": "organizationClubs",
+        "type": "[Club]!"
+      },
+      {
+        "name": "clubOrganization",
+        "type": "Organization!"
+      },
+      {
+        "name": "getOrganizationPaymentCard",
+        "type": "OrganizationPaymentCard!"
+      },
+      {
+        "name": "getOrganizationPaymentCards",
+        "type": "[OrganizationPaymentCard]!"
+      },
+      {
+        "name": "getUpcomingAutoPaymentData",
+        "type": "UpcomingAutoPaymentData"
+      },
+      {
+        "name": "canUseDebt",
+        "type": "Boolean!"
+      },
+      {
+        "name": "getClubOptions",
+        "type": "[ClubOption]!"
+      },
+      {
+        "name": "getOrganizationOwners",
+        "type": "[Owner]!"
+      },
+      {
+        "name": "getCompanyOwner",
+        "type": "Owner!"
+      },
+      {
+        "name": "validatePayment",
+        "type": "Boolean!"
+      },
+      {
+        "name": "validateRefund",
+        "type": "Boolean!"
+      },
+      {
+        "name": "paymentTransactions",
+        "type": "PaymentTransactionPaginated!"
+      },
+      {
+        "name": "paymentTransaction",
+        "type": "PaymentTransaction!"
+      },
+      {
+        "name": "permissions",
+        "type": "[Permission]!"
+      },
+      {
+        "name": "promoCode",
+        "type": "PromoCode!"
+      },
+      {
+        "name": "promoCodes",
+        "type": "PromoCodePaginated!"
+      },
+      {
+        "name": "validatePromoCode",
+        "type": "PromoCode!"
+      },
+      {
+        "name": "clientsPaymentReport",
+        "type": "ClientsPaymentReportPaginated!"
+      },
+      {
+        "name": "uniqueUsersReport",
+        "type": "UnifiedReport!"
+      },
+      {
+        "name": "boughtTariffsReport",
+        "type": "UnifiedReport!"
+      },
+      {
+        "name": "sessionsMoneyReport",
+        "type": "UnifiedReport!"
+      },
+      {
+        "name": "hostsOccupationReport",
+        "type": "UnifiedReport!"
+      },
+      {
+        "name": "salesReport",
+        "type": "UnifiedReport!"
+      },
+      {
+        "name": "workShiftsReport",
+        "type": "UnifiedReport!"
+      },
+      {
+        "name": "workShiftsSummaryReport",
+        "type": "UnifiedReport!"
+      },
+      {
+        "name": "bonusReport",
+        "type": "UnifiedReport!"
+      },
+      {
+        "name": "usersBonusReport",
+        "type": "UnifiedReport!"
+      },
+      {
+        "name": "applicationsReport",
+        "type": "UnifiedReport!"
+      },
+      {
+        "name": "bonusHistoryReport",
+        "type": "UnifiedReportPaginated!"
+      },
+      {
+        "name": "bonusDetailedSummaryReport",
+        "type": "UnifiedReport!"
+      },
+      {
+        "name": "bonusDetailedTimeSeriesReport",
+        "type": "UnifiedReport!"
+      },
+      {
+        "name": "depositTransferReport",
+        "type": "DepositTransferReport"
+      },
+      {
+        "name": "depositTransferSummaryReport",
+        "type": "UnifiedReport!"
+      },
+      {
+        "name": "overviewReport",
+        "type": "OverviewReport!"
+      },
+      {
+        "name": "exportOverviewReport",
+        "type": "String!"
+      },
+      {
+        "name": "topSoldOverviewItemsReport",
+        "type": "UnifiedReport!"
+      },
+      {
+        "name": "clubLoadByDayOfWeekReport",
+        "type": "UnifiedReport!"
+      },
+      {
+        "name": "leadSourceReport",
+        "type": "UnifiedReport!"
+      },
+      {
+        "name": "roles",
+        "type": "[Role]!"
+      },
+      {
+        "name": "companyPermissions",
+        "type": "CompanyPermissionsData!"
+      },
+      {
+        "name": "services",
+        "type": "[Service]!"
+      },
+      {
+        "name": "service",
+        "type": "Service!"
+      },
+      {
+        "name": "settingValues",
+        "type": "[SettingPair]!"
+      },
+      {
+        "name": "shellSettingValues",
+        "type": "String!"
+      },
+      {
+        "name": "shellSettingList",
+        "type": "String!"
+      },
+      {
+        "name": "getTelegramChannels",
+        "type": "[TelegramChannel]!"
+      },
+      {
+        "name": "shortcuts",
+        "type": "[Shortcut]!"
+      },
+      {
+        "name": "shortcut",
+        "type": "Shortcut!"
+      },
+      {
+        "name": "getAgeRatings",
+        "type": "[AgeRating]"
+      },
+      {
+        "name": "shortcutGroups",
+        "type": "[ShortcutGroup]!"
+      },
+      {
+        "name": "shortcutGroup",
+        "type": "ShortcutGroup!"
+      },
+      {
+        "name": "tariffs",
+        "type": "TariffPaginated!"
+      },
+      {
+        "name": "tariffGrid",
+        "type": "[TariffGridItem]!"
+      },
+      {
+        "name": "getCurrentTariff",
+        "type": "CurrentTariff!"
+      },
+      {
+        "name": "clientTariffGrid",
+        "type": "[ClientTariffGridItem]!"
+      },
+      {
+        "name": "getBonusHistory",
+        "type": "BonusHistory!"
+      },
+      {
+        "name": "getDepositHistory",
+        "type": "PaymentHistory!"
+      },
+      {
+        "name": "user",
+        "type": "User!"
+      },
+      {
+        "name": "workers",
+        "type": "UserPaginated!"
+      },
+      {
+        "name": "clients",
+        "type": "UserPaginated!"
+      },
+      {
+        "name": "searchClients",
+        "type": "UserPaginated!"
+      },
+      {
+        "name": "getPaymentsByClientId",
+        "type": "PaymentHistory!"
+      },
+      {
+        "name": "userImportStatus",
+        "type": "Import!"
+      },
+      {
+        "name": "getActiveClientList",
+        "type": "[ActiveClient]!"
+      },
+      {
+        "name": "getClientDepositTransfers",
+        "type": "DepositTransferHistory!"
+      },
+      {
+        "name": "getClientDepositAccounts",
+        "type": "[DepositAccount]!"
+      },
+      {
+        "name": "userGroup",
+        "type": "UserGroup!"
+      },
+      {
+        "name": "userGroups",
+        "type": "[UserGroup]!"
+      },
+      {
+        "name": "activeWorkShift",
+        "type": "WorkShift"
+      },
+      {
+        "name": "workShifts",
+        "type": "WorkShiftPaginated!"
+      },
+      {
+        "name": "finishedWorkShifts",
+        "type": "[WorkShift]!"
+      },
+      {
+        "name": "workShift",
+        "type": "WorkShift!"
+      },
+      {
+        "name": "getDetailedWorkShiftMoneyData",
+        "type": "DetailedWorkShiftMoneyData"
+      },
+      {
+        "name": "getWorkShiftPaymentOverviewData",
+        "type": "WorkShiftPaymentOverviewData"
+      },
+      {
+        "name": "canStartWorkShift",
+        "type": "Boolean!"
+      },
+      {
+        "name": "canFinishWorkShift",
+        "type": "Boolean!"
+      },
+      {
+        "name": "workShiftSummary",
+        "type": "WorkShiftSummary!"
+      },
+      {
+        "name": "tasks",
+        "type": "WorkerTaskPaginated!"
+      },
+      {
+        "name": "loginExists",
+        "type": "Boolean!"
+      },
+      {
+        "name": "phoneExists",
+        "type": "Boolean!"
+      },
+      {
+        "name": "emailExists",
+        "type": "Boolean!"
+      },
+      {
+        "name": "clientPhoneExists",
+        "type": "Boolean!"
+      },
+      {
+        "name": "clientEmailExists",
+        "type": "Boolean!"
+      },
+      {
+        "name": "nicknameExists",
+        "type": "Boolean!"
+      },
+      {
+        "name": "me",
+        "type": "Me"
+      },
+      {
+        "name": "clientMe",
+        "type": "User"
+      },
+      {
+        "name": "versions",
+        "type": "Versions"
+      },
+      {
+        "name": "now",
+        "type": "DateTime"
+      },
+      {
+        "name": "regions",
+        "type": "[Region]"
+      },
+      {
+        "name": "currencies",
+        "type": "[Currency]!"
+      },
+      {
+        "name": "currency",
+        "type": "Currency!"
+      },
+      {
+        "name": "userClubs",
+        "type": "[UserClub]!"
+      },
+      {
+        "name": "featureFlags",
+        "type": "FeatureFlags!"
+      },
+      {
+        "name": "publicKey",
+        "type": "String!"
+      }
+    ]
+  },
+  {
+    "name": "Region",
+    "fieldCount": 2,
+    "fields": [
+      {
+        "name": "alias",
+        "type": "String!"
+      },
+      {
+        "name": "code",
+        "type": "String!"
+      }
+    ]
+  },
+  {
+    "name": "Report",
+    "fieldCount": 7,
+    "fields": [
+      {
+        "name": "statSeances",
+        "type": "StatBySeances!"
+      },
+      {
+        "name": "statServices",
+        "type": "StatByServices!"
+      },
+      {
+        "name": "statGoods",
+        "type": "StatByGoods!"
+      },
+      {
+        "name": "statOrders",
+        "type": "StatByOrders!"
+      },
+      {
+        "name": "statDeposit",
+        "type": "MoneyByTypes!"
+      },
+      {
+        "name": "statMoney",
+        "type": "MoneyByTypes!"
+      },
+      {
+        "name": "statTransfer",
+        "type": "StatByTransfers!"
+      }
+    ]
+  },
+  {
+    "name": "Reward",
+    "fieldCount": 2,
+    "fields": [
+      {
+        "name": "name",
+        "type": "String!"
+      },
+      {
+        "name": "value",
+        "type": "Decimal!"
+      }
+    ]
+  },
+  {
+    "name": "Role",
+    "fieldCount": 7,
+    "fields": [
+      {
+        "name": "id",
+        "type": "Int!"
+      },
+      {
+        "name": "alias",
+        "type": "String!"
+      },
+      {
+        "name": "title",
+        "type": "String!"
+      },
+      {
+        "name": "description",
+        "type": "String"
+      },
+      {
+        "name": "is_service",
+        "type": "Boolean!"
+      },
+      {
+        "name": "priority",
+        "type": "Int!"
+      },
+      {
+        "name": "permissions",
+        "type": "[Permission]!"
+      }
+    ]
+  },
+  {
+    "name": "Seance",
+    "fieldCount": 12,
+    "fields": [
+      {
+        "name": "id",
+        "type": "Int!"
+      },
+      {
+        "name": "client_session",
+        "type": "ClientSession!"
+      },
+      {
+        "name": "tariff",
+        "type": "Tariff!"
+      },
+      {
+        "name": "duration",
+        "type": "Int!"
+      },
+      {
+        "name": "elapsed",
+        "type": "Int!"
+      },
+      {
+        "name": "payment",
+        "type": "Payment"
+      },
+      {
+        "name": "payment_item",
+        "type": "PaymentItem"
+      },
+      {
+        "name": "status",
+        "type": "ClientSessionType!"
+      },
+      {
+        "name": "created_at",
+        "type": "DateTime!"
+      },
+      {
+        "name": "started_at",
+        "type": "DateTime!"
+      },
+      {
+        "name": "finished_at",
+        "type": "DateTime"
+      },
+      {
+        "name": "cancelled_at",
+        "type": "DateTime"
+      }
+    ]
+  },
+  {
+    "name": "SeanceOverview",
+    "fieldCount": 3,
+    "fields": [
+      {
+        "name": "id",
+        "type": "Int!"
+      },
+      {
+        "name": "status",
+        "type": "ClientSessionType!"
+      },
+      {
+        "name": "tariff",
+        "type": "TariffOverview!"
+      }
+    ]
+  },
+  {
+    "name": "Service",
+    "fieldCount": 10,
+    "fields": [
+      {
+        "name": "id",
+        "type": "Int!"
+      },
+      {
+        "name": "title",
+        "type": "String!"
+      },
+      {
+        "name": "cost",
+        "type": "Decimal!"
+      },
+      {
+        "name": "wholesale_cost",
+        "type": "Decimal!"
+      },
+      {
+        "name": "tax_percent",
+        "type": "Decimal"
+      },
+      {
+        "name": "use_global_discounts",
+        "type": "Boolean!"
+      },
+      {
+        "name": "created_at",
+        "type": "DateTime!"
+      },
+      {
+        "name": "tax_system",
+        "type": "TaxSystem"
+      },
+      {
+        "name": "vat",
+        "type": "Vat"
+      },
+      {
+        "name": "ean",
+        "type": "String"
+      }
+    ]
+  },
+  {
+    "name": "Setting",
+    "fieldCount": 4,
+    "fields": [
+      {
+        "name": "id",
+        "type": "Int!"
+      },
+      {
+        "name": "alias",
+        "type": "String!"
+      },
+      {
+        "name": "value",
+        "type": "String!"
+      },
+      {
+        "name": "updated_at",
+        "type": "DateTime"
+      }
+    ]
+  },
+  {
+    "name": "SettingPair",
+    "fieldCount": 4,
+    "fields": [
+      {
+        "name": "alias",
+        "type": "String!"
+      },
+      {
+        "name": "value",
+        "type": "String"
+      },
+      {
+        "name": "updated_at",
+        "type": "DateTime"
+      },
+      {
+        "name": "disabled",
+        "type": "Boolean!"
+      }
+    ]
+  },
+  {
+    "name": "Shortcut",
+    "fieldCount": 23,
+    "fields": [
+      {
+        "name": "id",
+        "type": "Int!"
+      },
+      {
+        "name": "title",
+        "type": "String!"
+      },
+      {
+        "name": "path",
+        "type": "[String]!"
+      },
+      {
+        "name": "group_id",
+        "type": "Int!"
+      },
+      {
+        "name": "group",
+        "type": "ShortcutGroup!"
+      },
+      {
+        "name": "type",
+        "type": "AppType!"
+      },
+      {
+        "name": "popular",
+        "type": "Boolean!"
+      },
+      {
+        "name": "sort",
+        "type": "Float!"
+      },
+      {
+        "name": "args",
+        "type": "String"
+      },
+      {
+        "name": "icon_path",
+        "type": "String"
+      },
+      {
+        "name": "password",
+        "type": "String"
+      },
+      {
+        "name": "main_picture",
+        "type": "String"
+      },
+      {
+        "name": "game_account_group",
+        "type": "GameAccountGroup"
+      },
+      {
+        "name": "run_as_admin",
+        "type": "Boolean!"
+      },
+      {
+        "name": "work_dir",
+        "type": "String"
+      },
+      {
+        "name": "only_for_registered",
+        "type": "Boolean"
+      },
+      {
+        "name": "age_rating",
+        "type": "Int"
+      },
+      {
+        "name": "free_run",
+        "type": "Boolean"
+      },
+      {
+        "name": "high_access_only",
+        "type": "Boolean"
+      },
+      {
+        "name": "description",
+        "type": "String"
+      },
+      {
+        "name": "screenshots",
+        "type": "[String]!"
+      },
+      {
+        "name": "template_id",
+        "type": "Int"
+      },
+      {
+        "name": "favorite_since",
+        "type": "DateTime"
+      }
+    ]
+  },
+  {
+    "name": "ShortcutGroup",
+    "fieldCount": 4,
+    "fields": [
+      {
+        "name": "id",
+        "type": "Int!"
+      },
+      {
+        "name": "title",
+        "type": "String!"
+      },
+      {
+        "name": "sort",
+        "type": "Int!"
+      },
+      {
+        "name": "groupType",
+        "type": "AppGroupType!"
+      }
+    ]
+  },
+  {
+    "name": "StatByGoods",
+    "fieldCount": 2,
+    "fields": [
+      {
+        "name": "amount",
+        "type": "Int!"
+      },
+      {
+        "name": "money",
+        "type": "MoneyByTypes!"
+      }
+    ]
+  },
+  {
+    "name": "StatByOrders",
+    "fieldCount": 2,
+    "fields": [
+      {
+        "name": "rko",
+        "type": "Int!"
+      },
+      {
+        "name": "pko",
+        "type": "Int!"
+      }
+    ]
+  },
+  {
+    "name": "StatByRefunds",
+    "fieldCount": 2,
+    "fields": [
+      {
+        "name": "amount",
+        "type": "Int!"
+      },
+      {
+        "name": "money",
+        "type": "MoneyByTypes!"
+      }
+    ]
+  },
+  {
+    "name": "StatBySeances",
+    "fieldCount": 3,
+    "fields": [
+      {
+        "name": "amount",
+        "type": "Int!"
+      },
+      {
+        "name": "hours",
+        "type": "Int!"
+      },
+      {
+        "name": "money",
+        "type": "MoneyByTypes!"
+      }
+    ]
+  },
+  {
+    "name": "StatByServices",
+    "fieldCount": 2,
+    "fields": [
+      {
+        "name": "amount",
+        "type": "Int!"
+      },
+      {
+        "name": "money",
+        "type": "MoneyByTypes!"
+      }
+    ]
+  },
+  {
+    "name": "StatByTransfers",
+    "fieldCount": 2,
+    "fields": [
+      {
+        "name": "income",
+        "type": "Decimal!"
+      },
+      {
+        "name": "outcome",
+        "type": "Decimal!"
+      }
+    ]
+  },
+  {
+    "name": "Tariff",
+    "fieldCount": 24,
+    "fields": [
+      {
+        "name": "id",
+        "type": "Int!"
+      },
+      {
+        "name": "title",
+        "type": "String!"
+      },
+      {
+        "name": "duration",
+        "type": "Int!"
+      },
+      {
+        "name": "use_global_discounts",
+        "type": "Boolean!"
+      },
+      {
+        "name": "has_fixed_finish_time",
+        "type": "Boolean!"
+      },
+      {
+        "name": "created_at",
+        "type": "DateTime!"
+      },
+      {
+        "name": "is_active",
+        "type": "Boolean"
+      },
+      {
+        "name": "per_minute",
+        "type": "Boolean!"
+      },
+      {
+        "name": "show_in_shell",
+        "type": "Boolean!"
+      },
+      {
+        "name": "show_in_billing",
+        "type": "Boolean!"
+      },
+      {
+        "name": "schedules",
+        "type": "[TariffPeriod]!"
+      },
+      {
+        "name": "sell_schedules",
+        "type": "[TariffPeriod]!"
+      },
+      {
+        "name": "price_list",
+        "type": "[TariffPricelist]!"
+      },
+      {
+        "name": "pausable",
+        "type": "Boolean!"
+      },
+      {
+        "name": "lifetime",
+        "type": "Int!"
+      },
+      {
+        "name": "ean",
+        "type": "String"
+      },
+      {
+        "name": "highlighted",
+        "type": "Boolean"
+      },
+      {
+        "name": "description",
+        "type": "String"
+      },
+      {
+        "name": "sort",
+        "type": "Int!"
+      },
+      {
+        "name": "is_tracked",
+        "type": "Boolean!"
+      },
+      {
+        "name": "disable_sale_receipt_printing",
+        "type": "Boolean!"
+      },
+      {
+        "name": "online_booking_enabled",
+        "type": "Boolean!"
+      },
+      {
+        "name": "use_on_holidays",
+        "type": "Boolean!"
+      },
+      {
+        "name": "bonus_usage_disabled",
+        "type": "Boolean!"
+      }
+    ]
+  },
+  {
+    "name": "TariffGridItem",
+    "fieldCount": 18,
+    "fields": [
+      {
+        "name": "id",
+        "type": "Int!"
+      },
+      {
+        "name": "title",
+        "type": "String!"
+      },
+      {
+        "name": "duration",
+        "type": "Int!"
+      },
+      {
+        "name": "cost",
+        "type": "Float!"
+      },
+      {
+        "name": "base_cost",
+        "type": "Float!"
+      },
+      {
+        "name": "max_bonus_usage",
+        "type": "Float!"
+      },
+      {
+        "name": "time_from",
+        "type": "Time!"
+      },
+      {
+        "name": "time_to",
+        "type": "Time!"
+      },
+      {
+        "name": "per_minute",
+        "type": "Boolean!"
+      },
+      {
+        "name": "use_global_discounts",
+        "type": "Boolean!"
+      },
+      {
+        "name": "has_fixed_finish_time",
+        "type": "Boolean!"
+      },
+      {
+        "name": "currency",
+        "type": "Currency!"
+      },
+      {
+        "name": "booked",
+        "type": "Boolean!"
+      },
+      {
+        "name": "ends_in",
+        "type": "Int!"
+      },
+      {
+        "name": "pausable",
+        "type": "Boolean!"
+      },
+      {
+        "name": "highlighted",
+        "type": "Boolean"
+      },
+      {
+        "name": "lifetime",
+        "type": "Int!"
+      },
+      {
+        "name": "disable_sale_receipt_printing",
+        "type": "Boolean!"
+      }
+    ]
+  },
+  {
+    "name": "TariffOverview",
+    "fieldCount": 3,
+    "fields": [
+      {
+        "name": "id",
+        "type": "Int!"
+      },
+      {
+        "name": "title",
+        "type": "String!"
+      },
+      {
+        "name": "kind",
+        "type": "TariffKind!"
+      }
+    ]
+  },
+  {
+    "name": "TariffPaginated",
+    "fieldCount": 2,
+    "fields": [
+      {
+        "name": "paginatorInfo",
+        "type": "PaginatorInfo"
+      },
+      {
+        "name": "data",
+        "type": "[Tariff]!"
+      }
+    ]
+  },
+  {
+    "name": "TariffPeriod",
+    "fieldCount": 2,
+    "fields": [
+      {
+        "name": "start",
+        "type": "Int!"
+      },
+      {
+        "name": "end",
+        "type": "Int!"
+      }
+    ]
+  },
+  {
+    "name": "TariffPricelist",
+    "fieldCount": 2,
+    "fields": [
+      {
+        "name": "host_groups",
+        "type": "[HostGroup]!"
+      },
+      {
+        "name": "cost_map",
+        "type": "[TariffPricelistCostMap]!"
+      }
+    ]
+  },
+  {
+    "name": "TariffPricelistCostMap",
+    "fieldCount": 3,
+    "fields": [
+      {
+        "name": "title",
+        "type": "String!"
+      },
+      {
+        "name": "value",
+        "type": "Float!"
+      },
+      {
+        "name": "currency",
+        "type": "Currency!"
+      }
+    ]
+  },
+  {
+    "name": "TariffSchedule",
+    "fieldCount": 4,
+    "fields": [
+      {
+        "name": "title",
+        "type": "String!"
+      },
+      {
+        "name": "cost",
+        "type": "Float!"
+      },
+      {
+        "name": "user_cost",
+        "type": "Float!"
+      },
+      {
+        "name": "intervals",
+        "type": "[TariffScheduleInterval]!"
+      }
+    ]
+  },
+  {
+    "name": "TariffScheduleInterval",
+    "fieldCount": 3,
+    "fields": [
+      {
+        "name": "week_day",
+        "type": "Int!"
+      },
+      {
+        "name": "time_from",
+        "type": "Time!"
+      },
+      {
+        "name": "time_to",
+        "type": "Time!"
+      }
+    ]
+  },
+  {
+    "name": "TelegramChannel",
+    "fieldCount": 3,
+    "fields": [
+      {
+        "name": "id",
+        "type": "String!"
+      },
+      {
+        "name": "type",
+        "type": "TelegramChannelType!"
+      },
+      {
+        "name": "title",
+        "type": "String!"
+      }
+    ]
+  },
+  {
+    "name": "TelegramSettings",
+    "fieldCount": 3,
+    "fields": [
+      {
+        "name": "token",
+        "type": "String"
+      },
+      {
+        "name": "channel",
+        "type": "TelegramChannel"
+      },
+      {
+        "name": "notification",
+        "type": "String!"
+      }
+    ]
+  },
+  {
+    "name": "UnifiedReport",
+    "fieldCount": 10,
+    "fields": [
+      {
+        "name": "title",
+        "type": "String"
+      },
+      {
+        "name": "labels",
+        "type": "[String]!"
+      },
+      {
+        "name": "extraLabels",
+        "type": "[String]!"
+      },
+      {
+        "name": "extraLabels2",
+        "type": "[String]!"
+      },
+      {
+        "name": "extraLabels3",
+        "type": "[String]!"
+      },
+      {
+        "name": "keys",
+        "type": "[String]!"
+      },
+      {
+        "name": "points",
+        "type": "Int!"
+      },
+      {
+        "name": "data",
+        "type": "[UnifiedReportData]!"
+      },
+      {
+        "name": "url",
+        "type": "String"
+      },
+      {
+        "name": "summary",
+        "type": "[UnifiedSummaryData]!"
+      }
+    ]
+  },
+  {
+    "name": "UnifiedReportData",
+    "fieldCount": 1,
+    "fields": [
+      {
+        "name": "values",
+        "type": "[Decimal]!"
+      }
+    ]
+  },
+  {
+    "name": "UnifiedReportPaginated",
+    "fieldCount": 2,
+    "fields": [
+      {
+        "name": "report",
+        "type": "UnifiedReport!"
+      },
+      {
+        "name": "hasNext",
+        "type": "Boolean!"
+      }
+    ]
+  },
+  {
+    "name": "UnifiedSummaryData",
+    "fieldCount": 4,
+    "fields": [
+      {
+        "name": "title",
+        "type": "String!"
+      },
+      {
+        "name": "value",
+        "type": "Decimal!"
+      },
+      {
+        "name": "extraValue",
+        "type": "Decimal"
+      },
+      {
+        "name": "extraString",
+        "type": "String"
+      }
+    ]
+  },
+  {
+    "name": "UpcomingAutoPaymentData",
+    "fieldCount": 3,
+    "fields": [
+      {
+        "name": "card",
+        "type": "OrganizationPaymentCard!"
+      },
+      {
+        "name": "amount",
+        "type": "Decimal!"
+      },
+      {
+        "name": "payment_date",
+        "type": "Date!"
+      }
+    ]
+  },
+  {
+    "name": "User",
+    "fieldCount": 41,
+    "fields": [
+      {
+        "name": "id",
+        "type": "Int!"
+      },
+      {
+        "name": "uuid",
+        "type": "String!"
+      },
+      {
+        "name": "group",
+        "type": "UserGroup"
+      },
+      {
+        "name": "creator",
+        "type": "User"
+      },
+      {
+        "name": "login",
+        "type": "String!"
+      },
+      {
+        "name": "nickname",
+        "type": "String!"
+      },
+      {
+        "name": "phone",
+        "type": "String"
+      },
+      {
+        "name": "email",
+        "type": "Email"
+      },
+      {
+        "name": "phone_suffix",
+        "type": "String!"
+      },
+      {
+        "name": "dob",
+        "type": "Date!"
+      },
+      {
+        "name": "country_code",
+        "type": "String"
+      },
+      {
+        "name": "roles",
+        "type": "[Role]!"
+      },
+      {
+        "name": "first_name",
+        "type": "String"
+      },
+      {
+        "name": "last_name",
+        "type": "String"
+      },
+      {
+        "name": "middle_name",
+        "type": "String"
+      },
+      {
+        "name": "deposit",
+        "type": "Decimal!"
+      },
+      {
+        "name": "bonus",
+        "type": "Decimal!"
+      },
+      {
+        "name": "last_client_activity",
+        "type": "DateTime"
+      },
+      {
+        "name": "last_worker_activity",
+        "type": "DateTime"
+      },
+      {
+        "name": "last_comment",
+        "type": "Comment"
+      },
+      {
+        "name": "user_discount",
+        "type": "Int"
+      },
+      {
+        "name": "created_at",
+        "type": "DateTime!"
+      },
+      {
+        "name": "updated_at",
+        "type": "DateTime!"
+      },
+      {
+        "name": "disabled_at",
+        "type": "DateTime"
+      },
+      {
+        "name": "banned_at",
+        "type": "DateTime"
+      },
+      {
+        "name": "total_hours",
+        "type": "Int!"
+      },
+      {
+        "name": "pausable_info",
+        "type": "PausableClientSession"
+      },
+      {
+        "name": "pausable_sessions",
+        "type": "[PausableClientSession]!"
+      },
+      {
+        "name": "city",
+        "type": "String"
+      },
+      {
+        "name": "avatar_url",
+        "type": "String!"
+      },
+      {
+        "name": "news_consent",
+        "type": "NewsConsent!"
+      },
+      {
+        "name": "telegram_link",
+        "type": "String"
+      },
+      {
+        "name": "discord_link",
+        "type": "String"
+      },
+      {
+        "name": "steam_link",
+        "type": "String"
+      },
+      {
+        "name": "vk_link",
+        "type": "String"
+      },
+      {
+        "name": "is_private",
+        "type": "Boolean!"
+      },
+      {
+        "name": "premium",
+        "type": "Boolean!"
+      },
+      {
+        "name": "unverified",
+        "type": "Boolean!"
+      },
+      {
+        "name": "lead_source",
+        "type": "String"
+      },
+      {
+        "name": "discounts",
+        "type": "[UserDiscount]!"
+      },
+      {
+        "name": "favorite_club",
+        "type": "Int"
+      }
+    ]
+  },
+  {
+    "name": "UserAchievement",
+    "fieldCount": 7,
+    "fields": [
+      {
+        "name": "id",
+        "type": "String!"
+      },
+      {
+        "name": "has",
+        "type": "Boolean!"
+      },
+      {
+        "name": "name",
+        "type": "String!"
+      },
+      {
+        "name": "icon_url",
+        "type": "String"
+      },
+      {
+        "name": "conditions",
+        "type": "[Condition]!"
+      },
+      {
+        "name": "rewards",
+        "type": "[Reward]!"
+      },
+      {
+        "name": "progress",
+        "type": "Decimal!"
+      }
+    ]
+  },
+  {
+    "name": "UserAchievements",
+    "fieldCount": 2,
+    "fields": [
+      {
+        "name": "single",
+        "type": "[UserAchievement]!"
+      },
+      {
+        "name": "continuous",
+        "type": "[UserAchievement]!"
+      }
+    ]
+  },
+  {
+    "name": "UserClub",
+    "fieldCount": 8,
+    "fields": [
+      {
+        "name": "id",
+        "type": "Int!"
+      },
+      {
+        "name": "name",
+        "type": "String!"
+      },
+      {
+        "name": "address",
+        "type": "String!"
+      },
+      {
+        "name": "tariffName",
+        "type": "String"
+      },
+      {
+        "name": "workShiftStatus",
+        "type": "WorkShiftStatus!"
+      },
+      {
+        "name": "permitted",
+        "type": "Boolean!"
+      },
+      {
+        "name": "operatorFirstName",
+        "type": "String"
+      },
+      {
+        "name": "operatorLastName",
+        "type": "String"
+      }
+    ]
+  },
+  {
+    "name": "UserConsents",
+    "fieldCount": 3,
+    "fields": [
+      {
+        "name": "privacy_policy",
+        "type": "Boolean!"
+      },
+      {
+        "name": "marketing",
+        "type": "Boolean!"
+      },
+      {
+        "name": "news",
+        "type": "Boolean!"
+      }
+    ]
+  },
+  {
+    "name": "UserDiscount",
+    "fieldCount": 2,
+    "fields": [
+      {
+        "name": "type",
+        "type": "UserDiscountType!"
+      },
+      {
+        "name": "value",
+        "type": "Int!"
+      }
+    ]
+  },
+  {
+    "name": "UserGroup",
+    "fieldCount": 6,
+    "fields": [
+      {
+        "name": "id",
+        "type": "Int!"
+      },
+      {
+        "name": "uuid",
+        "type": "String!"
+      },
+      {
+        "name": "title",
+        "type": "String!"
+      },
+      {
+        "name": "user_count",
+        "type": "Int!"
+      },
+      {
+        "name": "discount",
+        "type": "Int!"
+      },
+      {
+        "name": "created_at",
+        "type": "DateTime!"
+      }
+    ]
+  },
+  {
+    "name": "UserPaginated",
+    "fieldCount": 3,
+    "fields": [
+      {
+        "name": "paginatorInfo",
+        "type": "PaginatorInfo"
+      },
+      {
+        "name": "data",
+        "type": "[User]!"
+      },
+      {
+        "name": "total_deposits",
+        "type": "Decimal"
+      }
+    ]
+  },
+  {
+    "name": "Verification",
+    "fieldCount": 2,
+    "fields": [
+      {
+        "name": "status",
+        "type": "ClubVerificationStatus!"
+      },
+      {
+        "name": "updated_at",
+        "type": "DateTime"
+      }
+    ]
+  },
+  {
+    "name": "Versions",
+    "fieldCount": 3,
+    "fields": [
+      {
+        "name": "easter_egg",
+        "type": "String"
+      },
+      {
+        "name": "frontend",
+        "type": "String"
+      },
+      {
+        "name": "backend",
+        "type": "String"
+      }
+    ]
+  },
+  {
+    "name": "WarehouseState",
+    "fieldCount": 4,
+    "fields": [
+      {
+        "name": "received",
+        "type": "Int!"
+      },
+      {
+        "name": "income",
+        "type": "Int!"
+      },
+      {
+        "name": "sold",
+        "type": "Int!"
+      },
+      {
+        "name": "disposal",
+        "type": "Int!"
+      }
+    ]
+  },
+  {
+    "name": "WorkerTask",
+    "fieldCount": 9,
+    "fields": [
+      {
+        "name": "id",
+        "type": "Int!"
+      },
+      {
+        "name": "creator",
+        "type": "User!"
+      },
+      {
+        "name": "title",
+        "type": "String!"
+      },
+      {
+        "name": "assigned_to",
+        "type": "User"
+      },
+      {
+        "name": "executor",
+        "type": "User"
+      },
+      {
+        "name": "created_at",
+        "type": "DateTime!"
+      },
+      {
+        "name": "updated_at",
+        "type": "DateTime"
+      },
+      {
+        "name": "deadline_at",
+        "type": "DateTime"
+      },
+      {
+        "name": "finished_at",
+        "type": "DateTime"
+      }
+    ]
+  },
+  {
+    "name": "WorkerTaskPaginated",
+    "fieldCount": 2,
+    "fields": [
+      {
+        "name": "paginatorInfo",
+        "type": "PaginatorInfo"
+      },
+      {
+        "name": "data",
+        "type": "[WorkerTask]!"
+      }
+    ]
+  },
+  {
+    "name": "WorkShift",
+    "fieldCount": 9,
+    "fields": [
+      {
+        "name": "id",
+        "type": "Int!"
+      },
+      {
+        "name": "comment",
+        "type": "String"
+      },
+      {
+        "name": "worker",
+        "type": "User!"
+      },
+      {
+        "name": "created_at",
+        "type": "DateTime!"
+      },
+      {
+        "name": "finished_at",
+        "type": "DateTime"
+      },
+      {
+        "name": "events",
+        "type": "[WorkShiftEvent]!"
+      },
+      {
+        "name": "money",
+        "type": "WorkShiftMoney!"
+      },
+      {
+        "name": "payments",
+        "type": "[Payment]!"
+      },
+      {
+        "name": "cashOrders",
+        "type": "[CashOrder]!"
+      }
+    ]
+  },
+  {
+    "name": "WorkShiftEvent",
+    "fieldCount": 3,
+    "fields": [
+      {
+        "name": "id",
+        "type": "Int!"
+      },
+      {
+        "name": "type",
+        "type": "String!"
+      },
+      {
+        "name": "created_at",
+        "type": "DateTime!"
+      }
+    ]
+  },
+  {
+    "name": "WorkShiftMoney",
+    "fieldCount": 2,
+    "fields": [
+      {
+        "name": "sum",
+        "type": "MoneyByTypes!"
+      },
+      {
+        "name": "cash_on_start",
+        "type": "Decimal!"
+      }
+    ]
+  },
+  {
+    "name": "WorkShiftPaginated",
+    "fieldCount": 2,
+    "fields": [
+      {
+        "name": "paginatorInfo",
+        "type": "PaginatorInfo"
+      },
+      {
+        "name": "data",
+        "type": "[WorkShift]!"
+      }
+    ]
+  },
+  {
+    "name": "WorkShiftPaymentOverviewComboData",
+    "fieldCount": 3,
+    "fields": [
+      {
+        "name": "title",
+        "type": "String!"
+      },
+      {
+        "name": "amount",
+        "type": "Int!"
+      },
+      {
+        "name": "sum",
+        "type": "Decimal!"
+      }
+    ]
+  },
+  {
+    "name": "WorkShiftPaymentOverviewData",
+    "fieldCount": 18,
+    "fields": [
+      {
+        "name": "id",
+        "type": "Int!"
+      },
+      {
+        "name": "worker",
+        "type": "User!"
+      },
+      {
+        "name": "cash_on_start",
+        "type": "Decimal!"
+      },
+      {
+        "name": "total",
+        "type": "Decimal!"
+      },
+      {
+        "name": "deposit",
+        "type": "Decimal!"
+      },
+      {
+        "name": "online_deposit",
+        "type": "Decimal!"
+      },
+      {
+        "name": "bonus",
+        "type": "Decimal!"
+      },
+      {
+        "name": "refunded",
+        "type": "Decimal!"
+      },
+      {
+        "name": "cash",
+        "type": "Decimal!"
+      },
+      {
+        "name": "card",
+        "type": "Decimal!"
+      },
+      {
+        "name": "cash_orders",
+        "type": "[CashOrder]!"
+      },
+      {
+        "name": "sum",
+        "type": "MoneyData!"
+      },
+      {
+        "name": "currency",
+        "type": "Currency"
+      },
+      {
+        "name": "created_at",
+        "type": "DateTime!"
+      },
+      {
+        "name": "finished_at",
+        "type": "DateTime"
+      },
+      {
+        "name": "goods",
+        "type": "[WorkShiftPaymentOverviewGoodData]!"
+      },
+      {
+        "name": "services",
+        "type": "[WorkShiftPaymentOverviewServiceData]!"
+      },
+      {
+        "name": "combos",
+        "type": "[WorkShiftPaymentOverviewComboData]!"
+      }
+    ]
+  },
+  {
+    "name": "WorkShiftPaymentOverviewGoodData",
+    "fieldCount": 5,
+    "fields": [
+      {
+        "name": "title",
+        "type": "String!"
+      },
+      {
+        "name": "cost",
+        "type": "Decimal!"
+      },
+      {
+        "name": "amount",
+        "type": "Int!"
+      },
+      {
+        "name": "in_stock",
+        "type": "Int!"
+      },
+      {
+        "name": "sum",
+        "type": "Decimal!"
+      }
+    ]
+  },
+  {
+    "name": "WorkShiftPaymentOverviewServiceData",
+    "fieldCount": 3,
+    "fields": [
+      {
+        "name": "title",
+        "type": "String!"
+      },
+      {
+        "name": "amount",
+        "type": "Int!"
+      },
+      {
+        "name": "sum",
+        "type": "Decimal!"
+      }
+    ]
+  },
+  {
+    "name": "WorkShiftSummary",
+    "fieldCount": 2,
+    "fields": [
+      {
+        "name": "id",
+        "type": "Int!"
+      },
+      {
+        "name": "summary",
+        "type": "String"
+      }
+    ]
+  }
+]

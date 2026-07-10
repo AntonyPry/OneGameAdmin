@@ -1,0 +1,564 @@
+[
+  {
+    "name": "AchievementStatus",
+    "values": [
+      "ACTIVE",
+      "DISABLED"
+    ]
+  },
+  {
+    "name": "AppGroupType",
+    "values": [
+      "APPLICATION",
+      "GAME",
+      "DEFAULT"
+    ]
+  },
+  {
+    "name": "ApplicationsReportType",
+    "values": [
+      "APPLICATION",
+      "WINDOW",
+      "CLICK"
+    ]
+  },
+  {
+    "name": "AppType",
+    "values": [
+      "APPLICATION",
+      "GAME"
+    ]
+  },
+  {
+    "name": "BeneficiaryType",
+    "values": [
+      "UL_RESIDENT",
+      "IP_RESIDENT"
+    ]
+  },
+  {
+    "name": "BonusReportOrderByType",
+    "values": [
+      "MANAGED"
+    ]
+  },
+  {
+    "name": "BookingClientStatus",
+    "values": [
+      "ACTIVE",
+      "INACTIVE"
+    ]
+  },
+  {
+    "name": "BookingStatus",
+    "values": [
+      "ACTIVE",
+      "FINISHED",
+      "CANCELED",
+      "REDEEMED",
+      "REDEEMED_AUTO"
+    ]
+  },
+  {
+    "name": "CartEntity",
+    "values": [
+      "GOOD",
+      "SERVICE",
+      "TARIFF"
+    ]
+  },
+  {
+    "name": "CashOrderType",
+    "values": [
+      "PKO",
+      "RKO"
+    ]
+  },
+  {
+    "name": "ClientSessionType",
+    "values": [
+      "PLANNED",
+      "ACTIVE",
+      "FINISHED",
+      "CANCELLED"
+    ]
+  },
+  {
+    "name": "CloudPaymentsAccountAction",
+    "values": [
+      "SET",
+      "REMOVE"
+    ]
+  },
+  {
+    "name": "ClubCommentSearchSort",
+    "values": [
+      "NEW_FIRST",
+      "OLD_FIRST",
+      "HIGH_GRADE_FIRST",
+      "LOW_GRADE_FIRST"
+    ]
+  },
+  {
+    "name": "ClubVerificationStatus",
+    "values": [
+      "UNVERIFIED",
+      "REVIEW",
+      "VERIFIED",
+      "DECLINED"
+    ]
+  },
+  {
+    "name": "ComboItemEntityType",
+    "values": [
+      "GOOD",
+      "SERVICE"
+    ]
+  },
+  {
+    "name": "CommentType",
+    "values": [
+      "CLIENT",
+      "HOST",
+      "CLIENT_SESSION"
+    ]
+  },
+  {
+    "name": "CompanyNewsListSortField",
+    "values": [
+      "TITLE",
+      "LABEL",
+      "URL",
+      "ACTIVE_FROM",
+      "ACTIVE_UNTIL",
+      "ACTIVE",
+      "CREATED_AT"
+    ]
+  },
+  {
+    "name": "ConfirmationCodeType",
+    "values": [
+      "REGISTER",
+      "RESET_PASSWORD"
+    ]
+  },
+  {
+    "name": "DateReportEnum",
+    "values": [
+      "TODAY",
+      "WEEK",
+      "MONTH",
+      "QUARTER",
+      "YEAR"
+    ]
+  },
+  {
+    "name": "DepositTransferOperationType",
+    "values": [
+      "DEPOSIT",
+      "WITHDRAWAL"
+    ]
+  },
+  {
+    "name": "DepositTransferType",
+    "values": [
+      "DEPOSIT",
+      "WITHDRAW"
+    ]
+  },
+  {
+    "name": "DistributionType",
+    "values": [
+      "LOCAL",
+      "CLOUD"
+    ]
+  },
+  {
+    "name": "EanEntityType",
+    "values": [
+      "GOOD",
+      "SERVICE",
+      "TARIFF",
+      "HOST",
+      "USER"
+    ]
+  },
+  {
+    "name": "GameAccountLauncher",
+    "values": [
+      "STEAM",
+      "EGS",
+      "BATTLENET",
+      "ORIGIN",
+      "EA",
+      "VKPLAY"
+    ]
+  },
+  {
+    "name": "GameAccountStatus",
+    "values": [
+      "OFFLINE",
+      "ONLINE",
+      "IN_GAME"
+    ]
+  },
+  {
+    "name": "HallType",
+    "values": [
+      "PC",
+      "CONSOLE"
+    ]
+  },
+  {
+    "name": "HostCommandAction",
+    "values": [
+      "SHUTDOWN",
+      "REBOOT",
+      "ALLOW_ADMIN_MODE",
+      "DISABLE_SHELL",
+      "SHOW_MESSAGE",
+      "LOGOFF",
+      "RUN",
+      "SEND_LOGS",
+      "SHELL_UNINSTALL",
+      "SHELL_UPDATE",
+      "LOGIN_QR",
+      "TINKOFF_SBP_PAYMENT"
+    ]
+  },
+  {
+    "name": "HostTypeValue",
+    "values": [
+      "PC",
+      "CONSOLE",
+      "VR",
+      "BILLIARD",
+      "BOARD_GAME",
+      "RACING_SIM"
+    ]
+  },
+  {
+    "name": "ImportStatusEnum",
+    "values": [
+      "NEW",
+      "PROCESSING",
+      "FINISH",
+      "FINISH_HAS_ERROR"
+    ]
+  },
+  {
+    "name": "IntegrationService",
+    "values": [
+      "TINKOFF",
+      "STRIPE",
+      "BEPAID"
+    ]
+  },
+  {
+    "name": "LicensePaymentMethod",
+    "values": [
+      "CARD",
+      "BILL",
+      "CLOUD_PAYMENTS",
+      "KASPI_QR",
+      "STRIPE"
+    ]
+  },
+  {
+    "name": "LicensePaymentStatus",
+    "values": [
+      "NEW",
+      "SUCCESS",
+      "FAILED"
+    ]
+  },
+  {
+    "name": "MethodType",
+    "values": [
+      "CASCADE",
+      "EMAIL",
+      "TELEGRAM",
+      "FLASH_CALL",
+      "SMS"
+    ]
+  },
+  {
+    "name": "MovementTypeEnum",
+    "values": [
+      "DEPOSIT",
+      "WITHDRAWAL"
+    ]
+  },
+  {
+    "name": "OperationType",
+    "values": [
+      "DEPOSIT",
+      "WITHDRAWAL"
+    ]
+  },
+  {
+    "name": "OpfType",
+    "values": [
+      "OOO",
+      "OAO",
+      "AO"
+    ]
+  },
+  {
+    "name": "OrderByDirection",
+    "values": [
+      "ASC",
+      "DESC"
+    ]
+  },
+  {
+    "name": "OrganizationConfirmationCodeType",
+    "values": [
+      "REGISTER",
+      "RESET_PASSWORD",
+      "WITHDRAW"
+    ]
+  },
+  {
+    "name": "OrganizationUserType",
+    "values": [
+      "OWNER",
+      "DIRECTOR",
+      "SYSTEM_ADMINISTRATOR",
+      "HALL_ADMINISTRATOR"
+    ]
+  },
+  {
+    "name": "OwnerType",
+    "values": [
+      "COMPANY",
+      "ENTREPRENEUR"
+    ]
+  },
+  {
+    "name": "PaginateType",
+    "values": [
+      "PAGINATOR"
+    ]
+  },
+  {
+    "name": "PaymentItemType",
+    "values": [
+      "DEPOSIT",
+      "GOOD",
+      "SERVICE",
+      "TARIFF",
+      "COMBO",
+      "BONUS",
+      "TIPS"
+    ]
+  },
+  {
+    "name": "PaymentMethod",
+    "values": [
+      "CARD",
+      "CASH",
+      "DEPOSIT",
+      "BONUS",
+      "COMPOSITE",
+      "CLOUD_PAYMENTS",
+      "POST_PAY",
+      "KASPI_QR",
+      "KASPI_CARD"
+    ]
+  },
+  {
+    "name": "PaymentStatus",
+    "values": [
+      "PENDING",
+      "PAID",
+      "UNPAID"
+    ]
+  },
+  {
+    "name": "PaymentTransactionStatus",
+    "values": [
+      "PENDING",
+      "SUCCESS",
+      "EXPIRED",
+      "FAILED",
+      "CANCELED"
+    ]
+  },
+  {
+    "name": "PaymentTransactionType",
+    "values": [
+      "MANAGER",
+      "CLIENT"
+    ]
+  },
+  {
+    "name": "PromoValueType",
+    "values": [
+      "DISCOUNT",
+      "DEPOSIT",
+      "BONUS"
+    ]
+  },
+  {
+    "name": "RegisterType",
+    "values": [
+      "SHELL",
+      "STATION",
+      "MANAGER"
+    ]
+  },
+  {
+    "name": "ReturnFormatEnum",
+    "values": [
+      "LINK",
+      "QR_CODE",
+      "QR_CODE_BASE64"
+    ]
+  },
+  {
+    "name": "ServiceEnum",
+    "values": [
+      "CLOUD_PAYMENTS",
+      "TINKOFF_SBP",
+      "KASPI_PAY",
+      "SBP",
+      "STRIPE",
+      "BEPAID_ERIP"
+    ]
+  },
+  {
+    "name": "ShellMode",
+    "values": [
+      "NORMAL",
+      "DISABLED",
+      "HIGH_ACCESS"
+    ]
+  },
+  {
+    "name": "SliceType",
+    "values": [
+      "DAY",
+      "WEEK",
+      "MONTH"
+    ]
+  },
+  {
+    "name": "SortActiveClientEnum",
+    "values": [
+      "ByPayments",
+      "ByTime"
+    ]
+  },
+  {
+    "name": "SyncMode",
+    "values": [
+      "COPY",
+      "REPLACE"
+    ]
+  },
+  {
+    "name": "SyncScope",
+    "values": [
+      "LOCAL",
+      "NETWORK"
+    ]
+  },
+  {
+    "name": "TariffKind",
+    "values": [
+      "PER_MINUTE",
+      "PAUSABLE",
+      "FIXED",
+      "PACKET"
+    ]
+  },
+  {
+    "name": "TariffPricelistCostMapType",
+    "values": [
+      "DEFAULT",
+      "USER_COST"
+    ]
+  },
+  {
+    "name": "Tax",
+    "values": [
+      "NONE",
+      "VAT0",
+      "VAT5",
+      "VAT7",
+      "VAT10",
+      "VAT20",
+      "VAT110",
+      "VAT120"
+    ]
+  },
+  {
+    "name": "TaxSystem",
+    "values": [
+      "SIMPLE_INCOME",
+      "SIMPLE_INCOME_EXPENSES",
+      "PATENT",
+      "MAIN"
+    ]
+  },
+  {
+    "name": "TelegramChannelType",
+    "values": [
+      "SUPERGROUP",
+      "GROUP",
+      "CHANNEL",
+      "PRIVATE"
+    ]
+  },
+  {
+    "name": "UserDiscountType",
+    "values": [
+      "PERSONAL",
+      "GROUP",
+      "NETWORK"
+    ]
+  },
+  {
+    "name": "Vat",
+    "values": [
+      "NO_NDS",
+      "NDS_0",
+      "NDS_5",
+      "NDS_7",
+      "NDS_10",
+      "NDS_20",
+      "NDS_110",
+      "NDS_120"
+    ]
+  },
+  {
+    "name": "WarehouseHistoryOperationType",
+    "values": [
+      "ADD",
+      "DISPOSAL",
+      "SOLD",
+      "CREATE",
+      "REFUND"
+    ]
+  },
+  {
+    "name": "WarehouseOperationType",
+    "values": [
+      "ADD",
+      "DISPOSAL",
+      "SOLD",
+      "CREATE",
+      "SET"
+    ]
+  },
+  {
+    "name": "WorkShiftStatus",
+    "values": [
+      "NONE",
+      "OPEN",
+      "MY",
+      "LOCKED"
+    ]
+  }
+]

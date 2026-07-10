@@ -1,0 +1,5102 @@
+[
+  {
+    "name": "achievements",
+    "returnType": {
+      "name": "Achievement",
+      "kind": "OBJECT",
+      "list": true,
+      "nonNull": true
+    },
+    "returnTypeText": "[Achievement]!",
+    "args": [
+      {
+        "name": "user_id",
+        "type": {
+          "name": "Int",
+          "kind": "SCALAR",
+          "list": false,
+          "nonNull": false
+        },
+        "typeText": "Int",
+        "defaultValue": null,
+        "description": ""
+      }
+    ],
+    "description": "",
+    "deprecated": false,
+    "deprecationReason": ""
+  },
+  {
+    "name": "activeWorkShift",
+    "returnType": {
+      "name": "WorkShift",
+      "kind": "OBJECT",
+      "list": false,
+      "nonNull": false
+    },
+    "returnTypeText": "WorkShift",
+    "args": [],
+    "description": "",
+    "deprecated": false,
+    "deprecationReason": ""
+  },
+  {
+    "name": "additionalLicensePrice",
+    "returnType": {
+      "name": "LicensePrice",
+      "kind": "OBJECT",
+      "list": false,
+      "nonNull": true
+    },
+    "returnTypeText": "LicensePrice!",
+    "args": [
+      {
+        "name": "input",
+        "type": {
+          "name": "AdditionalLicensePriceInput",
+          "kind": "INPUT_OBJECT",
+          "list": false,
+          "nonNull": true
+        },
+        "typeText": "AdditionalLicensePriceInput!",
+        "defaultValue": null,
+        "description": ""
+      }
+    ],
+    "description": "",
+    "deprecated": false,
+    "deprecationReason": ""
+  },
+  {
+    "name": "applicationsReport",
+    "returnType": {
+      "name": "UnifiedReport",
+      "kind": "OBJECT",
+      "list": false,
+      "nonNull": true
+    },
+    "returnTypeText": "UnifiedReport!",
+    "args": [
+      {
+        "name": "input",
+        "type": {
+          "name": "ApplicationsReportInput",
+          "kind": "INPUT_OBJECT",
+          "list": false,
+          "nonNull": true
+        },
+        "typeText": "ApplicationsReportInput!",
+        "defaultValue": null,
+        "description": ""
+      }
+    ],
+    "description": "",
+    "deprecated": false,
+    "deprecationReason": ""
+  },
+  {
+    "name": "bonusDetailedSummaryReport",
+    "returnType": {
+      "name": "UnifiedReport",
+      "kind": "OBJECT",
+      "list": false,
+      "nonNull": true
+    },
+    "returnTypeText": "UnifiedReport!",
+    "args": [
+      {
+        "name": "input",
+        "type": {
+          "name": "ReportInput",
+          "kind": "INPUT_OBJECT",
+          "list": false,
+          "nonNull": true
+        },
+        "typeText": "ReportInput!",
+        "defaultValue": null,
+        "description": ""
+      }
+    ],
+    "description": "",
+    "deprecated": false,
+    "deprecationReason": ""
+  },
+  {
+    "name": "bonusDetailedTimeSeriesReport",
+    "returnType": {
+      "name": "UnifiedReport",
+      "kind": "OBJECT",
+      "list": false,
+      "nonNull": true
+    },
+    "returnTypeText": "UnifiedReport!",
+    "args": [
+      {
+        "name": "input",
+        "type": {
+          "name": "BonusDetailedTimeSeriesInput",
+          "kind": "INPUT_OBJECT",
+          "list": false,
+          "nonNull": true
+        },
+        "typeText": "BonusDetailedTimeSeriesInput!",
+        "defaultValue": null,
+        "description": ""
+      }
+    ],
+    "description": "",
+    "deprecated": false,
+    "deprecationReason": ""
+  },
+  {
+    "name": "bonusHistoryReport",
+    "returnType": {
+      "name": "UnifiedReportPaginated",
+      "kind": "OBJECT",
+      "list": false,
+      "nonNull": true
+    },
+    "returnTypeText": "UnifiedReportPaginated!",
+    "args": [
+      {
+        "name": "input",
+        "type": {
+          "name": "BonusHistoryReportInput",
+          "kind": "INPUT_OBJECT",
+          "list": false,
+          "nonNull": true
+        },
+        "typeText": "BonusHistoryReportInput!",
+        "defaultValue": null,
+        "description": ""
+      }
+    ],
+    "description": "",
+    "deprecated": false,
+    "deprecationReason": ""
+  },
+  {
+    "name": "bonusReport",
+    "returnType": {
+      "name": "UnifiedReport",
+      "kind": "OBJECT",
+      "list": false,
+      "nonNull": true
+    },
+    "returnTypeText": "UnifiedReport!",
+    "args": [
+      {
+        "name": "input",
+        "type": {
+          "name": "BonusReport",
+          "kind": "INPUT_OBJECT",
+          "list": false,
+          "nonNull": true
+        },
+        "typeText": "BonusReport!",
+        "defaultValue": null,
+        "description": ""
+      }
+    ],
+    "description": "",
+    "deprecated": false,
+    "deprecationReason": ""
+  },
+  {
+    "name": "boughtTariffsReport",
+    "returnType": {
+      "name": "UnifiedReport",
+      "kind": "OBJECT",
+      "list": false,
+      "nonNull": true
+    },
+    "returnTypeText": "UnifiedReport!",
+    "args": [
+      {
+        "name": "input",
+        "type": {
+          "name": "BoughtTariffsReport",
+          "kind": "INPUT_OBJECT",
+          "list": false,
+          "nonNull": true
+        },
+        "typeText": "BoughtTariffsReport!",
+        "defaultValue": null,
+        "description": ""
+      }
+    ],
+    "description": "",
+    "deprecated": false,
+    "deprecationReason": ""
+  },
+  {
+    "name": "canFinishWorkShift",
+    "returnType": {
+      "name": "Boolean",
+      "kind": "SCALAR",
+      "list": false,
+      "nonNull": true
+    },
+    "returnTypeText": "Boolean!",
+    "args": [
+      {
+        "name": "confirm_pass",
+        "type": {
+          "name": "String",
+          "kind": "SCALAR",
+          "list": false,
+          "nonNull": true
+        },
+        "typeText": "String!",
+        "defaultValue": null,
+        "description": ""
+      }
+    ],
+    "description": "",
+    "deprecated": false,
+    "deprecationReason": ""
+  },
+  {
+    "name": "canStartWorkShift",
+    "returnType": {
+      "name": "Boolean",
+      "kind": "SCALAR",
+      "list": false,
+      "nonNull": true
+    },
+    "returnTypeText": "Boolean!",
+    "args": [],
+    "description": "",
+    "deprecated": false,
+    "deprecationReason": ""
+  },
+  {
+    "name": "canUnpauseClientSession",
+    "returnType": {
+      "name": "Boolean",
+      "kind": "SCALAR",
+      "list": false,
+      "nonNull": true
+    },
+    "returnTypeText": "Boolean!",
+    "args": [
+      {
+        "name": "id",
+        "type": {
+          "name": "Int",
+          "kind": "SCALAR",
+          "list": false,
+          "nonNull": true
+        },
+        "typeText": "Int!",
+        "defaultValue": null,
+        "description": ""
+      },
+      {
+        "name": "host_id",
+        "type": {
+          "name": "Int",
+          "kind": "SCALAR",
+          "list": false,
+          "nonNull": true
+        },
+        "typeText": "Int!",
+        "defaultValue": null,
+        "description": ""
+      }
+    ],
+    "description": "",
+    "deprecated": false,
+    "deprecationReason": ""
+  },
+  {
+    "name": "canUseDebt",
+    "returnType": {
+      "name": "Boolean",
+      "kind": "SCALAR",
+      "list": false,
+      "nonNull": true
+    },
+    "returnTypeText": "Boolean!",
+    "args": [],
+    "description": "",
+    "deprecated": false,
+    "deprecationReason": ""
+  },
+  {
+    "name": "cashBoxLicenseToken",
+    "returnType": {
+      "name": "String",
+      "kind": "SCALAR",
+      "list": false,
+      "nonNull": true
+    },
+    "returnTypeText": "String!",
+    "args": [],
+    "description": "",
+    "deprecated": false,
+    "deprecationReason": ""
+  },
+  {
+    "name": "categories",
+    "returnType": {
+      "name": "Category",
+      "kind": "OBJECT",
+      "list": true,
+      "nonNull": true
+    },
+    "returnTypeText": "[Category]!",
+    "args": [
+      {
+        "name": "input",
+        "type": {
+          "name": "CategoriesInput",
+          "kind": "INPUT_OBJECT",
+          "list": false,
+          "nonNull": false
+        },
+        "typeText": "CategoriesInput",
+        "defaultValue": null,
+        "description": ""
+      }
+    ],
+    "description": "",
+    "deprecated": false,
+    "deprecationReason": ""
+  },
+  {
+    "name": "category",
+    "returnType": {
+      "name": "Category",
+      "kind": "OBJECT",
+      "list": false,
+      "nonNull": true
+    },
+    "returnTypeText": "Category!",
+    "args": [
+      {
+        "name": "id",
+        "type": {
+          "name": "Int",
+          "kind": "SCALAR",
+          "list": false,
+          "nonNull": true
+        },
+        "typeText": "Int!",
+        "defaultValue": null,
+        "description": ""
+      }
+    ],
+    "description": "",
+    "deprecated": false,
+    "deprecationReason": ""
+  },
+  {
+    "name": "clientBookingCheckPenalty",
+    "returnType": {
+      "name": "ClientBookingPenaltyData",
+      "kind": "OBJECT",
+      "list": false,
+      "nonNull": true
+    },
+    "returnTypeText": "ClientBookingPenaltyData!",
+    "args": [
+      {
+        "name": "id",
+        "type": {
+          "name": "Int",
+          "kind": "SCALAR",
+          "list": false,
+          "nonNull": true
+        },
+        "typeText": "Int!",
+        "defaultValue": null,
+        "description": ""
+      },
+      {
+        "name": "companyId",
+        "type": {
+          "name": "Int",
+          "kind": "SCALAR",
+          "list": false,
+          "nonNull": false
+        },
+        "typeText": "Int",
+        "defaultValue": null,
+        "description": ""
+      }
+    ],
+    "description": "",
+    "deprecated": false,
+    "deprecationReason": ""
+  },
+  {
+    "name": "clientBookings",
+    "returnType": {
+      "name": "ClientBooking",
+      "kind": "OBJECT",
+      "list": true,
+      "nonNull": true
+    },
+    "returnTypeText": "[ClientBooking]!",
+    "args": [
+      {
+        "name": "status",
+        "type": {
+          "name": "BookingClientStatus",
+          "kind": "ENUM",
+          "list": false,
+          "nonNull": false
+        },
+        "typeText": "BookingClientStatus",
+        "defaultValue": null,
+        "description": ""
+      }
+    ],
+    "description": "",
+    "deprecated": false,
+    "deprecationReason": ""
+  },
+  {
+    "name": "clientEmailExists",
+    "returnType": {
+      "name": "Boolean",
+      "kind": "SCALAR",
+      "list": false,
+      "nonNull": true
+    },
+    "returnTypeText": "Boolean!",
+    "args": [
+      {
+        "name": "email",
+        "type": {
+          "name": "String",
+          "kind": "SCALAR",
+          "list": false,
+          "nonNull": true
+        },
+        "typeText": "String!",
+        "defaultValue": null,
+        "description": ""
+      }
+    ],
+    "description": "",
+    "deprecated": false,
+    "deprecationReason": ""
+  },
+  {
+    "name": "clientHost",
+    "returnType": {
+      "name": "ClientHost",
+      "kind": "OBJECT",
+      "list": false,
+      "nonNull": true
+    },
+    "returnTypeText": "ClientHost!",
+    "args": [
+      {
+        "name": "qr",
+        "type": {
+          "name": "String",
+          "kind": "SCALAR",
+          "list": false,
+          "nonNull": true
+        },
+        "typeText": "String!",
+        "defaultValue": null,
+        "description": ""
+      }
+    ],
+    "description": "",
+    "deprecated": false,
+    "deprecationReason": ""
+  },
+  {
+    "name": "clientHostGroups",
+    "returnType": {
+      "name": "ClientHostGroup",
+      "kind": "OBJECT",
+      "list": true,
+      "nonNull": true
+    },
+    "returnTypeText": "[ClientHostGroup]!",
+    "args": [
+      {
+        "name": "companyId",
+        "type": {
+          "name": "Int",
+          "kind": "SCALAR",
+          "list": false,
+          "nonNull": true
+        },
+        "typeText": "Int!",
+        "defaultValue": null,
+        "description": ""
+      }
+    ],
+    "description": "",
+    "deprecated": false,
+    "deprecationReason": ""
+  },
+  {
+    "name": "clientHosts",
+    "returnType": {
+      "name": "ClientHost",
+      "kind": "OBJECT",
+      "list": true,
+      "nonNull": true
+    },
+    "returnTypeText": "[ClientHost]!",
+    "args": [
+      {
+        "name": "company_id",
+        "type": {
+          "name": "Int",
+          "kind": "SCALAR",
+          "list": false,
+          "nonNull": true
+        },
+        "typeText": "Int!",
+        "defaultValue": null,
+        "description": ""
+      },
+      {
+        "name": "host_group_id",
+        "type": {
+          "name": "Int",
+          "kind": "SCALAR",
+          "list": false,
+          "nonNull": true
+        },
+        "typeText": "Int!",
+        "defaultValue": null,
+        "description": ""
+      },
+      {
+        "name": "tariff_id",
+        "type": {
+          "name": "Int",
+          "kind": "SCALAR",
+          "list": false,
+          "nonNull": true
+        },
+        "typeText": "Int!",
+        "defaultValue": null,
+        "description": ""
+      },
+      {
+        "name": "from",
+        "type": {
+          "name": "DateTime",
+          "kind": "SCALAR",
+          "list": false,
+          "nonNull": true
+        },
+        "typeText": "DateTime!",
+        "defaultValue": null,
+        "description": ""
+      }
+    ],
+    "description": "",
+    "deprecated": false,
+    "deprecationReason": ""
+  },
+  {
+    "name": "clientMe",
+    "returnType": {
+      "name": "User",
+      "kind": "OBJECT",
+      "list": false,
+      "nonNull": false
+    },
+    "returnTypeText": "User",
+    "args": [],
+    "description": "",
+    "deprecated": false,
+    "deprecationReason": ""
+  },
+  {
+    "name": "clientPhoneExists",
+    "returnType": {
+      "name": "Boolean",
+      "kind": "SCALAR",
+      "list": false,
+      "nonNull": true
+    },
+    "returnTypeText": "Boolean!",
+    "args": [
+      {
+        "name": "phone",
+        "type": {
+          "name": "String",
+          "kind": "SCALAR",
+          "list": false,
+          "nonNull": true
+        },
+        "typeText": "String!",
+        "defaultValue": null,
+        "description": ""
+      }
+    ],
+    "description": "",
+    "deprecated": false,
+    "deprecationReason": ""
+  },
+  {
+    "name": "clients",
+    "returnType": {
+      "name": "UserPaginated",
+      "kind": "OBJECT",
+      "list": false,
+      "nonNull": true
+    },
+    "returnTypeText": "UserPaginated!",
+    "args": [
+      {
+        "name": "input",
+        "type": {
+          "name": "ClientsInput",
+          "kind": "INPUT_OBJECT",
+          "list": false,
+          "nonNull": false
+        },
+        "typeText": "ClientsInput",
+        "defaultValue": null,
+        "description": ""
+      },
+      {
+        "name": "page",
+        "type": {
+          "name": "Int",
+          "kind": "SCALAR",
+          "list": false,
+          "nonNull": false
+        },
+        "typeText": "Int",
+        "defaultValue": null,
+        "description": ""
+      },
+      {
+        "name": "first",
+        "type": {
+          "name": "Int",
+          "kind": "SCALAR",
+          "list": false,
+          "nonNull": false
+        },
+        "typeText": "Int",
+        "defaultValue": null,
+        "description": ""
+      }
+    ],
+    "description": "@orderBy(column: \"id\", direction: DESC)",
+    "deprecated": false,
+    "deprecationReason": ""
+  },
+  {
+    "name": "clientSession",
+    "returnType": {
+      "name": "ClientSession",
+      "kind": "OBJECT",
+      "list": false,
+      "nonNull": true
+    },
+    "returnTypeText": "ClientSession!",
+    "args": [
+      {
+        "name": "id",
+        "type": {
+          "name": "Int",
+          "kind": "SCALAR",
+          "list": false,
+          "nonNull": true
+        },
+        "typeText": "Int!",
+        "defaultValue": null,
+        "description": ""
+      }
+    ],
+    "description": "",
+    "deprecated": false,
+    "deprecationReason": ""
+  },
+  {
+    "name": "clientsPaymentReport",
+    "returnType": {
+      "name": "ClientsPaymentReportPaginated",
+      "kind": "OBJECT",
+      "list": false,
+      "nonNull": true
+    },
+    "returnTypeText": "ClientsPaymentReportPaginated!",
+    "args": [
+      {
+        "name": "input",
+        "type": {
+          "name": "ClientsPaymentReportInput",
+          "kind": "INPUT_OBJECT",
+          "list": false,
+          "nonNull": true
+        },
+        "typeText": "ClientsPaymentReportInput!",
+        "defaultValue": null,
+        "description": ""
+      },
+      {
+        "name": "page",
+        "type": {
+          "name": "Int",
+          "kind": "SCALAR",
+          "list": false,
+          "nonNull": false
+        },
+        "typeText": "Int",
+        "defaultValue": null,
+        "description": ""
+      },
+      {
+        "name": "first",
+        "type": {
+          "name": "Int",
+          "kind": "SCALAR",
+          "list": false,
+          "nonNull": false
+        },
+        "typeText": "Int",
+        "defaultValue": null,
+        "description": ""
+      }
+    ],
+    "description": "",
+    "deprecated": false,
+    "deprecationReason": ""
+  },
+  {
+    "name": "clientTariffGrid",
+    "returnType": {
+      "name": "ClientTariffGridItem",
+      "kind": "OBJECT",
+      "list": true,
+      "nonNull": true
+    },
+    "returnTypeText": "[ClientTariffGridItem]!",
+    "args": [
+      {
+        "name": "input",
+        "type": {
+          "name": "ClientTariffGridInput",
+          "kind": "INPUT_OBJECT",
+          "list": false,
+          "nonNull": true
+        },
+        "typeText": "ClientTariffGridInput!",
+        "defaultValue": null,
+        "description": ""
+      }
+    ],
+    "description": "",
+    "deprecated": false,
+    "deprecationReason": ""
+  },
+  {
+    "name": "club",
+    "returnType": {
+      "name": "Club",
+      "kind": "OBJECT",
+      "list": false,
+      "nonNull": true
+    },
+    "returnTypeText": "Club!",
+    "args": [
+      {
+        "name": "id",
+        "type": {
+          "name": "Int",
+          "kind": "SCALAR",
+          "list": false,
+          "nonNull": true
+        },
+        "typeText": "Int!",
+        "defaultValue": null,
+        "description": ""
+      }
+    ],
+    "description": "",
+    "deprecated": false,
+    "deprecationReason": ""
+  },
+  {
+    "name": "clubComments",
+    "returnType": {
+      "name": "ClubCommentPaginated",
+      "kind": "OBJECT",
+      "list": false,
+      "nonNull": true
+    },
+    "returnTypeText": "ClubCommentPaginated!",
+    "args": [
+      {
+        "name": "input",
+        "type": {
+          "name": "ClubCommentSearchInput",
+          "kind": "INPUT_OBJECT",
+          "list": false,
+          "nonNull": false
+        },
+        "typeText": "ClubCommentSearchInput",
+        "defaultValue": null,
+        "description": ""
+      },
+      {
+        "name": "page",
+        "type": {
+          "name": "Int",
+          "kind": "SCALAR",
+          "list": false,
+          "nonNull": false
+        },
+        "typeText": "Int",
+        "defaultValue": null,
+        "description": ""
+      },
+      {
+        "name": "first",
+        "type": {
+          "name": "Int",
+          "kind": "SCALAR",
+          "list": false,
+          "nonNull": false
+        },
+        "typeText": "Int",
+        "defaultValue": null,
+        "description": ""
+      }
+    ],
+    "description": "",
+    "deprecated": false,
+    "deprecationReason": ""
+  },
+  {
+    "name": "clubLoadByDayOfWeekReport",
+    "returnType": {
+      "name": "UnifiedReport",
+      "kind": "OBJECT",
+      "list": false,
+      "nonNull": true
+    },
+    "returnTypeText": "UnifiedReport!",
+    "args": [
+      {
+        "name": "input",
+        "type": {
+          "name": "ReportInput",
+          "kind": "INPUT_OBJECT",
+          "list": false,
+          "nonNull": true
+        },
+        "typeText": "ReportInput!",
+        "defaultValue": null,
+        "description": ""
+      }
+    ],
+    "description": "",
+    "deprecated": false,
+    "deprecationReason": ""
+  },
+  {
+    "name": "clubOrganization",
+    "returnType": {
+      "name": "Organization",
+      "kind": "OBJECT",
+      "list": false,
+      "nonNull": true
+    },
+    "returnTypeText": "Organization!",
+    "args": [
+      {
+        "name": "id",
+        "type": {
+          "name": "Int",
+          "kind": "SCALAR",
+          "list": false,
+          "nonNull": true
+        },
+        "typeText": "Int!",
+        "defaultValue": null,
+        "description": ""
+      }
+    ],
+    "description": "",
+    "deprecated": false,
+    "deprecationReason": ""
+  },
+  {
+    "name": "clubs",
+    "returnType": {
+      "name": "Club",
+      "kind": "OBJECT",
+      "list": true,
+      "nonNull": true
+    },
+    "returnTypeText": "[Club]!",
+    "args": [],
+    "description": "",
+    "deprecated": false,
+    "deprecationReason": ""
+  },
+  {
+    "name": "clubsOnMap",
+    "returnType": {
+      "name": "ClientClubOnMap",
+      "kind": "OBJECT",
+      "list": true,
+      "nonNull": true
+    },
+    "returnTypeText": "[ClientClubOnMap]!",
+    "args": [
+      {
+        "name": "q",
+        "type": {
+          "name": "String",
+          "kind": "SCALAR",
+          "list": false,
+          "nonNull": false
+        },
+        "typeText": "String",
+        "defaultValue": null,
+        "description": ""
+      },
+      {
+        "name": "city",
+        "type": {
+          "name": "String",
+          "kind": "SCALAR",
+          "list": false,
+          "nonNull": false
+        },
+        "typeText": "String",
+        "defaultValue": null,
+        "description": ""
+      }
+    ],
+    "description": "",
+    "deprecated": false,
+    "deprecationReason": ""
+  },
+  {
+    "name": "combo",
+    "returnType": {
+      "name": "Combo",
+      "kind": "OBJECT",
+      "list": false,
+      "nonNull": true
+    },
+    "returnTypeText": "Combo!",
+    "args": [
+      {
+        "name": "id",
+        "type": {
+          "name": "Int",
+          "kind": "SCALAR",
+          "list": false,
+          "nonNull": true
+        },
+        "typeText": "Int!",
+        "defaultValue": null,
+        "description": ""
+      }
+    ],
+    "description": "",
+    "deprecated": false,
+    "deprecationReason": ""
+  },
+  {
+    "name": "comboList",
+    "returnType": {
+      "name": "ComboListItem",
+      "kind": "OBJECT",
+      "list": true,
+      "nonNull": true
+    },
+    "returnTypeText": "[ComboListItem]!",
+    "args": [
+      {
+        "name": "input",
+        "type": {
+          "name": "ComboListInput",
+          "kind": "INPUT_OBJECT",
+          "list": false,
+          "nonNull": false
+        },
+        "typeText": "ComboListInput",
+        "defaultValue": null,
+        "description": ""
+      }
+    ],
+    "description": "",
+    "deprecated": false,
+    "deprecationReason": ""
+  },
+  {
+    "name": "combos",
+    "returnType": {
+      "name": "ComboPaginated",
+      "kind": "OBJECT",
+      "list": false,
+      "nonNull": true
+    },
+    "returnTypeText": "ComboPaginated!",
+    "args": [
+      {
+        "name": "input",
+        "type": {
+          "name": "SearchComboInput",
+          "kind": "INPUT_OBJECT",
+          "list": false,
+          "nonNull": false
+        },
+        "typeText": "SearchComboInput",
+        "defaultValue": null,
+        "description": ""
+      },
+      {
+        "name": "page",
+        "type": {
+          "name": "Int",
+          "kind": "SCALAR",
+          "list": false,
+          "nonNull": false
+        },
+        "typeText": "Int",
+        "defaultValue": null,
+        "description": ""
+      },
+      {
+        "name": "first",
+        "type": {
+          "name": "Int",
+          "kind": "SCALAR",
+          "list": false,
+          "nonNull": false
+        },
+        "typeText": "Int",
+        "defaultValue": null,
+        "description": ""
+      }
+    ],
+    "description": "",
+    "deprecated": false,
+    "deprecationReason": ""
+  },
+  {
+    "name": "comments",
+    "returnType": {
+      "name": "CommentPaginated",
+      "kind": "OBJECT",
+      "list": false,
+      "nonNull": true
+    },
+    "returnTypeText": "CommentPaginated!",
+    "args": [
+      {
+        "name": "input",
+        "type": {
+          "name": "CommentSearchInput",
+          "kind": "INPUT_OBJECT",
+          "list": false,
+          "nonNull": true
+        },
+        "typeText": "CommentSearchInput!",
+        "defaultValue": null,
+        "description": ""
+      },
+      {
+        "name": "page",
+        "type": {
+          "name": "Int",
+          "kind": "SCALAR",
+          "list": false,
+          "nonNull": false
+        },
+        "typeText": "Int",
+        "defaultValue": null,
+        "description": ""
+      },
+      {
+        "name": "first",
+        "type": {
+          "name": "Int",
+          "kind": "SCALAR",
+          "list": false,
+          "nonNull": false
+        },
+        "typeText": "Int",
+        "defaultValue": null,
+        "description": ""
+      }
+    ],
+    "description": "",
+    "deprecated": false,
+    "deprecationReason": ""
+  },
+  {
+    "name": "companyNewsArticle",
+    "returnType": {
+      "name": "CompanyNewsArticle",
+      "kind": "OBJECT",
+      "list": false,
+      "nonNull": false
+    },
+    "returnTypeText": "CompanyNewsArticle",
+    "args": [
+      {
+        "name": "id",
+        "type": {
+          "name": "ID",
+          "kind": "SCALAR",
+          "list": false,
+          "nonNull": true
+        },
+        "typeText": "ID!",
+        "defaultValue": null,
+        "description": ""
+      }
+    ],
+    "description": "",
+    "deprecated": false,
+    "deprecationReason": ""
+  },
+  {
+    "name": "companyNewsList",
+    "returnType": {
+      "name": "CompanyNewsList",
+      "kind": "OBJECT",
+      "list": false,
+      "nonNull": true
+    },
+    "returnTypeText": "CompanyNewsList!",
+    "args": [
+      {
+        "name": "input",
+        "type": {
+          "name": "CompanyNewsListInput",
+          "kind": "INPUT_OBJECT",
+          "list": false,
+          "nonNull": false
+        },
+        "typeText": "CompanyNewsListInput",
+        "defaultValue": null,
+        "description": ""
+      },
+      {
+        "name": "page",
+        "type": {
+          "name": "Int",
+          "kind": "SCALAR",
+          "list": false,
+          "nonNull": false
+        },
+        "typeText": "Int",
+        "defaultValue": null,
+        "description": ""
+      },
+      {
+        "name": "first",
+        "type": {
+          "name": "Int",
+          "kind": "SCALAR",
+          "list": false,
+          "nonNull": false
+        },
+        "typeText": "Int",
+        "defaultValue": null,
+        "description": ""
+      }
+    ],
+    "description": "",
+    "deprecated": false,
+    "deprecationReason": ""
+  },
+  {
+    "name": "companyPermissions",
+    "returnType": {
+      "name": "CompanyPermissionsData",
+      "kind": "OBJECT",
+      "list": false,
+      "nonNull": true
+    },
+    "returnTypeText": "CompanyPermissionsData!",
+    "args": [],
+    "description": "",
+    "deprecated": false,
+    "deprecationReason": ""
+  },
+  {
+    "name": "contractors",
+    "returnType": {
+      "name": "Contractor",
+      "kind": "OBJECT",
+      "list": true,
+      "nonNull": true
+    },
+    "returnTypeText": "[Contractor]!",
+    "args": [],
+    "description": "",
+    "deprecated": false,
+    "deprecationReason": ""
+  },
+  {
+    "name": "currencies",
+    "returnType": {
+      "name": "Currency",
+      "kind": "OBJECT",
+      "list": true,
+      "nonNull": true
+    },
+    "returnTypeText": "[Currency]!",
+    "args": [],
+    "description": "",
+    "deprecated": false,
+    "deprecationReason": ""
+  },
+  {
+    "name": "currency",
+    "returnType": {
+      "name": "Currency",
+      "kind": "OBJECT",
+      "list": false,
+      "nonNull": true
+    },
+    "returnTypeText": "Currency!",
+    "args": [
+      {
+        "name": "alias",
+        "type": {
+          "name": "String",
+          "kind": "SCALAR",
+          "list": false,
+          "nonNull": false
+        },
+        "typeText": "String",
+        "defaultValue": null,
+        "description": ""
+      }
+    ],
+    "description": "",
+    "deprecated": false,
+    "deprecationReason": ""
+  },
+  {
+    "name": "currentClub",
+    "returnType": {
+      "name": "Club",
+      "kind": "OBJECT",
+      "list": false,
+      "nonNull": true
+    },
+    "returnTypeText": "Club!",
+    "args": [],
+    "description": "",
+    "deprecated": false,
+    "deprecationReason": ""
+  },
+  {
+    "name": "currentHost",
+    "returnType": {
+      "name": "Host",
+      "kind": "OBJECT",
+      "list": false,
+      "nonNull": true
+    },
+    "returnTypeText": "Host!",
+    "args": [],
+    "description": "",
+    "deprecated": false,
+    "deprecationReason": ""
+  },
+  {
+    "name": "depositCashback",
+    "returnType": {
+      "name": "DepositCashback",
+      "kind": "OBJECT",
+      "list": false,
+      "nonNull": true
+    },
+    "returnTypeText": "DepositCashback!",
+    "args": [
+      {
+        "name": "id",
+        "type": {
+          "name": "Int",
+          "kind": "SCALAR",
+          "list": false,
+          "nonNull": true
+        },
+        "typeText": "Int!",
+        "defaultValue": null,
+        "description": ""
+      }
+    ],
+    "description": "",
+    "deprecated": false,
+    "deprecationReason": ""
+  },
+  {
+    "name": "depositCashbacks",
+    "returnType": {
+      "name": "DepositCashback",
+      "kind": "OBJECT",
+      "list": true,
+      "nonNull": true
+    },
+    "returnTypeText": "[DepositCashback]!",
+    "args": [],
+    "description": "",
+    "deprecated": false,
+    "deprecationReason": ""
+  },
+  {
+    "name": "depositTransferReport",
+    "returnType": {
+      "name": "DepositTransferReport",
+      "kind": "OBJECT",
+      "list": false,
+      "nonNull": false
+    },
+    "returnTypeText": "DepositTransferReport",
+    "args": [
+      {
+        "name": "input",
+        "type": {
+          "name": "DepositTransferReportInput",
+          "kind": "INPUT_OBJECT",
+          "list": false,
+          "nonNull": true
+        },
+        "typeText": "DepositTransferReportInput!",
+        "defaultValue": null,
+        "description": ""
+      },
+      {
+        "name": "page",
+        "type": {
+          "name": "Int",
+          "kind": "SCALAR",
+          "list": false,
+          "nonNull": false
+        },
+        "typeText": "Int",
+        "defaultValue": null,
+        "description": ""
+      },
+      {
+        "name": "first",
+        "type": {
+          "name": "Int",
+          "kind": "SCALAR",
+          "list": false,
+          "nonNull": false
+        },
+        "typeText": "Int",
+        "defaultValue": null,
+        "description": ""
+      }
+    ],
+    "description": "",
+    "deprecated": false,
+    "deprecationReason": ""
+  },
+  {
+    "name": "depositTransferSummaryReport",
+    "returnType": {
+      "name": "UnifiedReport",
+      "kind": "OBJECT",
+      "list": false,
+      "nonNull": true
+    },
+    "returnTypeText": "UnifiedReport!",
+    "args": [
+      {
+        "name": "input",
+        "type": {
+          "name": "ReportInput",
+          "kind": "INPUT_OBJECT",
+          "list": false,
+          "nonNull": true
+        },
+        "typeText": "ReportInput!",
+        "defaultValue": null,
+        "description": ""
+      }
+    ],
+    "description": "",
+    "deprecated": false,
+    "deprecationReason": ""
+  },
+  {
+    "name": "discount",
+    "returnType": {
+      "name": "Discount",
+      "kind": "OBJECT",
+      "list": false,
+      "nonNull": true
+    },
+    "returnTypeText": "Discount!",
+    "args": [
+      {
+        "name": "id",
+        "type": {
+          "name": "Int",
+          "kind": "SCALAR",
+          "list": false,
+          "nonNull": true
+        },
+        "typeText": "Int!",
+        "defaultValue": null,
+        "description": ""
+      }
+    ],
+    "description": "soft_exist:discounts,id",
+    "deprecated": false,
+    "deprecationReason": ""
+  },
+  {
+    "name": "discounts",
+    "returnType": {
+      "name": "DiscountPaginated",
+      "kind": "OBJECT",
+      "list": false,
+      "nonNull": true
+    },
+    "returnTypeText": "DiscountPaginated!",
+    "args": [
+      {
+        "name": "page",
+        "type": {
+          "name": "Int",
+          "kind": "SCALAR",
+          "list": false,
+          "nonNull": false
+        },
+        "typeText": "Int",
+        "defaultValue": null,
+        "description": ""
+      },
+      {
+        "name": "first",
+        "type": {
+          "name": "Int",
+          "kind": "SCALAR",
+          "list": false,
+          "nonNull": false
+        },
+        "typeText": "Int",
+        "defaultValue": null,
+        "description": ""
+      }
+    ],
+    "description": "",
+    "deprecated": false,
+    "deprecationReason": ""
+  },
+  {
+    "name": "emailExists",
+    "returnType": {
+      "name": "Boolean",
+      "kind": "SCALAR",
+      "list": false,
+      "nonNull": true
+    },
+    "returnTypeText": "Boolean!",
+    "args": [
+      {
+        "name": "input",
+        "type": {
+          "name": "EmailExistsInput",
+          "kind": "INPUT_OBJECT",
+          "list": false,
+          "nonNull": true
+        },
+        "typeText": "EmailExistsInput!",
+        "defaultValue": null,
+        "description": ""
+      }
+    ],
+    "description": "",
+    "deprecated": false,
+    "deprecationReason": ""
+  },
+  {
+    "name": "eventList",
+    "returnType": {
+      "name": "EventListPaginated",
+      "kind": "OBJECT",
+      "list": false,
+      "nonNull": true
+    },
+    "returnTypeText": "EventListPaginated!",
+    "args": [
+      {
+        "name": "input",
+        "type": {
+          "name": "EventsInput",
+          "kind": "INPUT_OBJECT",
+          "list": false,
+          "nonNull": false
+        },
+        "typeText": "EventsInput",
+        "defaultValue": null,
+        "description": ""
+      },
+      {
+        "name": "page",
+        "type": {
+          "name": "Int",
+          "kind": "SCALAR",
+          "list": false,
+          "nonNull": false
+        },
+        "typeText": "Int",
+        "defaultValue": null,
+        "description": ""
+      },
+      {
+        "name": "first",
+        "type": {
+          "name": "Int",
+          "kind": "SCALAR",
+          "list": false,
+          "nonNull": false
+        },
+        "typeText": "Int",
+        "defaultValue": null,
+        "description": ""
+      }
+    ],
+    "description": "",
+    "deprecated": false,
+    "deprecationReason": ""
+  },
+  {
+    "name": "exportGoods",
+    "returnType": {
+      "name": "String",
+      "kind": "SCALAR",
+      "list": false,
+      "nonNull": true
+    },
+    "returnTypeText": "String!",
+    "args": [
+      {
+        "name": "input",
+        "type": {
+          "name": "GoodsInput",
+          "kind": "INPUT_OBJECT",
+          "list": false,
+          "nonNull": false
+        },
+        "typeText": "GoodsInput",
+        "defaultValue": null,
+        "description": ""
+      }
+    ],
+    "description": "",
+    "deprecated": false,
+    "deprecationReason": ""
+  },
+  {
+    "name": "exportOverviewReport",
+    "returnType": {
+      "name": "String",
+      "kind": "SCALAR",
+      "list": false,
+      "nonNull": true
+    },
+    "returnTypeText": "String!",
+    "args": [
+      {
+        "name": "input",
+        "type": {
+          "name": "OverviewExportInput",
+          "kind": "INPUT_OBJECT",
+          "list": false,
+          "nonNull": true
+        },
+        "typeText": "OverviewExportInput!",
+        "defaultValue": null,
+        "description": ""
+      }
+    ],
+    "description": "",
+    "deprecated": false,
+    "deprecationReason": ""
+  },
+  {
+    "name": "exportSales",
+    "returnType": {
+      "name": "String",
+      "kind": "SCALAR",
+      "list": false,
+      "nonNull": true
+    },
+    "returnTypeText": "String!",
+    "args": [
+      {
+        "name": "input",
+        "type": {
+          "name": "SalesExportInput",
+          "kind": "INPUT_OBJECT",
+          "list": false,
+          "nonNull": true
+        },
+        "typeText": "SalesExportInput!",
+        "defaultValue": null,
+        "description": ""
+      }
+    ],
+    "description": "",
+    "deprecated": false,
+    "deprecationReason": ""
+  },
+  {
+    "name": "exportUsers",
+    "returnType": {
+      "name": "String",
+      "kind": "SCALAR",
+      "list": false,
+      "nonNull": true
+    },
+    "returnTypeText": "String!",
+    "args": [],
+    "description": "",
+    "deprecated": false,
+    "deprecationReason": ""
+  },
+  {
+    "name": "featureFlags",
+    "returnType": {
+      "name": "FeatureFlags",
+      "kind": "OBJECT",
+      "list": false,
+      "nonNull": true
+    },
+    "returnTypeText": "FeatureFlags!",
+    "args": [],
+    "description": "",
+    "deprecated": false,
+    "deprecationReason": ""
+  },
+  {
+    "name": "finishedWorkShifts",
+    "returnType": {
+      "name": "WorkShift",
+      "kind": "OBJECT",
+      "list": true,
+      "nonNull": true
+    },
+    "returnTypeText": "[WorkShift]!",
+    "args": [
+      {
+        "name": "input",
+        "type": {
+          "name": "FinishedWorkShiftInput",
+          "kind": "INPUT_OBJECT",
+          "list": false,
+          "nonNull": false
+        },
+        "typeText": "FinishedWorkShiftInput",
+        "defaultValue": null,
+        "description": ""
+      }
+    ],
+    "description": "",
+    "deprecated": false,
+    "deprecationReason": ""
+  },
+  {
+    "name": "freeHosts",
+    "returnType": {
+      "name": "Host",
+      "kind": "OBJECT",
+      "list": true,
+      "nonNull": true
+    },
+    "returnTypeText": "[Host]!",
+    "args": [
+      {
+        "name": "host_id",
+        "type": {
+          "name": "Int",
+          "kind": "SCALAR",
+          "list": false,
+          "nonNull": false
+        },
+        "typeText": "Int",
+        "defaultValue": null,
+        "description": ""
+      }
+    ],
+    "description": "",
+    "deprecated": false,
+    "deprecationReason": ""
+  },
+  {
+    "name": "gameAccount",
+    "returnType": {
+      "name": "GameAccount",
+      "kind": "OBJECT",
+      "list": false,
+      "nonNull": true
+    },
+    "returnTypeText": "GameAccount!",
+    "args": [
+      {
+        "name": "id",
+        "type": {
+          "name": "Int",
+          "kind": "SCALAR",
+          "list": false,
+          "nonNull": true
+        },
+        "typeText": "Int!",
+        "defaultValue": null,
+        "description": ""
+      }
+    ],
+    "description": "exists:game_accounts,id",
+    "deprecated": false,
+    "deprecationReason": ""
+  },
+  {
+    "name": "gameAccountGroup",
+    "returnType": {
+      "name": "GameAccountGroup",
+      "kind": "OBJECT",
+      "list": false,
+      "nonNull": true
+    },
+    "returnTypeText": "GameAccountGroup!",
+    "args": [
+      {
+        "name": "id",
+        "type": {
+          "name": "Int",
+          "kind": "SCALAR",
+          "list": false,
+          "nonNull": true
+        },
+        "typeText": "Int!",
+        "defaultValue": null,
+        "description": ""
+      }
+    ],
+    "description": "exists:game_account_groups,id",
+    "deprecated": false,
+    "deprecationReason": ""
+  },
+  {
+    "name": "gameAccountGroups",
+    "returnType": {
+      "name": "GameAccountGroup",
+      "kind": "OBJECT",
+      "list": true,
+      "nonNull": true
+    },
+    "returnTypeText": "[GameAccountGroup]!",
+    "args": [],
+    "description": "@all @orderBy(column: \"id\", direction: DESC)",
+    "deprecated": false,
+    "deprecationReason": ""
+  },
+  {
+    "name": "gameAccounts",
+    "returnType": {
+      "name": "GameAccount",
+      "kind": "OBJECT",
+      "list": true,
+      "nonNull": true
+    },
+    "returnTypeText": "[GameAccount]!",
+    "args": [],
+    "description": "@orderBy(column: \"id\", direction: DESC)",
+    "deprecated": false,
+    "deprecationReason": ""
+  },
+  {
+    "name": "getActiveClientList",
+    "returnType": {
+      "name": "ActiveClient",
+      "kind": "OBJECT",
+      "list": true,
+      "nonNull": true
+    },
+    "returnTypeText": "[ActiveClient]!",
+    "args": [
+      {
+        "name": "input",
+        "type": {
+          "name": "GetActiveClientListInput",
+          "kind": "INPUT_OBJECT",
+          "list": false,
+          "nonNull": true
+        },
+        "typeText": "GetActiveClientListInput!",
+        "defaultValue": null,
+        "description": ""
+      },
+      {
+        "name": "first",
+        "type": {
+          "name": "Int",
+          "kind": "SCALAR",
+          "list": false,
+          "nonNull": false
+        },
+        "typeText": "Int",
+        "defaultValue": null,
+        "description": ""
+      }
+    ],
+    "description": "",
+    "deprecated": false,
+    "deprecationReason": ""
+  },
+  {
+    "name": "getAgeRatings",
+    "returnType": {
+      "name": "AgeRating",
+      "kind": "OBJECT",
+      "list": true,
+      "nonNull": false
+    },
+    "returnTypeText": "[AgeRating]",
+    "args": [],
+    "description": "",
+    "deprecated": false,
+    "deprecationReason": ""
+  },
+  {
+    "name": "getAvailableDiscounts",
+    "returnType": {
+      "name": "Discount",
+      "kind": "OBJECT",
+      "list": true,
+      "nonNull": true
+    },
+    "returnTypeText": "[Discount]!",
+    "args": [],
+    "description": "",
+    "deprecated": false,
+    "deprecationReason": ""
+  },
+  {
+    "name": "getBeneficiaries",
+    "returnType": {
+      "name": "Beneficiary",
+      "kind": "OBJECT",
+      "list": true,
+      "nonNull": true
+    },
+    "returnTypeText": "[Beneficiary]!",
+    "args": [],
+    "description": "",
+    "deprecated": false,
+    "deprecationReason": ""
+  },
+  {
+    "name": "getBeneficiaryBankDetails",
+    "returnType": {
+      "name": "BeneficiaryBankDetails",
+      "kind": "OBJECT",
+      "list": false,
+      "nonNull": false
+    },
+    "returnTypeText": "BeneficiaryBankDetails",
+    "args": [
+      {
+        "name": "beneficiary_id",
+        "type": {
+          "name": "String",
+          "kind": "SCALAR",
+          "list": false,
+          "nonNull": true
+        },
+        "typeText": "String!",
+        "defaultValue": null,
+        "description": ""
+      }
+    ],
+    "description": "",
+    "deprecated": false,
+    "deprecationReason": ""
+  },
+  {
+    "name": "getBeneficiaryDeal",
+    "returnType": {
+      "name": "BeneficiaryDeal",
+      "kind": "OBJECT",
+      "list": false,
+      "nonNull": true
+    },
+    "returnTypeText": "BeneficiaryDeal!",
+    "args": [
+      {
+        "name": "id",
+        "type": {
+          "name": "String",
+          "kind": "SCALAR",
+          "list": false,
+          "nonNull": true
+        },
+        "typeText": "String!",
+        "defaultValue": null,
+        "description": ""
+      }
+    ],
+    "description": "",
+    "deprecated": false,
+    "deprecationReason": ""
+  },
+  {
+    "name": "getBeneficiaryMovementsOfFunds",
+    "returnType": {
+      "name": "MovementOfFundsPaginated",
+      "kind": "OBJECT",
+      "list": false,
+      "nonNull": true
+    },
+    "returnTypeText": "MovementOfFundsPaginated!",
+    "args": [
+      {
+        "name": "input",
+        "type": {
+          "name": "GetBeneficiaryMovementsOfFunds",
+          "kind": "INPUT_OBJECT",
+          "list": false,
+          "nonNull": true
+        },
+        "typeText": "GetBeneficiaryMovementsOfFunds!",
+        "defaultValue": null,
+        "description": ""
+      },
+      {
+        "name": "page",
+        "type": {
+          "name": "Int",
+          "kind": "SCALAR",
+          "list": false,
+          "nonNull": false
+        },
+        "typeText": "Int",
+        "defaultValue": null,
+        "description": ""
+      },
+      {
+        "name": "first",
+        "type": {
+          "name": "Int",
+          "kind": "SCALAR",
+          "list": false,
+          "nonNull": false
+        },
+        "typeText": "Int",
+        "defaultValue": null,
+        "description": ""
+      }
+    ],
+    "description": "",
+    "deprecated": true,
+    "deprecationReason": "use listBeneficiaryMovementsOfFunds"
+  },
+  {
+    "name": "getBeneficiaryMovementsOfFundsCsv",
+    "returnType": {
+      "name": "String",
+      "kind": "SCALAR",
+      "list": false,
+      "nonNull": true
+    },
+    "returnTypeText": "String!",
+    "args": [
+      {
+        "name": "input",
+        "type": {
+          "name": "GetBeneficiaryMovementsOfFundsReport",
+          "kind": "INPUT_OBJECT",
+          "list": false,
+          "nonNull": true
+        },
+        "typeText": "GetBeneficiaryMovementsOfFundsReport!",
+        "defaultValue": null,
+        "description": ""
+      }
+    ],
+    "description": "",
+    "deprecated": false,
+    "deprecationReason": ""
+  },
+  {
+    "name": "getBonusHistory",
+    "returnType": {
+      "name": "BonusHistory",
+      "kind": "OBJECT",
+      "list": false,
+      "nonNull": true
+    },
+    "returnTypeText": "BonusHistory!",
+    "args": [
+      {
+        "name": "uuid",
+        "type": {
+          "name": "String",
+          "kind": "SCALAR",
+          "list": false,
+          "nonNull": true
+        },
+        "typeText": "String!",
+        "defaultValue": null,
+        "description": ""
+      },
+      {
+        "name": "page",
+        "type": {
+          "name": "Int",
+          "kind": "SCALAR",
+          "list": false,
+          "nonNull": false
+        },
+        "typeText": "Int",
+        "defaultValue": null,
+        "description": ""
+      },
+      {
+        "name": "first",
+        "type": {
+          "name": "Int",
+          "kind": "SCALAR",
+          "list": false,
+          "nonNull": false
+        },
+        "typeText": "Int",
+        "defaultValue": null,
+        "description": ""
+      }
+    ],
+    "description": "",
+    "deprecated": false,
+    "deprecationReason": ""
+  },
+  {
+    "name": "getBooking",
+    "returnType": {
+      "name": "Booking",
+      "kind": "OBJECT",
+      "list": false,
+      "nonNull": true
+    },
+    "returnTypeText": "Booking!",
+    "args": [
+      {
+        "name": "id",
+        "type": {
+          "name": "Int",
+          "kind": "SCALAR",
+          "list": false,
+          "nonNull": true
+        },
+        "typeText": "Int!",
+        "defaultValue": null,
+        "description": ""
+      }
+    ],
+    "description": "",
+    "deprecated": false,
+    "deprecationReason": ""
+  },
+  {
+    "name": "getBookings",
+    "returnType": {
+      "name": "BookingPaginated",
+      "kind": "OBJECT",
+      "list": false,
+      "nonNull": true
+    },
+    "returnTypeText": "BookingPaginated!",
+    "args": [
+      {
+        "name": "hostIds",
+        "type": {
+          "name": "Int",
+          "kind": "SCALAR",
+          "list": true,
+          "nonNull": true
+        },
+        "typeText": "[Int]!",
+        "defaultValue": null,
+        "description": ""
+      },
+      {
+        "name": "status",
+        "type": {
+          "name": "String",
+          "kind": "SCALAR",
+          "list": false,
+          "nonNull": false
+        },
+        "typeText": "String",
+        "defaultValue": null,
+        "description": ""
+      },
+      {
+        "name": "from",
+        "type": {
+          "name": "DateTime",
+          "kind": "SCALAR",
+          "list": false,
+          "nonNull": false
+        },
+        "typeText": "DateTime",
+        "defaultValue": null,
+        "description": ""
+      },
+      {
+        "name": "to",
+        "type": {
+          "name": "DateTime",
+          "kind": "SCALAR",
+          "list": false,
+          "nonNull": false
+        },
+        "typeText": "DateTime",
+        "defaultValue": null,
+        "description": ""
+      },
+      {
+        "name": "page",
+        "type": {
+          "name": "Int",
+          "kind": "SCALAR",
+          "list": false,
+          "nonNull": false
+        },
+        "typeText": "Int",
+        "defaultValue": null,
+        "description": ""
+      },
+      {
+        "name": "first",
+        "type": {
+          "name": "Int",
+          "kind": "SCALAR",
+          "list": false,
+          "nonNull": false
+        },
+        "typeText": "Int",
+        "defaultValue": null,
+        "description": ""
+      }
+    ],
+    "description": "",
+    "deprecated": false,
+    "deprecationReason": ""
+  },
+  {
+    "name": "getClientDepositAccounts",
+    "returnType": {
+      "name": "DepositAccount",
+      "kind": "OBJECT",
+      "list": true,
+      "nonNull": true
+    },
+    "returnTypeText": "[DepositAccount]!",
+    "args": [
+      {
+        "name": "company_id",
+        "type": {
+          "name": "Int",
+          "kind": "SCALAR",
+          "list": false,
+          "nonNull": false
+        },
+        "typeText": "Int",
+        "defaultValue": null,
+        "description": ""
+      }
+    ],
+    "description": "",
+    "deprecated": false,
+    "deprecationReason": ""
+  },
+  {
+    "name": "getClientDepositTransfers",
+    "returnType": {
+      "name": "DepositTransferHistory",
+      "kind": "OBJECT",
+      "list": false,
+      "nonNull": true
+    },
+    "returnTypeText": "DepositTransferHistory!",
+    "args": [
+      {
+        "name": "uuid",
+        "type": {
+          "name": "String",
+          "kind": "SCALAR",
+          "list": false,
+          "nonNull": true
+        },
+        "typeText": "String!",
+        "defaultValue": null,
+        "description": ""
+      },
+      {
+        "name": "page",
+        "type": {
+          "name": "Int",
+          "kind": "SCALAR",
+          "list": false,
+          "nonNull": false
+        },
+        "typeText": "Int",
+        "defaultValue": null,
+        "description": ""
+      },
+      {
+        "name": "first",
+        "type": {
+          "name": "Int",
+          "kind": "SCALAR",
+          "list": false,
+          "nonNull": false
+        },
+        "typeText": "Int",
+        "defaultValue": null,
+        "description": ""
+      }
+    ],
+    "description": "",
+    "deprecated": false,
+    "deprecationReason": ""
+  },
+  {
+    "name": "getClubOptions",
+    "returnType": {
+      "name": "ClubOption",
+      "kind": "OBJECT",
+      "list": true,
+      "nonNull": true
+    },
+    "returnTypeText": "[ClubOption]!",
+    "args": [],
+    "description": "",
+    "deprecated": false,
+    "deprecationReason": ""
+  },
+  {
+    "name": "getCompanyOwner",
+    "returnType": {
+      "name": "Owner",
+      "kind": "OBJECT",
+      "list": false,
+      "nonNull": true
+    },
+    "returnTypeText": "Owner!",
+    "args": [
+      {
+        "name": "company_id",
+        "type": {
+          "name": "Int",
+          "kind": "SCALAR",
+          "list": false,
+          "nonNull": true
+        },
+        "typeText": "Int!",
+        "defaultValue": null,
+        "description": ""
+      }
+    ],
+    "description": "",
+    "deprecated": false,
+    "deprecationReason": ""
+  },
+  {
+    "name": "getCounterpartyDataByInn",
+    "returnType": {
+      "name": "CounterpartyData",
+      "kind": "OBJECT",
+      "list": false,
+      "nonNull": false
+    },
+    "returnTypeText": "CounterpartyData",
+    "args": [
+      {
+        "name": "inn",
+        "type": {
+          "name": "String",
+          "kind": "SCALAR",
+          "list": false,
+          "nonNull": true
+        },
+        "typeText": "String!",
+        "defaultValue": null,
+        "description": ""
+      }
+    ],
+    "description": "",
+    "deprecated": false,
+    "deprecationReason": ""
+  },
+  {
+    "name": "getCurrentBeneficiary",
+    "returnType": {
+      "name": "Beneficiary",
+      "kind": "OBJECT",
+      "list": false,
+      "nonNull": false
+    },
+    "returnTypeText": "Beneficiary",
+    "args": [
+      {
+        "name": "club_id",
+        "type": {
+          "name": "Int",
+          "kind": "SCALAR",
+          "list": false,
+          "nonNull": false
+        },
+        "typeText": "Int",
+        "defaultValue": null,
+        "description": ""
+      }
+    ],
+    "description": "",
+    "deprecated": false,
+    "deprecationReason": ""
+  },
+  {
+    "name": "getCurrentTariff",
+    "returnType": {
+      "name": "CurrentTariff",
+      "kind": "OBJECT",
+      "list": false,
+      "nonNull": true
+    },
+    "returnTypeText": "CurrentTariff!",
+    "args": [
+      {
+        "name": "input",
+        "type": {
+          "name": "GetCurrentTariff",
+          "kind": "INPUT_OBJECT",
+          "list": false,
+          "nonNull": true
+        },
+        "typeText": "GetCurrentTariff!",
+        "defaultValue": null,
+        "description": ""
+      }
+    ],
+    "description": "",
+    "deprecated": false,
+    "deprecationReason": ""
+  },
+  {
+    "name": "getDepositHistory",
+    "returnType": {
+      "name": "PaymentHistory",
+      "kind": "OBJECT",
+      "list": false,
+      "nonNull": true
+    },
+    "returnTypeText": "PaymentHistory!",
+    "args": [
+      {
+        "name": "user_id",
+        "type": {
+          "name": "Int",
+          "kind": "SCALAR",
+          "list": false,
+          "nonNull": true
+        },
+        "typeText": "Int!",
+        "defaultValue": null,
+        "description": ""
+      }
+    ],
+    "description": "",
+    "deprecated": false,
+    "deprecationReason": ""
+  },
+  {
+    "name": "getDetailedWorkShiftMoneyData",
+    "returnType": {
+      "name": "DetailedWorkShiftMoneyData",
+      "kind": "OBJECT",
+      "list": false,
+      "nonNull": false
+    },
+    "returnTypeText": "DetailedWorkShiftMoneyData",
+    "args": [
+      {
+        "name": "id",
+        "type": {
+          "name": "Int",
+          "kind": "SCALAR",
+          "list": false,
+          "nonNull": false
+        },
+        "typeText": "Int",
+        "defaultValue": null,
+        "description": ""
+      }
+    ],
+    "description": "",
+    "deprecated": false,
+    "deprecationReason": ""
+  },
+  {
+    "name": "getGoodCategoryAgeRatings",
+    "returnType": {
+      "name": "AgeRating",
+      "kind": "OBJECT",
+      "list": true,
+      "nonNull": true
+    },
+    "returnTypeText": "[AgeRating]!",
+    "args": [],
+    "description": "",
+    "deprecated": false,
+    "deprecationReason": ""
+  },
+  {
+    "name": "getNewsFeed",
+    "returnType": {
+      "name": "NewsFeed",
+      "kind": "OBJECT",
+      "list": false,
+      "nonNull": true
+    },
+    "returnTypeText": "NewsFeed!",
+    "args": [
+      {
+        "name": "company_id",
+        "type": {
+          "name": "Int",
+          "kind": "SCALAR",
+          "list": false,
+          "nonNull": false
+        },
+        "typeText": "Int",
+        "defaultValue": null,
+        "description": ""
+      },
+      {
+        "name": "page",
+        "type": {
+          "name": "Int",
+          "kind": "SCALAR",
+          "list": false,
+          "nonNull": false
+        },
+        "typeText": "Int",
+        "defaultValue": null,
+        "description": ""
+      },
+      {
+        "name": "first",
+        "type": {
+          "name": "Int",
+          "kind": "SCALAR",
+          "list": false,
+          "nonNull": false
+        },
+        "typeText": "Int",
+        "defaultValue": null,
+        "description": ""
+      }
+    ],
+    "description": "",
+    "deprecated": false,
+    "deprecationReason": ""
+  },
+  {
+    "name": "getOrganizationOwners",
+    "returnType": {
+      "name": "Owner",
+      "kind": "OBJECT",
+      "list": true,
+      "nonNull": true
+    },
+    "returnTypeText": "[Owner]!",
+    "args": [],
+    "description": "",
+    "deprecated": false,
+    "deprecationReason": ""
+  },
+  {
+    "name": "getOrganizationPaymentCard",
+    "returnType": {
+      "name": "OrganizationPaymentCard",
+      "kind": "OBJECT",
+      "list": false,
+      "nonNull": true
+    },
+    "returnTypeText": "OrganizationPaymentCard!",
+    "args": [
+      {
+        "name": "id",
+        "type": {
+          "name": "Int",
+          "kind": "SCALAR",
+          "list": false,
+          "nonNull": true
+        },
+        "typeText": "Int!",
+        "defaultValue": null,
+        "description": ""
+      }
+    ],
+    "description": "",
+    "deprecated": false,
+    "deprecationReason": ""
+  },
+  {
+    "name": "getOrganizationPaymentCards",
+    "returnType": {
+      "name": "OrganizationPaymentCard",
+      "kind": "OBJECT",
+      "list": true,
+      "nonNull": true
+    },
+    "returnTypeText": "[OrganizationPaymentCard]!",
+    "args": [],
+    "description": "",
+    "deprecated": false,
+    "deprecationReason": ""
+  },
+  {
+    "name": "getPaymentsByClientId",
+    "returnType": {
+      "name": "PaymentHistory",
+      "kind": "OBJECT",
+      "list": false,
+      "nonNull": true
+    },
+    "returnTypeText": "PaymentHistory!",
+    "args": [
+      {
+        "name": "uuid",
+        "type": {
+          "name": "String",
+          "kind": "SCALAR",
+          "list": false,
+          "nonNull": true
+        },
+        "typeText": "String!",
+        "defaultValue": null,
+        "description": ""
+      },
+      {
+        "name": "page",
+        "type": {
+          "name": "Int",
+          "kind": "SCALAR",
+          "list": false,
+          "nonNull": false
+        },
+        "typeText": "Int",
+        "defaultValue": null,
+        "description": ""
+      },
+      {
+        "name": "first",
+        "type": {
+          "name": "Int",
+          "kind": "SCALAR",
+          "list": false,
+          "nonNull": false
+        },
+        "typeText": "Int",
+        "defaultValue": null,
+        "description": ""
+      }
+    ],
+    "description": "",
+    "deprecated": false,
+    "deprecationReason": ""
+  },
+  {
+    "name": "getSumForWithdrawToCheckingAccount",
+    "returnType": {
+      "name": "BeneficiaryBalance",
+      "kind": "OBJECT",
+      "list": false,
+      "nonNull": true
+    },
+    "returnTypeText": "BeneficiaryBalance!",
+    "args": [
+      {
+        "name": "beneficiary_id",
+        "type": {
+          "name": "String",
+          "kind": "SCALAR",
+          "list": false,
+          "nonNull": true
+        },
+        "typeText": "String!",
+        "defaultValue": null,
+        "description": ""
+      }
+    ],
+    "description": "",
+    "deprecated": false,
+    "deprecationReason": ""
+  },
+  {
+    "name": "getTelegramChannels",
+    "returnType": {
+      "name": "TelegramChannel",
+      "kind": "OBJECT",
+      "list": true,
+      "nonNull": true
+    },
+    "returnTypeText": "[TelegramChannel]!",
+    "args": [
+      {
+        "name": "token",
+        "type": {
+          "name": "String",
+          "kind": "SCALAR",
+          "list": false,
+          "nonNull": true
+        },
+        "typeText": "String!",
+        "defaultValue": null,
+        "description": ""
+      }
+    ],
+    "description": "",
+    "deprecated": false,
+    "deprecationReason": ""
+  },
+  {
+    "name": "getUpcomingAutoPaymentData",
+    "returnType": {
+      "name": "UpcomingAutoPaymentData",
+      "kind": "OBJECT",
+      "list": false,
+      "nonNull": false
+    },
+    "returnTypeText": "UpcomingAutoPaymentData",
+    "args": [
+      {
+        "name": "id",
+        "type": {
+          "name": "Int",
+          "kind": "SCALAR",
+          "list": false,
+          "nonNull": true
+        },
+        "typeText": "Int!",
+        "defaultValue": null,
+        "description": ""
+      }
+    ],
+    "description": "",
+    "deprecated": false,
+    "deprecationReason": ""
+  },
+  {
+    "name": "getWorkShiftPaymentOverviewData",
+    "returnType": {
+      "name": "WorkShiftPaymentOverviewData",
+      "kind": "OBJECT",
+      "list": false,
+      "nonNull": false
+    },
+    "returnTypeText": "WorkShiftPaymentOverviewData",
+    "args": [
+      {
+        "name": "id",
+        "type": {
+          "name": "Int",
+          "kind": "SCALAR",
+          "list": false,
+          "nonNull": false
+        },
+        "typeText": "Int",
+        "defaultValue": null,
+        "description": ""
+      }
+    ],
+    "description": "",
+    "deprecated": false,
+    "deprecationReason": ""
+  },
+  {
+    "name": "good",
+    "returnType": {
+      "name": "Good",
+      "kind": "OBJECT",
+      "list": false,
+      "nonNull": true
+    },
+    "returnTypeText": "Good!",
+    "args": [
+      {
+        "name": "id",
+        "type": {
+          "name": "Int",
+          "kind": "SCALAR",
+          "list": false,
+          "nonNull": true
+        },
+        "typeText": "Int!",
+        "defaultValue": null,
+        "description": ""
+      }
+    ],
+    "description": "\"soft_exist:goods,id",
+    "deprecated": false,
+    "deprecationReason": ""
+  },
+  {
+    "name": "goodHistory",
+    "returnType": {
+      "name": "GoodHistory",
+      "kind": "OBJECT",
+      "list": false,
+      "nonNull": true
+    },
+    "returnTypeText": "GoodHistory!",
+    "args": [
+      {
+        "name": "input",
+        "type": {
+          "name": "GoodHistoryInput",
+          "kind": "INPUT_OBJECT",
+          "list": false,
+          "nonNull": true
+        },
+        "typeText": "GoodHistoryInput!",
+        "defaultValue": null,
+        "description": ""
+      }
+    ],
+    "description": "",
+    "deprecated": false,
+    "deprecationReason": ""
+  },
+  {
+    "name": "goods",
+    "returnType": {
+      "name": "Good",
+      "kind": "OBJECT",
+      "list": true,
+      "nonNull": true
+    },
+    "returnTypeText": "[Good]!",
+    "args": [
+      {
+        "name": "input",
+        "type": {
+          "name": "GoodsInput",
+          "kind": "INPUT_OBJECT",
+          "list": false,
+          "nonNull": false
+        },
+        "typeText": "GoodsInput",
+        "defaultValue": null,
+        "description": ""
+      }
+    ],
+    "description": "",
+    "deprecated": false,
+    "deprecationReason": ""
+  },
+  {
+    "name": "host",
+    "returnType": {
+      "name": "Host",
+      "kind": "OBJECT",
+      "list": false,
+      "nonNull": true
+    },
+    "returnTypeText": "Host!",
+    "args": [
+      {
+        "name": "id",
+        "type": {
+          "name": "Int",
+          "kind": "SCALAR",
+          "list": false,
+          "nonNull": true
+        },
+        "typeText": "Int!",
+        "defaultValue": null,
+        "description": ""
+      }
+    ],
+    "description": "",
+    "deprecated": false,
+    "deprecationReason": ""
+  },
+  {
+    "name": "hostAccessToken",
+    "returnType": {
+      "name": "String",
+      "kind": "SCALAR",
+      "list": false,
+      "nonNull": false
+    },
+    "returnTypeText": "String",
+    "args": [
+      {
+        "name": "input",
+        "type": {
+          "name": "HostAccessTokenInput",
+          "kind": "INPUT_OBJECT",
+          "list": false,
+          "nonNull": true
+        },
+        "typeText": "HostAccessTokenInput!",
+        "defaultValue": null,
+        "description": ""
+      }
+    ],
+    "description": "",
+    "deprecated": false,
+    "deprecationReason": ""
+  },
+  {
+    "name": "hostCommandTemplates",
+    "returnType": {
+      "name": "HostCommandTemplate",
+      "kind": "OBJECT",
+      "list": true,
+      "nonNull": true
+    },
+    "returnTypeText": "[HostCommandTemplate]!",
+    "args": [],
+    "description": "",
+    "deprecated": false,
+    "deprecationReason": ""
+  },
+  {
+    "name": "hostGroup",
+    "returnType": {
+      "name": "HostGroup",
+      "kind": "OBJECT",
+      "list": false,
+      "nonNull": true
+    },
+    "returnTypeText": "HostGroup!",
+    "args": [
+      {
+        "name": "id",
+        "type": {
+          "name": "Int",
+          "kind": "SCALAR",
+          "list": false,
+          "nonNull": true
+        },
+        "typeText": "Int!",
+        "defaultValue": null,
+        "description": ""
+      }
+    ],
+    "description": "exists:host_groups,id",
+    "deprecated": false,
+    "deprecationReason": ""
+  },
+  {
+    "name": "hostGroups",
+    "returnType": {
+      "name": "HostGroup",
+      "kind": "OBJECT",
+      "list": true,
+      "nonNull": true
+    },
+    "returnTypeText": "[HostGroup]!",
+    "args": [],
+    "description": "",
+    "deprecated": false,
+    "deprecationReason": ""
+  },
+  {
+    "name": "hostGroupsOverview",
+    "returnType": {
+      "name": "HostGroupOverview",
+      "kind": "OBJECT",
+      "list": true,
+      "nonNull": true
+    },
+    "returnTypeText": "[HostGroupOverview]!",
+    "args": [],
+    "description": "",
+    "deprecated": false,
+    "deprecationReason": ""
+  },
+  {
+    "name": "hostGroupTitles",
+    "returnType": {
+      "name": "HostGroupTitle",
+      "kind": "OBJECT",
+      "list": true,
+      "nonNull": true
+    },
+    "returnTypeText": "[HostGroupTitle]!",
+    "args": [],
+    "description": "",
+    "deprecated": false,
+    "deprecationReason": ""
+  },
+  {
+    "name": "hosts",
+    "returnType": {
+      "name": "Host",
+      "kind": "OBJECT",
+      "list": true,
+      "nonNull": true
+    },
+    "returnTypeText": "[Host]!",
+    "args": [],
+    "description": "",
+    "deprecated": false,
+    "deprecationReason": ""
+  },
+  {
+    "name": "hostsByIds",
+    "returnType": {
+      "name": "Host",
+      "kind": "OBJECT",
+      "list": true,
+      "nonNull": true
+    },
+    "returnTypeText": "[Host]!",
+    "args": [
+      {
+        "name": "ids",
+        "type": {
+          "name": "Int",
+          "kind": "SCALAR",
+          "list": true,
+          "nonNull": true
+        },
+        "typeText": "[Int]!",
+        "defaultValue": null,
+        "description": ""
+      }
+    ],
+    "description": "",
+    "deprecated": false,
+    "deprecationReason": ""
+  },
+  {
+    "name": "hostsOccupationReport",
+    "returnType": {
+      "name": "UnifiedReport",
+      "kind": "OBJECT",
+      "list": false,
+      "nonNull": true
+    },
+    "returnTypeText": "UnifiedReport!",
+    "args": [
+      {
+        "name": "input",
+        "type": {
+          "name": "HostsOccupationReport",
+          "kind": "INPUT_OBJECT",
+          "list": false,
+          "nonNull": true
+        },
+        "typeText": "HostsOccupationReport!",
+        "defaultValue": null,
+        "description": ""
+      }
+    ],
+    "description": "",
+    "deprecated": false,
+    "deprecationReason": ""
+  },
+  {
+    "name": "hostsOverview",
+    "returnType": {
+      "name": "HostOverview",
+      "kind": "OBJECT",
+      "list": true,
+      "nonNull": true
+    },
+    "returnTypeText": "[HostOverview]!",
+    "args": [],
+    "description": "",
+    "deprecated": false,
+    "deprecationReason": ""
+  },
+  {
+    "name": "hostTokenByPIN",
+    "returnType": {
+      "name": "String",
+      "kind": "SCALAR",
+      "list": false,
+      "nonNull": true
+    },
+    "returnTypeText": "String!",
+    "args": [
+      {
+        "name": "pin",
+        "type": {
+          "name": "String",
+          "kind": "SCALAR",
+          "list": false,
+          "nonNull": true
+        },
+        "typeText": "String!",
+        "defaultValue": null,
+        "description": ""
+      }
+    ],
+    "description": "",
+    "deprecated": false,
+    "deprecationReason": ""
+  },
+  {
+    "name": "hostType",
+    "returnType": {
+      "name": "HostType",
+      "kind": "OBJECT",
+      "list": false,
+      "nonNull": true
+    },
+    "returnTypeText": "HostType!",
+    "args": [
+      {
+        "name": "id",
+        "type": {
+          "name": "Int",
+          "kind": "SCALAR",
+          "list": false,
+          "nonNull": true
+        },
+        "typeText": "Int!",
+        "defaultValue": null,
+        "description": ""
+      }
+    ],
+    "description": "exists:host_types,id",
+    "deprecated": true,
+    "deprecationReason": "No longer supported"
+  },
+  {
+    "name": "hostTypes",
+    "returnType": {
+      "name": "HostType",
+      "kind": "OBJECT",
+      "list": true,
+      "nonNull": true
+    },
+    "returnTypeText": "[HostType]!",
+    "args": [],
+    "description": "",
+    "deprecated": true,
+    "deprecationReason": "No longer supported"
+  },
+  {
+    "name": "income",
+    "returnType": {
+      "name": "String",
+      "kind": "SCALAR",
+      "list": false,
+      "nonNull": true
+    },
+    "returnTypeText": "String!",
+    "args": [],
+    "description": "",
+    "deprecated": false,
+    "deprecationReason": ""
+  },
+  {
+    "name": "leaderboard",
+    "returnType": {
+      "name": "LeaderboardUser",
+      "kind": "OBJECT",
+      "list": true,
+      "nonNull": true
+    },
+    "returnTypeText": "[LeaderboardUser]!",
+    "args": [
+      {
+        "name": "companyId",
+        "type": {
+          "name": "Int",
+          "kind": "SCALAR",
+          "list": false,
+          "nonNull": true
+        },
+        "typeText": "Int!",
+        "defaultValue": null,
+        "description": ""
+      },
+      {
+        "name": "from",
+        "type": {
+          "name": "DateTime",
+          "kind": "SCALAR",
+          "list": false,
+          "nonNull": true
+        },
+        "typeText": "DateTime!",
+        "defaultValue": null,
+        "description": ""
+      },
+      {
+        "name": "to",
+        "type": {
+          "name": "DateTime",
+          "kind": "SCALAR",
+          "list": false,
+          "nonNull": true
+        },
+        "typeText": "DateTime!",
+        "defaultValue": null,
+        "description": ""
+      }
+    ],
+    "description": "",
+    "deprecated": false,
+    "deprecationReason": ""
+  },
+  {
+    "name": "leadSourceReport",
+    "returnType": {
+      "name": "UnifiedReport",
+      "kind": "OBJECT",
+      "list": false,
+      "nonNull": true
+    },
+    "returnTypeText": "UnifiedReport!",
+    "args": [
+      {
+        "name": "input",
+        "type": {
+          "name": "ReportInput",
+          "kind": "INPUT_OBJECT",
+          "list": false,
+          "nonNull": true
+        },
+        "typeText": "ReportInput!",
+        "defaultValue": null,
+        "description": ""
+      }
+    ],
+    "description": "",
+    "deprecated": false,
+    "deprecationReason": ""
+  },
+  {
+    "name": "licenseModule",
+    "returnType": {
+      "name": "LicenseTariffModule",
+      "kind": "OBJECT",
+      "list": false,
+      "nonNull": true
+    },
+    "returnTypeText": "LicenseTariffModule!",
+    "args": [
+      {
+        "name": "id",
+        "type": {
+          "name": "Int",
+          "kind": "SCALAR",
+          "list": false,
+          "nonNull": true
+        },
+        "typeText": "Int!",
+        "defaultValue": null,
+        "description": ""
+      }
+    ],
+    "description": "",
+    "deprecated": false,
+    "deprecationReason": ""
+  },
+  {
+    "name": "licenseModuleCategory",
+    "returnType": {
+      "name": "LicenseTariffCategory",
+      "kind": "OBJECT",
+      "list": false,
+      "nonNull": true
+    },
+    "returnTypeText": "LicenseTariffCategory!",
+    "args": [
+      {
+        "name": "id",
+        "type": {
+          "name": "Int",
+          "kind": "SCALAR",
+          "list": false,
+          "nonNull": true
+        },
+        "typeText": "Int!",
+        "defaultValue": null,
+        "description": ""
+      }
+    ],
+    "description": "",
+    "deprecated": false,
+    "deprecationReason": ""
+  },
+  {
+    "name": "licensePayment",
+    "returnType": {
+      "name": "LicensePaymentData",
+      "kind": "OBJECT",
+      "list": false,
+      "nonNull": true
+    },
+    "returnTypeText": "LicensePaymentData!",
+    "args": [
+      {
+        "name": "id",
+        "type": {
+          "name": "Int",
+          "kind": "SCALAR",
+          "list": false,
+          "nonNull": true
+        },
+        "typeText": "Int!",
+        "defaultValue": null,
+        "description": ""
+      }
+    ],
+    "description": "",
+    "deprecated": false,
+    "deprecationReason": ""
+  },
+  {
+    "name": "licensePayments",
+    "returnType": {
+      "name": "LicensePaymentData",
+      "kind": "OBJECT",
+      "list": true,
+      "nonNull": true
+    },
+    "returnTypeText": "[LicensePaymentData]!",
+    "args": [
+      {
+        "name": "company_id",
+        "type": {
+          "name": "Int",
+          "kind": "SCALAR",
+          "list": false,
+          "nonNull": true
+        },
+        "typeText": "Int!",
+        "defaultValue": null,
+        "description": ""
+      }
+    ],
+    "description": "",
+    "deprecated": false,
+    "deprecationReason": ""
+  },
+  {
+    "name": "licensePrice",
+    "returnType": {
+      "name": "LicensePrice",
+      "kind": "OBJECT",
+      "list": false,
+      "nonNull": true
+    },
+    "returnTypeText": "LicensePrice!",
+    "args": [
+      {
+        "name": "input",
+        "type": {
+          "name": "LicensePriceInput",
+          "kind": "INPUT_OBJECT",
+          "list": false,
+          "nonNull": true
+        },
+        "typeText": "LicensePriceInput!",
+        "defaultValue": null,
+        "description": ""
+      }
+    ],
+    "description": "",
+    "deprecated": false,
+    "deprecationReason": ""
+  },
+  {
+    "name": "licenseTariff",
+    "returnType": {
+      "name": "LicenseTariff",
+      "kind": "OBJECT",
+      "list": false,
+      "nonNull": true
+    },
+    "returnTypeText": "LicenseTariff!",
+    "args": [
+      {
+        "name": "id",
+        "type": {
+          "name": "Int",
+          "kind": "SCALAR",
+          "list": false,
+          "nonNull": true
+        },
+        "typeText": "Int!",
+        "defaultValue": null,
+        "description": ""
+      }
+    ],
+    "description": "",
+    "deprecated": false,
+    "deprecationReason": ""
+  },
+  {
+    "name": "licenseTariffGrid",
+    "returnType": {
+      "name": "LicenseTariffGrid",
+      "kind": "OBJECT",
+      "list": false,
+      "nonNull": true
+    },
+    "returnTypeText": "LicenseTariffGrid!",
+    "args": [
+      {
+        "name": "id",
+        "type": {
+          "name": "Int",
+          "kind": "SCALAR",
+          "list": false,
+          "nonNull": false
+        },
+        "typeText": "Int",
+        "defaultValue": null,
+        "description": ""
+      }
+    ],
+    "description": "",
+    "deprecated": false,
+    "deprecationReason": ""
+  },
+  {
+    "name": "licenseTariffs",
+    "returnType": {
+      "name": "LicenseTariff",
+      "kind": "OBJECT",
+      "list": true,
+      "nonNull": true
+    },
+    "returnTypeText": "[LicenseTariff]!",
+    "args": [],
+    "description": "",
+    "deprecated": false,
+    "deprecationReason": ""
+  },
+  {
+    "name": "listBeneficiaryMovementsOfFunds",
+    "returnType": {
+      "name": "ListMovementOfFundsPaginated",
+      "kind": "OBJECT",
+      "list": false,
+      "nonNull": true
+    },
+    "returnTypeText": "ListMovementOfFundsPaginated!",
+    "args": [
+      {
+        "name": "input",
+        "type": {
+          "name": "ListBeneficiaryMovementsOfFunds",
+          "kind": "INPUT_OBJECT",
+          "list": false,
+          "nonNull": true
+        },
+        "typeText": "ListBeneficiaryMovementsOfFunds!",
+        "defaultValue": null,
+        "description": ""
+      },
+      {
+        "name": "page",
+        "type": {
+          "name": "Int",
+          "kind": "SCALAR",
+          "list": false,
+          "nonNull": false
+        },
+        "typeText": "Int",
+        "defaultValue": null,
+        "description": ""
+      },
+      {
+        "name": "first",
+        "type": {
+          "name": "Int",
+          "kind": "SCALAR",
+          "list": false,
+          "nonNull": false
+        },
+        "typeText": "Int",
+        "defaultValue": null,
+        "description": ""
+      }
+    ],
+    "description": "",
+    "deprecated": false,
+    "deprecationReason": ""
+  },
+  {
+    "name": "loginExists",
+    "returnType": {
+      "name": "Boolean",
+      "kind": "SCALAR",
+      "list": false,
+      "nonNull": true
+    },
+    "returnTypeText": "Boolean!",
+    "args": [
+      {
+        "name": "input",
+        "type": {
+          "name": "LoginExistsInput",
+          "kind": "INPUT_OBJECT",
+          "list": false,
+          "nonNull": true
+        },
+        "typeText": "LoginExistsInput!",
+        "defaultValue": null,
+        "description": ""
+      }
+    ],
+    "description": "",
+    "deprecated": false,
+    "deprecationReason": ""
+  },
+  {
+    "name": "magicPeriods",
+    "returnType": {
+      "name": "Boolean",
+      "kind": "SCALAR",
+      "list": false,
+      "nonNull": false
+    },
+    "returnTypeText": "Boolean",
+    "args": [],
+    "description": "",
+    "deprecated": false,
+    "deprecationReason": ""
+  },
+  {
+    "name": "magicSuperInit",
+    "returnType": {
+      "name": "Boolean",
+      "kind": "SCALAR",
+      "list": false,
+      "nonNull": false
+    },
+    "returnTypeText": "Boolean",
+    "args": [],
+    "description": "",
+    "deprecated": false,
+    "deprecationReason": ""
+  },
+  {
+    "name": "me",
+    "returnType": {
+      "name": "Me",
+      "kind": "OBJECT",
+      "list": false,
+      "nonNull": false
+    },
+    "returnTypeText": "Me",
+    "args": [],
+    "description": "",
+    "deprecated": false,
+    "deprecationReason": ""
+  },
+  {
+    "name": "mobileEvents",
+    "returnType": {
+      "name": "EventPaginated",
+      "kind": "OBJECT",
+      "list": false,
+      "nonNull": true
+    },
+    "returnTypeText": "EventPaginated!",
+    "args": [
+      {
+        "name": "input",
+        "type": {
+          "name": "MobileEventsInput",
+          "kind": "INPUT_OBJECT",
+          "list": false,
+          "nonNull": false
+        },
+        "typeText": "MobileEventsInput",
+        "defaultValue": null,
+        "description": ""
+      },
+      {
+        "name": "page",
+        "type": {
+          "name": "Int",
+          "kind": "SCALAR",
+          "list": false,
+          "nonNull": false
+        },
+        "typeText": "Int",
+        "defaultValue": null,
+        "description": ""
+      },
+      {
+        "name": "first",
+        "type": {
+          "name": "Int",
+          "kind": "SCALAR",
+          "list": false,
+          "nonNull": false
+        },
+        "typeText": "Int",
+        "defaultValue": null,
+        "description": ""
+      }
+    ],
+    "description": "",
+    "deprecated": false,
+    "deprecationReason": ""
+  },
+  {
+    "name": "myClub",
+    "returnType": {
+      "name": "ClientClub",
+      "kind": "OBJECT",
+      "list": false,
+      "nonNull": true
+    },
+    "returnTypeText": "ClientClub!",
+    "args": [
+      {
+        "name": "id",
+        "type": {
+          "name": "Int",
+          "kind": "SCALAR",
+          "list": false,
+          "nonNull": true
+        },
+        "typeText": "Int!",
+        "defaultValue": null,
+        "description": ""
+      }
+    ],
+    "description": "",
+    "deprecated": false,
+    "deprecationReason": ""
+  },
+  {
+    "name": "myClubs",
+    "returnType": {
+      "name": "ClientClub",
+      "kind": "OBJECT",
+      "list": true,
+      "nonNull": true
+    },
+    "returnTypeText": "[ClientClub]!",
+    "args": [],
+    "description": "",
+    "deprecated": false,
+    "deprecationReason": ""
+  },
+  {
+    "name": "myLastVisitedClub",
+    "returnType": {
+      "name": "ClientClub",
+      "kind": "OBJECT",
+      "list": false,
+      "nonNull": true
+    },
+    "returnTypeText": "ClientClub!",
+    "args": [],
+    "description": "",
+    "deprecated": false,
+    "deprecationReason": ""
+  },
+  {
+    "name": "network",
+    "returnType": {
+      "name": "Network",
+      "kind": "OBJECT",
+      "list": false,
+      "nonNull": false
+    },
+    "returnTypeText": "Network",
+    "args": [],
+    "description": "",
+    "deprecated": false,
+    "deprecationReason": ""
+  },
+  {
+    "name": "news",
+    "returnType": {
+      "name": "News",
+      "kind": "OBJECT",
+      "list": false,
+      "nonNull": true
+    },
+    "returnTypeText": "News!",
+    "args": [
+      {
+        "name": "page",
+        "type": {
+          "name": "Int",
+          "kind": "SCALAR",
+          "list": false,
+          "nonNull": false
+        },
+        "typeText": "Int",
+        "defaultValue": null,
+        "description": ""
+      },
+      {
+        "name": "first",
+        "type": {
+          "name": "Int",
+          "kind": "SCALAR",
+          "list": false,
+          "nonNull": false
+        },
+        "typeText": "Int",
+        "defaultValue": null,
+        "description": ""
+      }
+    ],
+    "description": "",
+    "deprecated": false,
+    "deprecationReason": ""
+  },
+  {
+    "name": "nicknameExists",
+    "returnType": {
+      "name": "Boolean",
+      "kind": "SCALAR",
+      "list": false,
+      "nonNull": true
+    },
+    "returnTypeText": "Boolean!",
+    "args": [
+      {
+        "name": "nickname",
+        "type": {
+          "name": "String",
+          "kind": "SCALAR",
+          "list": false,
+          "nonNull": true
+        },
+        "typeText": "String!",
+        "defaultValue": null,
+        "description": ""
+      }
+    ],
+    "description": "",
+    "deprecated": false,
+    "deprecationReason": ""
+  },
+  {
+    "name": "now",
+    "returnType": {
+      "name": "DateTime",
+      "kind": "SCALAR",
+      "list": false,
+      "nonNull": false
+    },
+    "returnTypeText": "DateTime",
+    "args": [],
+    "description": "",
+    "deprecated": false,
+    "deprecationReason": ""
+  },
+  {
+    "name": "organizationClubs",
+    "returnType": {
+      "name": "Club",
+      "kind": "OBJECT",
+      "list": true,
+      "nonNull": true
+    },
+    "returnTypeText": "[Club]!",
+    "args": [
+      {
+        "name": "id",
+        "type": {
+          "name": "Int",
+          "kind": "SCALAR",
+          "list": false,
+          "nonNull": true
+        },
+        "typeText": "Int!",
+        "defaultValue": null,
+        "description": ""
+      }
+    ],
+    "description": "",
+    "deprecated": false,
+    "deprecationReason": ""
+  },
+  {
+    "name": "organizationMe",
+    "returnType": {
+      "name": "Organization",
+      "kind": "OBJECT",
+      "list": false,
+      "nonNull": false
+    },
+    "returnTypeText": "Organization",
+    "args": [],
+    "description": "",
+    "deprecated": false,
+    "deprecationReason": ""
+  },
+  {
+    "name": "overviewReport",
+    "returnType": {
+      "name": "OverviewReport",
+      "kind": "OBJECT",
+      "list": false,
+      "nonNull": true
+    },
+    "returnTypeText": "OverviewReport!",
+    "args": [
+      {
+        "name": "input",
+        "type": {
+          "name": "ReportInput",
+          "kind": "INPUT_OBJECT",
+          "list": false,
+          "nonNull": true
+        },
+        "typeText": "ReportInput!",
+        "defaultValue": null,
+        "description": ""
+      }
+    ],
+    "description": "",
+    "deprecated": false,
+    "deprecationReason": ""
+  },
+  {
+    "name": "pausableClientSessions",
+    "returnType": {
+      "name": "PausableClientSession",
+      "kind": "OBJECT",
+      "list": true,
+      "nonNull": true
+    },
+    "returnTypeText": "[PausableClientSession]!",
+    "args": [
+      {
+        "name": "client_id",
+        "type": {
+          "name": "String",
+          "kind": "SCALAR",
+          "list": false,
+          "nonNull": false
+        },
+        "typeText": "String",
+        "defaultValue": null,
+        "description": ""
+      }
+    ],
+    "description": "",
+    "deprecated": false,
+    "deprecationReason": ""
+  },
+  {
+    "name": "paymentTransaction",
+    "returnType": {
+      "name": "PaymentTransaction",
+      "kind": "OBJECT",
+      "list": false,
+      "nonNull": true
+    },
+    "returnTypeText": "PaymentTransaction!",
+    "args": [
+      {
+        "name": "id",
+        "type": {
+          "name": "String",
+          "kind": "SCALAR",
+          "list": false,
+          "nonNull": true
+        },
+        "typeText": "String!",
+        "defaultValue": null,
+        "description": ""
+      }
+    ],
+    "description": "",
+    "deprecated": false,
+    "deprecationReason": ""
+  },
+  {
+    "name": "paymentTransactions",
+    "returnType": {
+      "name": "PaymentTransactionPaginated",
+      "kind": "OBJECT",
+      "list": false,
+      "nonNull": true
+    },
+    "returnTypeText": "PaymentTransactionPaginated!",
+    "args": [
+      {
+        "name": "company_id",
+        "type": {
+          "name": "Int",
+          "kind": "SCALAR",
+          "list": false,
+          "nonNull": false
+        },
+        "typeText": "Int",
+        "defaultValue": null,
+        "description": ""
+      },
+      {
+        "name": "page",
+        "type": {
+          "name": "Int",
+          "kind": "SCALAR",
+          "list": false,
+          "nonNull": false
+        },
+        "typeText": "Int",
+        "defaultValue": null,
+        "description": ""
+      },
+      {
+        "name": "first",
+        "type": {
+          "name": "Int",
+          "kind": "SCALAR",
+          "list": false,
+          "nonNull": false
+        },
+        "typeText": "Int",
+        "defaultValue": null,
+        "description": ""
+      }
+    ],
+    "description": "",
+    "deprecated": false,
+    "deprecationReason": ""
+  },
+  {
+    "name": "permissions",
+    "returnType": {
+      "name": "Permission",
+      "kind": "OBJECT",
+      "list": true,
+      "nonNull": true
+    },
+    "returnTypeText": "[Permission]!",
+    "args": [],
+    "description": "",
+    "deprecated": false,
+    "deprecationReason": ""
+  },
+  {
+    "name": "phoneExists",
+    "returnType": {
+      "name": "Boolean",
+      "kind": "SCALAR",
+      "list": false,
+      "nonNull": true
+    },
+    "returnTypeText": "Boolean!",
+    "args": [
+      {
+        "name": "input",
+        "type": {
+          "name": "PhoneExistsInput",
+          "kind": "INPUT_OBJECT",
+          "list": false,
+          "nonNull": true
+        },
+        "typeText": "PhoneExistsInput!",
+        "defaultValue": null,
+        "description": ""
+      }
+    ],
+    "description": "",
+    "deprecated": false,
+    "deprecationReason": ""
+  },
+  {
+    "name": "promoCode",
+    "returnType": {
+      "name": "PromoCode",
+      "kind": "OBJECT",
+      "list": false,
+      "nonNull": true
+    },
+    "returnTypeText": "PromoCode!",
+    "args": [
+      {
+        "name": "id",
+        "type": {
+          "name": "Int",
+          "kind": "SCALAR",
+          "list": false,
+          "nonNull": true
+        },
+        "typeText": "Int!",
+        "defaultValue": null,
+        "description": ""
+      }
+    ],
+    "description": "soft_exist:promo_codes,id",
+    "deprecated": false,
+    "deprecationReason": ""
+  },
+  {
+    "name": "promoCodes",
+    "returnType": {
+      "name": "PromoCodePaginated",
+      "kind": "OBJECT",
+      "list": false,
+      "nonNull": true
+    },
+    "returnTypeText": "PromoCodePaginated!",
+    "args": [
+      {
+        "name": "page",
+        "type": {
+          "name": "Int",
+          "kind": "SCALAR",
+          "list": false,
+          "nonNull": false
+        },
+        "typeText": "Int",
+        "defaultValue": null,
+        "description": ""
+      },
+      {
+        "name": "first",
+        "type": {
+          "name": "Int",
+          "kind": "SCALAR",
+          "list": false,
+          "nonNull": false
+        },
+        "typeText": "Int",
+        "defaultValue": null,
+        "description": ""
+      }
+    ],
+    "description": "",
+    "deprecated": false,
+    "deprecationReason": ""
+  },
+  {
+    "name": "publicKey",
+    "returnType": {
+      "name": "String",
+      "kind": "SCALAR",
+      "list": false,
+      "nonNull": true
+    },
+    "returnTypeText": "String!",
+    "args": [],
+    "description": "",
+    "deprecated": false,
+    "deprecationReason": ""
+  },
+  {
+    "name": "regions",
+    "returnType": {
+      "name": "Region",
+      "kind": "OBJECT",
+      "list": true,
+      "nonNull": false
+    },
+    "returnTypeText": "[Region]",
+    "args": [],
+    "description": "",
+    "deprecated": false,
+    "deprecationReason": ""
+  },
+  {
+    "name": "roles",
+    "returnType": {
+      "name": "Role",
+      "kind": "OBJECT",
+      "list": true,
+      "nonNull": true
+    },
+    "returnTypeText": "[Role]!",
+    "args": [],
+    "description": "",
+    "deprecated": false,
+    "deprecationReason": ""
+  },
+  {
+    "name": "salesReport",
+    "returnType": {
+      "name": "UnifiedReport",
+      "kind": "OBJECT",
+      "list": false,
+      "nonNull": true
+    },
+    "returnTypeText": "UnifiedReport!",
+    "args": [
+      {
+        "name": "input",
+        "type": {
+          "name": "PaymentsReport",
+          "kind": "INPUT_OBJECT",
+          "list": false,
+          "nonNull": true
+        },
+        "typeText": "PaymentsReport!",
+        "defaultValue": null,
+        "description": ""
+      }
+    ],
+    "description": "",
+    "deprecated": false,
+    "deprecationReason": ""
+  },
+  {
+    "name": "searchByEan",
+    "returnType": {
+      "name": "EanEntity",
+      "kind": "OBJECT",
+      "list": false,
+      "nonNull": false
+    },
+    "returnTypeText": "EanEntity",
+    "args": [
+      {
+        "name": "ean",
+        "type": {
+          "name": "String",
+          "kind": "SCALAR",
+          "list": false,
+          "nonNull": true
+        },
+        "typeText": "String!",
+        "defaultValue": null,
+        "description": ""
+      }
+    ],
+    "description": "",
+    "deprecated": false,
+    "deprecationReason": ""
+  },
+  {
+    "name": "searchClients",
+    "returnType": {
+      "name": "UserPaginated",
+      "kind": "OBJECT",
+      "list": false,
+      "nonNull": true
+    },
+    "returnTypeText": "UserPaginated!",
+    "args": [
+      {
+        "name": "input",
+        "type": {
+          "name": "ClientsInput",
+          "kind": "INPUT_OBJECT",
+          "list": false,
+          "nonNull": false
+        },
+        "typeText": "ClientsInput",
+        "defaultValue": null,
+        "description": ""
+      },
+      {
+        "name": "page",
+        "type": {
+          "name": "Int",
+          "kind": "SCALAR",
+          "list": false,
+          "nonNull": false
+        },
+        "typeText": "Int",
+        "defaultValue": null,
+        "description": ""
+      },
+      {
+        "name": "first",
+        "type": {
+          "name": "Int",
+          "kind": "SCALAR",
+          "list": false,
+          "nonNull": false
+        },
+        "typeText": "Int",
+        "defaultValue": null,
+        "description": ""
+      }
+    ],
+    "description": "",
+    "deprecated": false,
+    "deprecationReason": ""
+  },
+  {
+    "name": "searchClubs",
+    "returnType": {
+      "name": "ClientClub",
+      "kind": "OBJECT",
+      "list": true,
+      "nonNull": true
+    },
+    "returnTypeText": "[ClientClub]!",
+    "args": [
+      {
+        "name": "page",
+        "type": {
+          "name": "Int",
+          "kind": "SCALAR",
+          "list": false,
+          "nonNull": false
+        },
+        "typeText": "Int",
+        "defaultValue": null,
+        "description": ""
+      },
+      {
+        "name": "first",
+        "type": {
+          "name": "Int",
+          "kind": "SCALAR",
+          "list": false,
+          "nonNull": false
+        },
+        "typeText": "Int",
+        "defaultValue": null,
+        "description": ""
+      },
+      {
+        "name": "q",
+        "type": {
+          "name": "String",
+          "kind": "SCALAR",
+          "list": false,
+          "nonNull": false
+        },
+        "typeText": "String",
+        "defaultValue": null,
+        "description": ""
+      },
+      {
+        "name": "city",
+        "type": {
+          "name": "String",
+          "kind": "SCALAR",
+          "list": false,
+          "nonNull": false
+        },
+        "typeText": "String",
+        "defaultValue": null,
+        "description": ""
+      },
+      {
+        "name": "accept_payments",
+        "type": {
+          "name": "Boolean",
+          "kind": "SCALAR",
+          "list": false,
+          "nonNull": false
+        },
+        "typeText": "Boolean",
+        "defaultValue": null,
+        "description": ""
+      },
+      {
+        "name": "booking_enabled",
+        "type": {
+          "name": "Boolean",
+          "kind": "SCALAR",
+          "list": false,
+          "nonNull": false
+        },
+        "typeText": "Boolean",
+        "defaultValue": null,
+        "description": ""
+      }
+    ],
+    "description": "",
+    "deprecated": false,
+    "deprecationReason": ""
+  },
+  {
+    "name": "service",
+    "returnType": {
+      "name": "Service",
+      "kind": "OBJECT",
+      "list": false,
+      "nonNull": true
+    },
+    "returnTypeText": "Service!",
+    "args": [
+      {
+        "name": "id",
+        "type": {
+          "name": "Int",
+          "kind": "SCALAR",
+          "list": false,
+          "nonNull": true
+        },
+        "typeText": "Int!",
+        "defaultValue": null,
+        "description": ""
+      }
+    ],
+    "description": "soft_exist:users,id",
+    "deprecated": false,
+    "deprecationReason": ""
+  },
+  {
+    "name": "services",
+    "returnType": {
+      "name": "Service",
+      "kind": "OBJECT",
+      "list": true,
+      "nonNull": true
+    },
+    "returnTypeText": "[Service]!",
+    "args": [
+      {
+        "name": "input",
+        "type": {
+          "name": "ServicesInput",
+          "kind": "INPUT_OBJECT",
+          "list": false,
+          "nonNull": false
+        },
+        "typeText": "ServicesInput",
+        "defaultValue": null,
+        "description": ""
+      }
+    ],
+    "description": "@orderBy(column: \"id\", direction: DESC)",
+    "deprecated": false,
+    "deprecationReason": ""
+  },
+  {
+    "name": "sessionsMoneyReport",
+    "returnType": {
+      "name": "UnifiedReport",
+      "kind": "OBJECT",
+      "list": false,
+      "nonNull": true
+    },
+    "returnTypeText": "UnifiedReport!",
+    "args": [
+      {
+        "name": "input",
+        "type": {
+          "name": "SessionsMoneyReport",
+          "kind": "INPUT_OBJECT",
+          "list": false,
+          "nonNull": true
+        },
+        "typeText": "SessionsMoneyReport!",
+        "defaultValue": null,
+        "description": ""
+      }
+    ],
+    "description": "",
+    "deprecated": false,
+    "deprecationReason": ""
+  },
+  {
+    "name": "settingValues",
+    "returnType": {
+      "name": "SettingPair",
+      "kind": "OBJECT",
+      "list": true,
+      "nonNull": true
+    },
+    "returnTypeText": "[SettingPair]!",
+    "args": [],
+    "description": "",
+    "deprecated": false,
+    "deprecationReason": ""
+  },
+  {
+    "name": "shellSettingList",
+    "returnType": {
+      "name": "String",
+      "kind": "SCALAR",
+      "list": false,
+      "nonNull": true
+    },
+    "returnTypeText": "String!",
+    "args": [],
+    "description": "",
+    "deprecated": false,
+    "deprecationReason": ""
+  },
+  {
+    "name": "shellSettingValues",
+    "returnType": {
+      "name": "String",
+      "kind": "SCALAR",
+      "list": false,
+      "nonNull": true
+    },
+    "returnTypeText": "String!",
+    "args": [],
+    "description": "",
+    "deprecated": false,
+    "deprecationReason": ""
+  },
+  {
+    "name": "shortcut",
+    "returnType": {
+      "name": "Shortcut",
+      "kind": "OBJECT",
+      "list": false,
+      "nonNull": true
+    },
+    "returnTypeText": "Shortcut!",
+    "args": [
+      {
+        "name": "id",
+        "type": {
+          "name": "Int",
+          "kind": "SCALAR",
+          "list": false,
+          "nonNull": true
+        },
+        "typeText": "Int!",
+        "defaultValue": null,
+        "description": ""
+      }
+    ],
+    "description": "exists:shortcuts,id",
+    "deprecated": false,
+    "deprecationReason": ""
+  },
+  {
+    "name": "shortcutGroup",
+    "returnType": {
+      "name": "ShortcutGroup",
+      "kind": "OBJECT",
+      "list": false,
+      "nonNull": true
+    },
+    "returnTypeText": "ShortcutGroup!",
+    "args": [
+      {
+        "name": "id",
+        "type": {
+          "name": "Int",
+          "kind": "SCALAR",
+          "list": false,
+          "nonNull": true
+        },
+        "typeText": "Int!",
+        "defaultValue": null,
+        "description": ""
+      }
+    ],
+    "description": "exists:shortcut_groups,id",
+    "deprecated": false,
+    "deprecationReason": ""
+  },
+  {
+    "name": "shortcutGroups",
+    "returnType": {
+      "name": "ShortcutGroup",
+      "kind": "OBJECT",
+      "list": true,
+      "nonNull": true
+    },
+    "returnTypeText": "[ShortcutGroup]!",
+    "args": [],
+    "description": "",
+    "deprecated": false,
+    "deprecationReason": ""
+  },
+  {
+    "name": "shortcuts",
+    "returnType": {
+      "name": "Shortcut",
+      "kind": "OBJECT",
+      "list": true,
+      "nonNull": true
+    },
+    "returnTypeText": "[Shortcut]!",
+    "args": [],
+    "description": "@orderBy(column: \"sort\", direction: ASC)",
+    "deprecated": false,
+    "deprecationReason": ""
+  },
+  {
+    "name": "tariffGrid",
+    "returnType": {
+      "name": "TariffGridItem",
+      "kind": "OBJECT",
+      "list": true,
+      "nonNull": true
+    },
+    "returnTypeText": "[TariffGridItem]!",
+    "args": [
+      {
+        "name": "input",
+        "type": {
+          "name": "TariffGridInput",
+          "kind": "INPUT_OBJECT",
+          "list": false,
+          "nonNull": false
+        },
+        "typeText": "TariffGridInput",
+        "defaultValue": null,
+        "description": ""
+      }
+    ],
+    "description": "",
+    "deprecated": false,
+    "deprecationReason": ""
+  },
+  {
+    "name": "tariffs",
+    "returnType": {
+      "name": "TariffPaginated",
+      "kind": "OBJECT",
+      "list": false,
+      "nonNull": true
+    },
+    "returnTypeText": "TariffPaginated!",
+    "args": [
+      {
+        "name": "page",
+        "type": {
+          "name": "Int",
+          "kind": "SCALAR",
+          "list": false,
+          "nonNull": false
+        },
+        "typeText": "Int",
+        "defaultValue": null,
+        "description": ""
+      },
+      {
+        "name": "first",
+        "type": {
+          "name": "Int",
+          "kind": "SCALAR",
+          "list": false,
+          "nonNull": false
+        },
+        "typeText": "Int",
+        "defaultValue": null,
+        "description": ""
+      },
+      {
+        "name": "filter",
+        "type": {
+          "name": "TariffsFilterInput",
+          "kind": "INPUT_OBJECT",
+          "list": false,
+          "nonNull": false
+        },
+        "typeText": "TariffsFilterInput",
+        "defaultValue": null,
+        "description": ""
+      }
+    ],
+    "description": "",
+    "deprecated": false,
+    "deprecationReason": ""
+  },
+  {
+    "name": "tasks",
+    "returnType": {
+      "name": "WorkerTaskPaginated",
+      "kind": "OBJECT",
+      "list": false,
+      "nonNull": true
+    },
+    "returnTypeText": "WorkerTaskPaginated!",
+    "args": [
+      {
+        "name": "page",
+        "type": {
+          "name": "Int",
+          "kind": "SCALAR",
+          "list": false,
+          "nonNull": false
+        },
+        "typeText": "Int",
+        "defaultValue": null,
+        "description": ""
+      },
+      {
+        "name": "first",
+        "type": {
+          "name": "Int",
+          "kind": "SCALAR",
+          "list": false,
+          "nonNull": false
+        },
+        "typeText": "Int",
+        "defaultValue": null,
+        "description": ""
+      }
+    ],
+    "description": "",
+    "deprecated": false,
+    "deprecationReason": ""
+  },
+  {
+    "name": "topSoldOverviewItemsReport",
+    "returnType": {
+      "name": "UnifiedReport",
+      "kind": "OBJECT",
+      "list": false,
+      "nonNull": true
+    },
+    "returnTypeText": "UnifiedReport!",
+    "args": [
+      {
+        "name": "input",
+        "type": {
+          "name": "ReportInput",
+          "kind": "INPUT_OBJECT",
+          "list": false,
+          "nonNull": true
+        },
+        "typeText": "ReportInput!",
+        "defaultValue": null,
+        "description": ""
+      }
+    ],
+    "description": "",
+    "deprecated": false,
+    "deprecationReason": ""
+  },
+  {
+    "name": "uniqueUsersReport",
+    "returnType": {
+      "name": "UnifiedReport",
+      "kind": "OBJECT",
+      "list": false,
+      "nonNull": true
+    },
+    "returnTypeText": "UnifiedReport!",
+    "args": [
+      {
+        "name": "input",
+        "type": {
+          "name": "UniqueUsersReport",
+          "kind": "INPUT_OBJECT",
+          "list": false,
+          "nonNull": true
+        },
+        "typeText": "UniqueUsersReport!",
+        "defaultValue": null,
+        "description": ""
+      }
+    ],
+    "description": "",
+    "deprecated": false,
+    "deprecationReason": ""
+  },
+  {
+    "name": "updateLicensePayment",
+    "returnType": {
+      "name": "LicensePaymentData",
+      "kind": "OBJECT",
+      "list": false,
+      "nonNull": true
+    },
+    "returnTypeText": "LicensePaymentData!",
+    "args": [
+      {
+        "name": "id",
+        "type": {
+          "name": "Int",
+          "kind": "SCALAR",
+          "list": false,
+          "nonNull": true
+        },
+        "typeText": "Int!",
+        "defaultValue": null,
+        "description": ""
+      },
+      {
+        "name": "status",
+        "type": {
+          "name": "LicensePaymentStatus",
+          "kind": "ENUM",
+          "list": false,
+          "nonNull": true
+        },
+        "typeText": "LicensePaymentStatus!",
+        "defaultValue": null,
+        "description": ""
+      }
+    ],
+    "description": "",
+    "deprecated": false,
+    "deprecationReason": ""
+  },
+  {
+    "name": "user",
+    "returnType": {
+      "name": "User",
+      "kind": "OBJECT",
+      "list": false,
+      "nonNull": true
+    },
+    "returnTypeText": "User!",
+    "args": [
+      {
+        "name": "uuid",
+        "type": {
+          "name": "String",
+          "kind": "SCALAR",
+          "list": false,
+          "nonNull": true
+        },
+        "typeText": "String!",
+        "defaultValue": null,
+        "description": "exist:users,id"
+      }
+    ],
+    "description": "",
+    "deprecated": false,
+    "deprecationReason": ""
+  },
+  {
+    "name": "userClubs",
+    "returnType": {
+      "name": "UserClub",
+      "kind": "OBJECT",
+      "list": true,
+      "nonNull": true
+    },
+    "returnTypeText": "[UserClub]!",
+    "args": [
+      {
+        "name": "input",
+        "type": {
+          "name": "UserClubsInput",
+          "kind": "INPUT_OBJECT",
+          "list": false,
+          "nonNull": false
+        },
+        "typeText": "UserClubsInput",
+        "defaultValue": null,
+        "description": ""
+      }
+    ],
+    "description": "",
+    "deprecated": false,
+    "deprecationReason": ""
+  },
+  {
+    "name": "userGroup",
+    "returnType": {
+      "name": "UserGroup",
+      "kind": "OBJECT",
+      "list": false,
+      "nonNull": true
+    },
+    "returnTypeText": "UserGroup!",
+    "args": [
+      {
+        "name": "uuid",
+        "type": {
+          "name": "String",
+          "kind": "SCALAR",
+          "list": false,
+          "nonNull": true
+        },
+        "typeText": "String!",
+        "defaultValue": null,
+        "description": ""
+      }
+    ],
+    "description": "",
+    "deprecated": false,
+    "deprecationReason": ""
+  },
+  {
+    "name": "userGroups",
+    "returnType": {
+      "name": "UserGroup",
+      "kind": "OBJECT",
+      "list": true,
+      "nonNull": true
+    },
+    "returnTypeText": "[UserGroup]!",
+    "args": [],
+    "description": "",
+    "deprecated": false,
+    "deprecationReason": ""
+  },
+  {
+    "name": "userImportStatus",
+    "returnType": {
+      "name": "Import",
+      "kind": "OBJECT",
+      "list": false,
+      "nonNull": true
+    },
+    "returnTypeText": "Import!",
+    "args": [
+      {
+        "name": "id",
+        "type": {
+          "name": "Int",
+          "kind": "SCALAR",
+          "list": false,
+          "nonNull": true
+        },
+        "typeText": "Int!",
+        "defaultValue": null,
+        "description": "exists:import,id"
+      }
+    ],
+    "description": "",
+    "deprecated": false,
+    "deprecationReason": ""
+  },
+  {
+    "name": "usersBonusReport",
+    "returnType": {
+      "name": "UnifiedReport",
+      "kind": "OBJECT",
+      "list": false,
+      "nonNull": true
+    },
+    "returnTypeText": "UnifiedReport!",
+    "args": [
+      {
+        "name": "input",
+        "type": {
+          "name": "UsersBonusReport",
+          "kind": "INPUT_OBJECT",
+          "list": false,
+          "nonNull": true
+        },
+        "typeText": "UsersBonusReport!",
+        "defaultValue": null,
+        "description": ""
+      }
+    ],
+    "description": "",
+    "deprecated": false,
+    "deprecationReason": ""
+  },
+  {
+    "name": "validatePayment",
+    "returnType": {
+      "name": "Boolean",
+      "kind": "SCALAR",
+      "list": false,
+      "nonNull": true
+    },
+    "returnTypeText": "Boolean!",
+    "args": [
+      {
+        "name": "input",
+        "type": {
+          "name": "PaymentInput",
+          "kind": "INPUT_OBJECT",
+          "list": false,
+          "nonNull": true
+        },
+        "typeText": "PaymentInput!",
+        "defaultValue": null,
+        "description": ""
+      }
+    ],
+    "description": "",
+    "deprecated": false,
+    "deprecationReason": ""
+  },
+  {
+    "name": "validatePromoCode",
+    "returnType": {
+      "name": "PromoCode",
+      "kind": "OBJECT",
+      "list": false,
+      "nonNull": true
+    },
+    "returnTypeText": "PromoCode!",
+    "args": [
+      {
+        "name": "input",
+        "type": {
+          "name": "ValidatePromoCodeInput",
+          "kind": "INPUT_OBJECT",
+          "list": false,
+          "nonNull": true
+        },
+        "typeText": "ValidatePromoCodeInput!",
+        "defaultValue": null,
+        "description": ""
+      }
+    ],
+    "description": "",
+    "deprecated": false,
+    "deprecationReason": ""
+  },
+  {
+    "name": "validateRefund",
+    "returnType": {
+      "name": "Boolean",
+      "kind": "SCALAR",
+      "list": false,
+      "nonNull": true
+    },
+    "returnTypeText": "Boolean!",
+    "args": [
+      {
+        "name": "input",
+        "type": {
+          "name": "RefundPaymentInput",
+          "kind": "INPUT_OBJECT",
+          "list": false,
+          "nonNull": true
+        },
+        "typeText": "RefundPaymentInput!",
+        "defaultValue": null,
+        "description": ""
+      }
+    ],
+    "description": "",
+    "deprecated": false,
+    "deprecationReason": ""
+  },
+  {
+    "name": "versions",
+    "returnType": {
+      "name": "Versions",
+      "kind": "OBJECT",
+      "list": false,
+      "nonNull": false
+    },
+    "returnTypeText": "Versions",
+    "args": [],
+    "description": "",
+    "deprecated": false,
+    "deprecationReason": ""
+  },
+  {
+    "name": "workers",
+    "returnType": {
+      "name": "UserPaginated",
+      "kind": "OBJECT",
+      "list": false,
+      "nonNull": true
+    },
+    "returnTypeText": "UserPaginated!",
+    "args": [
+      {
+        "name": "input",
+        "type": {
+          "name": "WorkersInput",
+          "kind": "INPUT_OBJECT",
+          "list": false,
+          "nonNull": false
+        },
+        "typeText": "WorkersInput",
+        "defaultValue": null,
+        "description": ""
+      },
+      {
+        "name": "page",
+        "type": {
+          "name": "Int",
+          "kind": "SCALAR",
+          "list": false,
+          "nonNull": false
+        },
+        "typeText": "Int",
+        "defaultValue": null,
+        "description": ""
+      },
+      {
+        "name": "first",
+        "type": {
+          "name": "Int",
+          "kind": "SCALAR",
+          "list": false,
+          "nonNull": false
+        },
+        "typeText": "Int",
+        "defaultValue": null,
+        "description": ""
+      }
+    ],
+    "description": "",
+    "deprecated": false,
+    "deprecationReason": ""
+  },
+  {
+    "name": "workShift",
+    "returnType": {
+      "name": "WorkShift",
+      "kind": "OBJECT",
+      "list": false,
+      "nonNull": true
+    },
+    "returnTypeText": "WorkShift!",
+    "args": [
+      {
+        "name": "id",
+        "type": {
+          "name": "Int",
+          "kind": "SCALAR",
+          "list": false,
+          "nonNull": true
+        },
+        "typeText": "Int!",
+        "defaultValue": null,
+        "description": ""
+      }
+    ],
+    "description": "exists:work_shifts,id",
+    "deprecated": false,
+    "deprecationReason": ""
+  },
+  {
+    "name": "workShifts",
+    "returnType": {
+      "name": "WorkShiftPaginated",
+      "kind": "OBJECT",
+      "list": false,
+      "nonNull": true
+    },
+    "returnTypeText": "WorkShiftPaginated!",
+    "args": [
+      {
+        "name": "input",
+        "type": {
+          "name": "WorkShiftInput",
+          "kind": "INPUT_OBJECT",
+          "list": false,
+          "nonNull": false
+        },
+        "typeText": "WorkShiftInput",
+        "defaultValue": null,
+        "description": ""
+      },
+      {
+        "name": "page",
+        "type": {
+          "name": "Int",
+          "kind": "SCALAR",
+          "list": false,
+          "nonNull": false
+        },
+        "typeText": "Int",
+        "defaultValue": null,
+        "description": ""
+      },
+      {
+        "name": "first",
+        "type": {
+          "name": "Int",
+          "kind": "SCALAR",
+          "list": false,
+          "nonNull": false
+        },
+        "typeText": "Int",
+        "defaultValue": null,
+        "description": ""
+      }
+    ],
+    "description": "",
+    "deprecated": false,
+    "deprecationReason": ""
+  },
+  {
+    "name": "workShiftsReport",
+    "returnType": {
+      "name": "UnifiedReport",
+      "kind": "OBJECT",
+      "list": false,
+      "nonNull": true
+    },
+    "returnTypeText": "UnifiedReport!",
+    "args": [
+      {
+        "name": "input",
+        "type": {
+          "name": "WorkShiftsReport",
+          "kind": "INPUT_OBJECT",
+          "list": false,
+          "nonNull": true
+        },
+        "typeText": "WorkShiftsReport!",
+        "defaultValue": null,
+        "description": ""
+      }
+    ],
+    "description": "",
+    "deprecated": false,
+    "deprecationReason": ""
+  },
+  {
+    "name": "workShiftsSummaryReport",
+    "returnType": {
+      "name": "UnifiedReport",
+      "kind": "OBJECT",
+      "list": false,
+      "nonNull": true
+    },
+    "returnTypeText": "UnifiedReport!",
+    "args": [
+      {
+        "name": "input",
+        "type": {
+          "name": "WorkShiftsReport",
+          "kind": "INPUT_OBJECT",
+          "list": false,
+          "nonNull": true
+        },
+        "typeText": "WorkShiftsReport!",
+        "defaultValue": null,
+        "description": ""
+      }
+    ],
+    "description": "",
+    "deprecated": false,
+    "deprecationReason": ""
+  },
+  {
+    "name": "workShiftSummary",
+    "returnType": {
+      "name": "WorkShiftSummary",
+      "kind": "OBJECT",
+      "list": false,
+      "nonNull": true
+    },
+    "returnTypeText": "WorkShiftSummary!",
+    "args": [
+      {
+        "name": "id",
+        "type": {
+          "name": "Int",
+          "kind": "SCALAR",
+          "list": false,
+          "nonNull": true
+        },
+        "typeText": "Int!",
+        "defaultValue": null,
+        "description": ""
+      }
+    ],
+    "description": "",
+    "deprecated": false,
+    "deprecationReason": ""
+  }
+]

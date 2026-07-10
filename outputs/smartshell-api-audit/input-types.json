@@ -1,0 +1,5527 @@
+[
+  {
+    "name": "AchievementInput",
+    "fields": [
+      {
+        "name": "name",
+        "type": "String!",
+        "defaultValue": null
+      },
+      {
+        "name": "icon_url",
+        "type": "String",
+        "defaultValue": null
+      },
+      {
+        "name": "conditions",
+        "type": "[ConditionRequest]!",
+        "defaultValue": null
+      },
+      {
+        "name": "rewards",
+        "type": "[RewardRequest]!",
+        "defaultValue": null
+      },
+      {
+        "name": "status",
+        "type": "AchievementStatus!",
+        "defaultValue": null
+      }
+    ]
+  },
+  {
+    "name": "AdditionalLicensePaymentInput",
+    "fields": [
+      {
+        "name": "license_price",
+        "type": "AdditionalLicensePriceInput!",
+        "defaultValue": null
+      },
+      {
+        "name": "contractor_id",
+        "type": "Int",
+        "defaultValue": null
+      },
+      {
+        "name": "success_url",
+        "type": "String",
+        "defaultValue": null
+      },
+      {
+        "name": "fail_url",
+        "type": "String",
+        "defaultValue": null
+      }
+    ]
+  },
+  {
+    "name": "AdditionalLicensePriceInput",
+    "fields": [
+      {
+        "name": "host_count",
+        "type": "Int!",
+        "defaultValue": null
+      },
+      {
+        "name": "promocode",
+        "type": "String",
+        "defaultValue": null
+      },
+      {
+        "name": "license_payment_method",
+        "type": "LicensePaymentMethod!",
+        "defaultValue": null
+      },
+      {
+        "name": "club_id",
+        "type": "Int!",
+        "defaultValue": null
+      },
+      {
+        "name": "modules",
+        "type": "[Int]!",
+        "defaultValue": null
+      }
+    ]
+  },
+  {
+    "name": "ApplicationsReportInput",
+    "fields": [
+      {
+        "name": "from",
+        "type": "DateTime!",
+        "defaultValue": null
+      },
+      {
+        "name": "to",
+        "type": "DateTime!",
+        "defaultValue": null
+      },
+      {
+        "name": "hostGroupId",
+        "type": "Int",
+        "defaultValue": null
+      },
+      {
+        "name": "hostId",
+        "type": "Int",
+        "defaultValue": null
+      },
+      {
+        "name": "type",
+        "type": "ApplicationsReportType!",
+        "defaultValue": null
+      }
+    ]
+  },
+  {
+    "name": "ArticleLinkInput",
+    "fields": [
+      {
+        "name": "label",
+        "type": "String",
+        "defaultValue": null
+      },
+      {
+        "name": "url",
+        "type": "String",
+        "defaultValue": null
+      }
+    ]
+  },
+  {
+    "name": "BankAccountInput",
+    "fields": [
+      {
+        "name": "bank_name",
+        "type": "String!",
+        "defaultValue": null
+      },
+      {
+        "name": "bank_bik",
+        "type": "String!",
+        "defaultValue": null
+      },
+      {
+        "name": "bank_kpp",
+        "type": "String",
+        "defaultValue": null
+      },
+      {
+        "name": "bank_account",
+        "type": "String!",
+        "defaultValue": null
+      },
+      {
+        "name": "correspondent_account",
+        "type": "String!",
+        "defaultValue": null
+      },
+      {
+        "name": "service_name",
+        "type": "String",
+        "defaultValue": null
+      },
+      {
+        "name": "tax",
+        "type": "Tax!",
+        "defaultValue": null
+      }
+    ]
+  },
+  {
+    "name": "BePaidAccountInput",
+    "fields": [
+      {
+        "name": "shop_id",
+        "type": "String!",
+        "defaultValue": null
+      },
+      {
+        "name": "secret_key",
+        "type": "String!",
+        "defaultValue": null
+      },
+      {
+        "name": "publishable_key",
+        "type": "String!",
+        "defaultValue": null
+      }
+    ]
+  },
+  {
+    "name": "BonusDetailedTimeSeriesInput",
+    "fields": [
+      {
+        "name": "from",
+        "type": "DateTime!",
+        "defaultValue": null
+      },
+      {
+        "name": "to",
+        "type": "DateTime!",
+        "defaultValue": null
+      },
+      {
+        "name": "groupBy",
+        "type": "SliceType!",
+        "defaultValue": null
+      }
+    ]
+  },
+  {
+    "name": "BonusHistoryReportInput",
+    "fields": [
+      {
+        "name": "from",
+        "type": "DateTime!",
+        "defaultValue": null
+      },
+      {
+        "name": "to",
+        "type": "DateTime!",
+        "defaultValue": null
+      },
+      {
+        "name": "orderByType",
+        "type": "BonusReportOrderByType",
+        "defaultValue": null
+      },
+      {
+        "name": "limit",
+        "type": "Int",
+        "defaultValue": null
+      },
+      {
+        "name": "offset",
+        "type": "Int",
+        "defaultValue": null
+      }
+    ]
+  },
+  {
+    "name": "BonusReport",
+    "fields": [
+      {
+        "name": "from",
+        "type": "DateTime!",
+        "defaultValue": null
+      },
+      {
+        "name": "to",
+        "type": "DateTime!",
+        "defaultValue": null
+      },
+      {
+        "name": "userId",
+        "type": "Int",
+        "defaultValue": null
+      }
+    ]
+  },
+  {
+    "name": "BookingInput",
+    "fields": [
+      {
+        "name": "hosts",
+        "type": "[Int]!",
+        "defaultValue": null
+      },
+      {
+        "name": "client",
+        "type": "Int",
+        "defaultValue": null
+      },
+      {
+        "name": "comment",
+        "type": "String",
+        "defaultValue": null
+      },
+      {
+        "name": "from",
+        "type": "DateTime!",
+        "defaultValue": null
+      },
+      {
+        "name": "to",
+        "type": "DateTime!",
+        "defaultValue": null
+      },
+      {
+        "name": "status",
+        "type": "BookingStatus",
+        "defaultValue": null
+      }
+    ]
+  },
+  {
+    "name": "BoughtTariffsReport",
+    "fields": [
+      {
+        "name": "from",
+        "type": "DateTime!",
+        "defaultValue": null
+      },
+      {
+        "name": "to",
+        "type": "DateTime!",
+        "defaultValue": null
+      }
+    ]
+  },
+  {
+    "name": "CashOrderInput",
+    "fields": [
+      {
+        "name": "type",
+        "type": "CashOrderType!",
+        "defaultValue": null
+      },
+      {
+        "name": "sum",
+        "type": "Float!",
+        "defaultValue": null
+      },
+      {
+        "name": "comment",
+        "type": "String!",
+        "defaultValue": null
+      }
+    ]
+  },
+  {
+    "name": "CategoriesInput",
+    "fields": [
+      {
+        "name": "client_uuid",
+        "type": "String",
+        "defaultValue": null
+      }
+    ]
+  },
+  {
+    "name": "CategoryInput",
+    "fields": [
+      {
+        "name": "title",
+        "type": "String!",
+        "defaultValue": null
+      },
+      {
+        "name": "show_in_shell",
+        "type": "Boolean!",
+        "defaultValue": null
+      },
+      {
+        "name": "sell_periods",
+        "type": "[CategoryPeriodInput]!",
+        "defaultValue": null
+      },
+      {
+        "name": "age_rating",
+        "type": "Int",
+        "defaultValue": null
+      }
+    ]
+  },
+  {
+    "name": "CategoryPeriodInput",
+    "fields": [
+      {
+        "name": "start",
+        "type": "Int!",
+        "defaultValue": null
+      },
+      {
+        "name": "end",
+        "type": "Int!",
+        "defaultValue": null
+      }
+    ]
+  },
+  {
+    "name": "ChangeClientSessionHostInput",
+    "fields": [
+      {
+        "name": "host_id",
+        "type": "Int!",
+        "defaultValue": null
+      }
+    ]
+  },
+  {
+    "name": "ChangeCompanyOwnerInput",
+    "fields": [
+      {
+        "name": "company_id",
+        "type": "Int!",
+        "defaultValue": null
+      },
+      {
+        "name": "owner_id",
+        "type": "Int!",
+        "defaultValue": null
+      }
+    ]
+  },
+  {
+    "name": "ChangeGoodsQuantityInput",
+    "fields": [
+      {
+        "name": "items",
+        "type": "[ChangeGoodsQuantityItemInput]!",
+        "defaultValue": null
+      },
+      {
+        "name": "operation",
+        "type": "WarehouseOperationType!",
+        "defaultValue": null
+      },
+      {
+        "name": "comment",
+        "type": "String",
+        "defaultValue": null
+      },
+      {
+        "name": "price",
+        "type": "Float",
+        "defaultValue": null
+      }
+    ]
+  },
+  {
+    "name": "ChangeGoodsQuantityItemInput",
+    "fields": [
+      {
+        "name": "id",
+        "type": "Int!",
+        "defaultValue": null
+      },
+      {
+        "name": "quantity",
+        "type": "Int!",
+        "defaultValue": null
+      }
+    ]
+  },
+  {
+    "name": "ChangeUsersGroupInput",
+    "fields": [
+      {
+        "name": "group_uuid",
+        "type": "String",
+        "defaultValue": null
+      },
+      {
+        "name": "users_uuids",
+        "type": "[String]!",
+        "defaultValue": null
+      }
+    ]
+  },
+  {
+    "name": "ClientBookingInput",
+    "fields": [
+      {
+        "name": "companyId",
+        "type": "Int!",
+        "defaultValue": null
+      },
+      {
+        "name": "hosts",
+        "type": "[Int]!",
+        "defaultValue": null
+      },
+      {
+        "name": "from",
+        "type": "DateTime!",
+        "defaultValue": null
+      },
+      {
+        "name": "to",
+        "type": "DateTime",
+        "defaultValue": null
+      },
+      {
+        "name": "tariffId",
+        "type": "Int!",
+        "defaultValue": null
+      }
+    ]
+  },
+  {
+    "name": "ClientClubCommentInput",
+    "fields": [
+      {
+        "name": "club_id",
+        "type": "Int!",
+        "defaultValue": null
+      },
+      {
+        "name": "client_session_id",
+        "type": "Int!",
+        "defaultValue": null
+      },
+      {
+        "name": "text",
+        "type": "String",
+        "defaultValue": null
+      },
+      {
+        "name": "grade",
+        "type": "Int!",
+        "defaultValue": null
+      },
+      {
+        "name": "request_contact",
+        "type": "Boolean",
+        "defaultValue": null
+      },
+      {
+        "name": "request_contact_info",
+        "type": "String",
+        "defaultValue": null
+      }
+    ]
+  },
+  {
+    "name": "ClientLoginInput",
+    "fields": [
+      {
+        "name": "login",
+        "type": "String!",
+        "defaultValue": null
+      },
+      {
+        "name": "password",
+        "type": "String!",
+        "defaultValue": null
+      }
+    ]
+  },
+  {
+    "name": "ClientRegisterInput",
+    "fields": [
+      {
+        "name": "country_code",
+        "type": "String!",
+        "defaultValue": null
+      },
+      {
+        "name": "email",
+        "type": "Email",
+        "defaultValue": null
+      },
+      {
+        "name": "phone",
+        "type": "String!",
+        "defaultValue": null
+      },
+      {
+        "name": "phone_confirmation",
+        "type": "String!",
+        "defaultValue": null
+      },
+      {
+        "name": "password",
+        "type": "String!",
+        "defaultValue": null
+      },
+      {
+        "name": "password_confirmation",
+        "type": "String!",
+        "defaultValue": null
+      },
+      {
+        "name": "dob",
+        "type": "Date!",
+        "defaultValue": null
+      },
+      {
+        "name": "nickname",
+        "type": "String!",
+        "defaultValue": null
+      },
+      {
+        "name": "first_name",
+        "type": "String",
+        "defaultValue": null
+      },
+      {
+        "name": "middle_name",
+        "type": "String",
+        "defaultValue": null
+      },
+      {
+        "name": "last_name",
+        "type": "String",
+        "defaultValue": null
+      },
+      {
+        "name": "city",
+        "type": "String",
+        "defaultValue": null
+      },
+      {
+        "name": "captcha_token",
+        "type": "String!",
+        "defaultValue": null
+      },
+      {
+        "name": "news_consent",
+        "type": "Boolean",
+        "defaultValue": null
+      }
+    ]
+  },
+  {
+    "name": "ClientSessionReportInput",
+    "fields": [
+      {
+        "name": "client_id",
+        "type": "Int!",
+        "defaultValue": null
+      },
+      {
+        "name": "from",
+        "type": "DateTime",
+        "defaultValue": null
+      },
+      {
+        "name": "to",
+        "type": "DateTime",
+        "defaultValue": null
+      },
+      {
+        "name": "preset",
+        "type": "DateReportEnum",
+        "defaultValue": null
+      }
+    ]
+  },
+  {
+    "name": "ClientsInput",
+    "fields": [
+      {
+        "name": "q",
+        "type": "String!",
+        "defaultValue": null
+      },
+      {
+        "name": "sort",
+        "type": "SortInput",
+        "defaultValue": null
+      },
+      {
+        "name": "filter",
+        "type": "FilterInput",
+        "defaultValue": null
+      }
+    ]
+  },
+  {
+    "name": "ClientsPaymentReportInput",
+    "fields": [
+      {
+        "name": "from",
+        "type": "DateTime!",
+        "defaultValue": null
+      },
+      {
+        "name": "to",
+        "type": "DateTime!",
+        "defaultValue": null
+      },
+      {
+        "name": "sorting",
+        "type": "ReportSortInput",
+        "defaultValue": null
+      },
+      {
+        "name": "search",
+        "type": "SearchReportInput",
+        "defaultValue": null
+      }
+    ]
+  },
+  {
+    "name": "ClientTariffGridInput",
+    "fields": [
+      {
+        "name": "companyId",
+        "type": "Int",
+        "defaultValue": null
+      },
+      {
+        "name": "host_group_id",
+        "type": "Int",
+        "defaultValue": null
+      },
+      {
+        "name": "at",
+        "type": "DateTime",
+        "defaultValue": null
+      },
+      {
+        "name": "qr",
+        "type": "String",
+        "defaultValue": null
+      }
+    ]
+  },
+  {
+    "name": "ClubCommentInput",
+    "fields": [
+      {
+        "name": "text",
+        "type": "String",
+        "defaultValue": null
+      },
+      {
+        "name": "grade",
+        "type": "Int!",
+        "defaultValue": null
+      },
+      {
+        "name": "request_contact",
+        "type": "Boolean",
+        "defaultValue": null
+      },
+      {
+        "name": "request_contact_info",
+        "type": "String",
+        "defaultValue": null
+      },
+      {
+        "name": "tips",
+        "type": "Int",
+        "defaultValue": null
+      },
+      {
+        "name": "client_session_id",
+        "type": "Int",
+        "defaultValue": null
+      }
+    ]
+  },
+  {
+    "name": "ClubCommentSearchInput",
+    "fields": [
+      {
+        "name": "user_uuid",
+        "type": "String",
+        "defaultValue": null
+      },
+      {
+        "name": "sort",
+        "type": "ClubCommentSearchSort",
+        "defaultValue": null
+      }
+    ]
+  },
+  {
+    "name": "ClubHardwareInput",
+    "fields": [
+      {
+        "name": "hall_title",
+        "type": "String!",
+        "defaultValue": null
+      },
+      {
+        "name": "hall_type",
+        "type": "HallType!",
+        "defaultValue": null
+      },
+      {
+        "name": "device_count",
+        "type": "Int!",
+        "defaultValue": null
+      },
+      {
+        "name": "console_model",
+        "type": "String",
+        "defaultValue": null
+      },
+      {
+        "name": "processor_brand",
+        "type": "String",
+        "defaultValue": null
+      },
+      {
+        "name": "processor_model",
+        "type": "String",
+        "defaultValue": null
+      },
+      {
+        "name": "gpu_brand",
+        "type": "String",
+        "defaultValue": null
+      },
+      {
+        "name": "gpu_model",
+        "type": "String",
+        "defaultValue": null
+      },
+      {
+        "name": "ram_size",
+        "type": "String",
+        "defaultValue": null
+      },
+      {
+        "name": "ram_type",
+        "type": "String",
+        "defaultValue": null
+      },
+      {
+        "name": "hdd_type",
+        "type": "String",
+        "defaultValue": null
+      },
+      {
+        "name": "keyboard",
+        "type": "String",
+        "defaultValue": null
+      },
+      {
+        "name": "mouse",
+        "type": "String",
+        "defaultValue": null
+      },
+      {
+        "name": "speakers",
+        "type": "String",
+        "defaultValue": null
+      },
+      {
+        "name": "chair",
+        "type": "String",
+        "defaultValue": null
+      },
+      {
+        "name": "monitor_brand",
+        "type": "String",
+        "defaultValue": null
+      },
+      {
+        "name": "monitor_size",
+        "type": "String",
+        "defaultValue": null
+      },
+      {
+        "name": "monitor_hz",
+        "type": "String",
+        "defaultValue": null
+      }
+    ]
+  },
+  {
+    "name": "ClubInput",
+    "fields": [
+      {
+        "name": "name",
+        "type": "String!",
+        "defaultValue": null
+      },
+      {
+        "name": "address",
+        "type": "String",
+        "defaultValue": null
+      },
+      {
+        "name": "city",
+        "type": "String",
+        "defaultValue": null
+      },
+      {
+        "name": "street",
+        "type": "String",
+        "defaultValue": null
+      },
+      {
+        "name": "house_number",
+        "type": "String",
+        "defaultValue": null
+      },
+      {
+        "name": "contact_name",
+        "type": "String!",
+        "defaultValue": null
+      },
+      {
+        "name": "contact_type",
+        "type": "OrganizationUserType!",
+        "defaultValue": null
+      },
+      {
+        "name": "contact_phone",
+        "type": "String!",
+        "defaultValue": null
+      },
+      {
+        "name": "pc_count",
+        "type": "Int",
+        "defaultValue": null
+      },
+      {
+        "name": "console_count",
+        "type": "Int",
+        "defaultValue": null
+      },
+      {
+        "name": "distribution_type",
+        "type": "DistributionType",
+        "defaultValue": null
+      },
+      {
+        "name": "url",
+        "type": "String",
+        "defaultValue": null
+      },
+      {
+        "name": "telegram",
+        "type": "String",
+        "defaultValue": null
+      },
+      {
+        "name": "info",
+        "type": "String",
+        "defaultValue": null
+      },
+      {
+        "name": "timezone",
+        "type": "Int",
+        "defaultValue": null
+      },
+      {
+        "name": "country_code",
+        "type": "String!",
+        "defaultValue": null
+      },
+      {
+        "name": "verify",
+        "type": "Boolean",
+        "defaultValue": null
+      },
+      {
+        "name": "club_phone",
+        "type": "String",
+        "defaultValue": null
+      },
+      {
+        "name": "vk_url",
+        "type": "String",
+        "defaultValue": null
+      },
+      {
+        "name": "telegram_url",
+        "type": "String",
+        "defaultValue": null
+      },
+      {
+        "name": "whats_up_url",
+        "type": "String",
+        "defaultValue": null
+      },
+      {
+        "name": "region",
+        "type": "String",
+        "defaultValue": null
+      },
+      {
+        "name": "comment",
+        "type": "String",
+        "defaultValue": null
+      },
+      {
+        "name": "country",
+        "type": "String",
+        "defaultValue": null
+      },
+      {
+        "name": "lat",
+        "type": "Float",
+        "defaultValue": null
+      },
+      {
+        "name": "lng",
+        "type": "Float",
+        "defaultValue": null
+      },
+      {
+        "name": "metro",
+        "type": "String",
+        "defaultValue": null
+      }
+    ]
+  },
+  {
+    "name": "ClubServicesInput",
+    "fields": [
+      {
+        "name": "has_vr",
+        "type": "Boolean!",
+        "defaultValue": null
+      },
+      {
+        "name": "vr_count",
+        "type": "Int!",
+        "defaultValue": null
+      },
+      {
+        "name": "vr_model",
+        "type": "String!",
+        "defaultValue": null
+      },
+      {
+        "name": "has_autosim",
+        "type": "Boolean!",
+        "defaultValue": null
+      },
+      {
+        "name": "autosim_count",
+        "type": "Int!",
+        "defaultValue": null
+      },
+      {
+        "name": "has_printer",
+        "type": "Boolean!",
+        "defaultValue": null
+      },
+      {
+        "name": "has_lounge",
+        "type": "Boolean!",
+        "defaultValue": null
+      },
+      {
+        "name": "has_gifts",
+        "type": "Boolean!",
+        "defaultValue": null
+      },
+      {
+        "name": "personal_devices_allowed",
+        "type": "Boolean!",
+        "defaultValue": null
+      },
+      {
+        "name": "has_streaming_boot",
+        "type": "Boolean!",
+        "defaultValue": null
+      },
+      {
+        "name": "personal_food_allowed",
+        "type": "Boolean!",
+        "defaultValue": null
+      },
+      {
+        "name": "has_tabletop_games",
+        "type": "Boolean!",
+        "defaultValue": null
+      },
+      {
+        "name": "can_rent_projector",
+        "type": "Boolean!",
+        "defaultValue": null
+      },
+      {
+        "name": "has_coworking",
+        "type": "Boolean!",
+        "defaultValue": null
+      },
+      {
+        "name": "has_snacks",
+        "type": "Boolean!",
+        "defaultValue": null
+      },
+      {
+        "name": "has_energy_drinks",
+        "type": "Boolean!",
+        "defaultValue": null
+      },
+      {
+        "name": "has_food_to_go",
+        "type": "Boolean!",
+        "defaultValue": null
+      },
+      {
+        "name": "has_kitchen",
+        "type": "Boolean!",
+        "defaultValue": null
+      },
+      {
+        "name": "has_beverages",
+        "type": "Boolean!",
+        "defaultValue": null
+      },
+      {
+        "name": "has_low_alcohol_beverages",
+        "type": "Boolean!",
+        "defaultValue": null
+      },
+      {
+        "name": "has_food_discounts",
+        "type": "Boolean!",
+        "defaultValue": null
+      },
+      {
+        "name": "accept_cash",
+        "type": "Boolean!",
+        "defaultValue": null
+      },
+      {
+        "name": "accept_card",
+        "type": "Boolean!",
+        "defaultValue": null
+      },
+      {
+        "name": "accept_qr",
+        "type": "Boolean!",
+        "defaultValue": null
+      },
+      {
+        "name": "accept_sbp",
+        "type": "Boolean!",
+        "defaultValue": null
+      }
+    ]
+  },
+  {
+    "name": "ClubWorkScheduleInput",
+    "fields": [
+      {
+        "name": "day",
+        "type": "Int!",
+        "defaultValue": null
+      },
+      {
+        "name": "Start",
+        "type": "String!",
+        "defaultValue": null
+      },
+      {
+        "name": "End",
+        "type": "String!",
+        "defaultValue": null
+      }
+    ]
+  },
+  {
+    "name": "ComboInput",
+    "fields": [
+      {
+        "name": "title",
+        "type": "String!",
+        "defaultValue": null
+      },
+      {
+        "name": "host_group_id",
+        "type": "Int",
+        "defaultValue": null
+      },
+      {
+        "name": "tariff_id",
+        "type": "Int",
+        "defaultValue": null
+      },
+      {
+        "name": "items",
+        "type": "[ComboItemInput]!",
+        "defaultValue": null
+      },
+      {
+        "name": "use_global_discount",
+        "type": "Boolean",
+        "defaultValue": null
+      }
+    ]
+  },
+  {
+    "name": "ComboItemInput",
+    "fields": [
+      {
+        "name": "entity_type",
+        "type": "ComboItemEntityType!",
+        "defaultValue": null
+      },
+      {
+        "name": "entity_id",
+        "type": "Int!",
+        "defaultValue": null
+      },
+      {
+        "name": "amount",
+        "type": "Int!",
+        "defaultValue": null
+      },
+      {
+        "name": "price",
+        "type": "Float!",
+        "defaultValue": null
+      }
+    ]
+  },
+  {
+    "name": "ComboListInput",
+    "fields": [
+      {
+        "name": "host_id",
+        "type": "Int",
+        "defaultValue": null
+      },
+      {
+        "name": "client_uuid",
+        "type": "String",
+        "defaultValue": null
+      },
+      {
+        "name": "shift",
+        "type": "Int",
+        "defaultValue": null
+      }
+    ]
+  },
+  {
+    "name": "CommentInput",
+    "fields": [
+      {
+        "name": "text",
+        "type": "String!",
+        "defaultValue": null
+      },
+      {
+        "name": "type",
+        "type": "CommentType!",
+        "defaultValue": null
+      },
+      {
+        "name": "entity_id",
+        "type": "Int!",
+        "defaultValue": null
+      },
+      {
+        "name": "request_contact",
+        "type": "Boolean",
+        "defaultValue": null
+      },
+      {
+        "name": "is_important",
+        "type": "Boolean",
+        "defaultValue": null
+      }
+    ]
+  },
+  {
+    "name": "CommentSearchInput",
+    "fields": [
+      {
+        "name": "entity_id",
+        "type": "Int!",
+        "defaultValue": null
+      },
+      {
+        "name": "type",
+        "type": "CommentType!",
+        "defaultValue": null
+      }
+    ]
+  },
+  {
+    "name": "CommentUpdateInput",
+    "fields": [
+      {
+        "name": "is_important",
+        "type": "Boolean!",
+        "defaultValue": null
+      }
+    ]
+  },
+  {
+    "name": "CompanyNewsListInput",
+    "fields": [
+      {
+        "name": "sort",
+        "type": "CompanyNewsListSort",
+        "defaultValue": null
+      },
+      {
+        "name": "active",
+        "type": "Boolean",
+        "defaultValue": null
+      }
+    ]
+  },
+  {
+    "name": "CompanyNewsListSort",
+    "fields": [
+      {
+        "name": "field",
+        "type": "CompanyNewsListSortField",
+        "defaultValue": null
+      },
+      {
+        "name": "direction",
+        "type": "String!",
+        "defaultValue": null
+      }
+    ]
+  },
+  {
+    "name": "CompanyPermissionInput",
+    "fields": [
+      {
+        "name": "company_id",
+        "type": "Int!",
+        "defaultValue": null
+      }
+    ]
+  },
+  {
+    "name": "CompanyPermissionsInput",
+    "fields": [
+      {
+        "name": "role_id",
+        "type": "Int!",
+        "defaultValue": null
+      },
+      {
+        "name": "permissions",
+        "type": "[PermissionInput]!",
+        "defaultValue": null
+      }
+    ]
+  },
+  {
+    "name": "ConditionRequest",
+    "fields": [
+      {
+        "name": "name",
+        "type": "String!",
+        "defaultValue": null
+      },
+      {
+        "name": "value",
+        "type": "Float!",
+        "defaultValue": null
+      }
+    ]
+  },
+  {
+    "name": "ConnectPaymentServiceInput",
+    "fields": [
+      {
+        "name": "existing_beneficiary",
+        "type": "String",
+        "defaultValue": null
+      },
+      {
+        "name": "type",
+        "type": "BeneficiaryType",
+        "defaultValue": null
+      },
+      {
+        "name": "ul",
+        "type": "ULResidentInput",
+        "defaultValue": null
+      },
+      {
+        "name": "ip",
+        "type": "IPResidentInput",
+        "defaultValue": null
+      },
+      {
+        "name": "bank_account",
+        "type": "BankAccountInput",
+        "defaultValue": null
+      },
+      {
+        "name": "stripe_account",
+        "type": "StripeAccountInput",
+        "defaultValue": null
+      },
+      {
+        "name": "bepaid_account",
+        "type": "BePaidAccountInput",
+        "defaultValue": null
+      }
+    ]
+  },
+  {
+    "name": "ContractorInput",
+    "fields": [
+      {
+        "name": "name",
+        "type": "String!",
+        "defaultValue": null
+      },
+      {
+        "name": "inn",
+        "type": "String!",
+        "defaultValue": null
+      },
+      {
+        "name": "kpp",
+        "type": "String!",
+        "defaultValue": null
+      },
+      {
+        "name": "address",
+        "type": "String!",
+        "defaultValue": null
+      },
+      {
+        "name": "phone",
+        "type": "String!",
+        "defaultValue": null
+      },
+      {
+        "name": "email",
+        "type": "String!",
+        "defaultValue": null
+      }
+    ]
+  },
+  {
+    "name": "CreateBeneficiaryByInnInput",
+    "fields": [
+      {
+        "name": "inn",
+        "type": "String!",
+        "defaultValue": null
+      },
+      {
+        "name": "company_id",
+        "type": "Int!",
+        "defaultValue": null
+      },
+      {
+        "name": "bank_account",
+        "type": "BankAccountInput!",
+        "defaultValue": null
+      },
+      {
+        "name": "entrepreneur_data",
+        "type": "EntrepreneurDataInput",
+        "defaultValue": null
+      },
+      {
+        "name": "phone",
+        "type": "String!",
+        "defaultValue": null
+      },
+      {
+        "name": "email",
+        "type": "String",
+        "defaultValue": null
+      }
+    ]
+  },
+  {
+    "name": "CreateCommandInput",
+    "fields": [
+      {
+        "name": "host_id",
+        "type": "Int!",
+        "defaultValue": null
+      },
+      {
+        "name": "action",
+        "type": "HostCommandAction!",
+        "defaultValue": null
+      },
+      {
+        "name": "param",
+        "type": "String",
+        "defaultValue": null
+      }
+    ]
+  },
+  {
+    "name": "CreateCommandsInput",
+    "fields": [
+      {
+        "name": "host_ids",
+        "type": "[Int]!",
+        "defaultValue": null
+      },
+      {
+        "name": "action",
+        "type": "HostCommandAction!",
+        "defaultValue": null
+      },
+      {
+        "name": "param",
+        "type": "String",
+        "defaultValue": null
+      }
+    ]
+  },
+  {
+    "name": "CreateGameAccountInput",
+    "fields": [
+      {
+        "name": "login",
+        "type": "String!",
+        "defaultValue": null
+      },
+      {
+        "name": "password",
+        "type": "String!",
+        "defaultValue": null
+      },
+      {
+        "name": "active",
+        "type": "Boolean!",
+        "defaultValue": null
+      },
+      {
+        "name": "group_id",
+        "type": "Int!",
+        "defaultValue": null
+      },
+      {
+        "name": "host_id",
+        "type": "Int",
+        "defaultValue": null
+      }
+    ]
+  },
+  {
+    "name": "CreateHostCommandTemplateInput",
+    "fields": [
+      {
+        "name": "title",
+        "type": "String!",
+        "defaultValue": null
+      },
+      {
+        "name": "path",
+        "type": "String!",
+        "defaultValue": null
+      },
+      {
+        "name": "arguments",
+        "type": "String",
+        "defaultValue": null
+      }
+    ]
+  },
+  {
+    "name": "CreateNetworkInput",
+    "fields": [
+      {
+        "name": "name",
+        "type": "String!",
+        "defaultValue": null
+      },
+      {
+        "name": "description",
+        "type": "String",
+        "defaultValue": null
+      },
+      {
+        "name": "main_company_id",
+        "type": "Int!",
+        "defaultValue": null
+      },
+      {
+        "name": "max_discount_enabled",
+        "type": "Boolean!",
+        "defaultValue": null
+      },
+      {
+        "name": "deposit_transfer_enabled",
+        "type": "Boolean!",
+        "defaultValue": null
+      }
+    ]
+  },
+  {
+    "name": "CreateNewsArticleInput",
+    "fields": [
+      {
+        "name": "title",
+        "type": "String!",
+        "defaultValue": null
+      },
+      {
+        "name": "content",
+        "type": "String!",
+        "defaultValue": null
+      },
+      {
+        "name": "image",
+        "type": "String",
+        "defaultValue": null
+      },
+      {
+        "name": "link",
+        "type": "ArticleLinkInput",
+        "defaultValue": null
+      },
+      {
+        "name": "active",
+        "type": "Boolean",
+        "defaultValue": null
+      },
+      {
+        "name": "publication_period",
+        "type": "PublicationPeriodInput",
+        "defaultValue": null
+      }
+    ]
+  },
+  {
+    "name": "CreateWorkerInput",
+    "fields": [
+      {
+        "name": "phone",
+        "type": "String!",
+        "defaultValue": null
+      },
+      {
+        "name": "first_name",
+        "type": "String!",
+        "defaultValue": null
+      },
+      {
+        "name": "last_name",
+        "type": "String!",
+        "defaultValue": null
+      },
+      {
+        "name": "middle_name",
+        "type": "String!",
+        "defaultValue": null
+      },
+      {
+        "name": "role_ids",
+        "type": "[Int]!",
+        "defaultValue": null
+      }
+    ]
+  },
+  {
+    "name": "DeleteUserGroupInput",
+    "fields": [
+      {
+        "name": "uuid",
+        "type": "String!",
+        "defaultValue": null
+      }
+    ]
+  },
+  {
+    "name": "DepositCashbackInput",
+    "fields": [
+      {
+        "name": "amount",
+        "type": "Float!",
+        "defaultValue": null
+      },
+      {
+        "name": "value",
+        "type": "Float!",
+        "defaultValue": null
+      },
+      {
+        "name": "is_percent",
+        "type": "Boolean!",
+        "defaultValue": null
+      },
+      {
+        "name": "is_active",
+        "type": "Boolean!",
+        "defaultValue": null
+      },
+      {
+        "name": "starts_at",
+        "type": "DateTime",
+        "defaultValue": null
+      },
+      {
+        "name": "expires_at",
+        "type": "DateTime",
+        "defaultValue": null
+      }
+    ]
+  },
+  {
+    "name": "DepositTransferReportInput",
+    "fields": [
+      {
+        "name": "from",
+        "type": "DateTime!",
+        "defaultValue": null
+      },
+      {
+        "name": "to",
+        "type": "DateTime!",
+        "defaultValue": null
+      },
+      {
+        "name": "type",
+        "type": "DepositTransferType",
+        "defaultValue": null
+      },
+      {
+        "name": "search",
+        "type": "SearchReportInput",
+        "defaultValue": null
+      },
+      {
+        "name": "sort",
+        "type": "ReportSortInput",
+        "defaultValue": null
+      }
+    ]
+  },
+  {
+    "name": "DiscountInput",
+    "fields": [
+      {
+        "name": "client_id",
+        "type": "Int",
+        "defaultValue": null
+      },
+      {
+        "name": "title",
+        "type": "String!",
+        "defaultValue": null
+      },
+      {
+        "name": "value",
+        "type": "Float!",
+        "defaultValue": null
+      },
+      {
+        "name": "entity",
+        "type": "CartEntity",
+        "defaultValue": null
+      },
+      {
+        "name": "entity_id",
+        "type": "Int",
+        "defaultValue": null
+      },
+      {
+        "name": "is_tracked",
+        "type": "Boolean",
+        "defaultValue": null
+      },
+      {
+        "name": "active",
+        "type": "Boolean!",
+        "defaultValue": null
+      },
+      {
+        "name": "active_from",
+        "type": "DateTime",
+        "defaultValue": null
+      },
+      {
+        "name": "active_to",
+        "type": "DateTime",
+        "defaultValue": null
+      },
+      {
+        "name": "schedules",
+        "type": "[DiscountScheduleInput]!",
+        "defaultValue": null
+      },
+      {
+        "name": "dont_use_on_holidays",
+        "type": "Boolean",
+        "defaultValue": null
+      }
+    ]
+  },
+  {
+    "name": "DiscountScheduleInput",
+    "fields": [
+      {
+        "name": "start",
+        "type": "Int!",
+        "defaultValue": null
+      },
+      {
+        "name": "end",
+        "type": "Int!",
+        "defaultValue": null
+      }
+    ]
+  },
+  {
+    "name": "DiscountUpdateInput",
+    "fields": [
+      {
+        "name": "client_id",
+        "type": "Int",
+        "defaultValue": null
+      },
+      {
+        "name": "title",
+        "type": "String",
+        "defaultValue": null
+      },
+      {
+        "name": "value",
+        "type": "Float",
+        "defaultValue": null
+      },
+      {
+        "name": "entity",
+        "type": "CartEntity",
+        "defaultValue": null
+      },
+      {
+        "name": "entity_id",
+        "type": "Int",
+        "defaultValue": null
+      },
+      {
+        "name": "is_tracked",
+        "type": "Boolean",
+        "defaultValue": null
+      },
+      {
+        "name": "active",
+        "type": "Boolean",
+        "defaultValue": null
+      },
+      {
+        "name": "active_from",
+        "type": "DateTime",
+        "defaultValue": null
+      },
+      {
+        "name": "active_to",
+        "type": "DateTime",
+        "defaultValue": null
+      },
+      {
+        "name": "schedules",
+        "type": "[DiscountScheduleInput]!",
+        "defaultValue": null
+      },
+      {
+        "name": "dont_use_on_holidays",
+        "type": "Boolean",
+        "defaultValue": null
+      }
+    ]
+  },
+  {
+    "name": "EmailExistsInput",
+    "fields": [
+      {
+        "name": "email",
+        "type": "String!",
+        "defaultValue": null
+      }
+    ]
+  },
+  {
+    "name": "EmailRegisterInput",
+    "fields": [
+      {
+        "name": "login",
+        "type": "String!",
+        "defaultValue": null
+      },
+      {
+        "name": "email",
+        "type": "Email!",
+        "defaultValue": null
+      },
+      {
+        "name": "phone",
+        "type": "String!",
+        "defaultValue": null
+      },
+      {
+        "name": "phone_confirmation",
+        "type": "String!",
+        "defaultValue": null
+      },
+      {
+        "name": "password",
+        "type": "String!",
+        "defaultValue": null
+      },
+      {
+        "name": "dob",
+        "type": "Date!",
+        "defaultValue": null
+      },
+      {
+        "name": "news_consent",
+        "type": "Boolean",
+        "defaultValue": null
+      },
+      {
+        "name": "first_name",
+        "type": "String",
+        "defaultValue": null
+      },
+      {
+        "name": "type",
+        "type": "RegisterType",
+        "defaultValue": null
+      }
+    ]
+  },
+  {
+    "name": "EntrepreneurDataInput",
+    "fields": [
+      {
+        "name": "first_name",
+        "type": "String!",
+        "defaultValue": null
+      },
+      {
+        "name": "middle_name",
+        "type": "String",
+        "defaultValue": null
+      },
+      {
+        "name": "last_name",
+        "type": "String!",
+        "defaultValue": null
+      },
+      {
+        "name": "passport",
+        "type": "PassportInput!",
+        "defaultValue": null
+      },
+      {
+        "name": "registration_address",
+        "type": "String!",
+        "defaultValue": null
+      },
+      {
+        "name": "residence_address",
+        "type": "String",
+        "defaultValue": null
+      },
+      {
+        "name": "birth_date",
+        "type": "Date!",
+        "defaultValue": null
+      },
+      {
+        "name": "birth_place",
+        "type": "String",
+        "defaultValue": null
+      }
+    ]
+  },
+  {
+    "name": "EventsInput",
+    "fields": [
+      {
+        "name": "types",
+        "type": "[String]!",
+        "defaultValue": null
+      },
+      {
+        "name": "start",
+        "type": "DateTime",
+        "defaultValue": null
+      },
+      {
+        "name": "finish",
+        "type": "DateTime",
+        "defaultValue": null
+      },
+      {
+        "name": "work_shift_id",
+        "type": "Int",
+        "defaultValue": null
+      },
+      {
+        "name": "q",
+        "type": "String",
+        "defaultValue": null
+      }
+    ]
+  },
+  {
+    "name": "ExternalPaymentDataInput",
+    "fields": [
+      {
+        "name": "external_id",
+        "type": "String",
+        "defaultValue": null
+      },
+      {
+        "name": "external_method",
+        "type": "String",
+        "defaultValue": null
+      }
+    ]
+  },
+  {
+    "name": "FilterInput",
+    "fields": [
+      {
+        "name": "groupUUID",
+        "type": "String",
+        "defaultValue": null
+      }
+    ]
+  },
+  {
+    "name": "FinishedWorkShiftInput",
+    "fields": [
+      {
+        "name": "from",
+        "type": "Date!",
+        "defaultValue": null
+      },
+      {
+        "name": "to",
+        "type": "Date!",
+        "defaultValue": null
+      }
+    ]
+  },
+  {
+    "name": "FinishWorkShiftInput",
+    "fields": [
+      {
+        "name": "comment",
+        "type": "String",
+        "defaultValue": null
+      }
+    ]
+  },
+  {
+    "name": "FlagInput",
+    "fields": [
+      {
+        "name": "value",
+        "type": "Boolean!",
+        "defaultValue": null
+      }
+    ]
+  },
+  {
+    "name": "GameAccountGroupInput",
+    "fields": [
+      {
+        "name": "title",
+        "type": "String!",
+        "defaultValue": null
+      },
+      {
+        "name": "launcher",
+        "type": "GameAccountLauncher!",
+        "defaultValue": null
+      }
+    ]
+  },
+  {
+    "name": "GenerateQRInput",
+    "fields": [
+      {
+        "name": "host_id",
+        "type": "Int!",
+        "defaultValue": null
+      }
+    ]
+  },
+  {
+    "name": "GetActiveClientListInput",
+    "fields": [
+      {
+        "name": "from",
+        "type": "DateTime",
+        "defaultValue": null
+      },
+      {
+        "name": "to",
+        "type": "DateTime",
+        "defaultValue": null
+      },
+      {
+        "name": "preset",
+        "type": "DateReportEnum",
+        "defaultValue": null
+      },
+      {
+        "name": "sort",
+        "type": "SortActiveClientEnum!",
+        "defaultValue": null
+      }
+    ]
+  },
+  {
+    "name": "GetBeneficiaryMovementsOfFunds",
+    "fields": [
+      {
+        "name": "beneficiary_id",
+        "type": "String!",
+        "defaultValue": null
+      },
+      {
+        "name": "from",
+        "type": "DateTime",
+        "defaultValue": null
+      },
+      {
+        "name": "to",
+        "type": "DateTime",
+        "defaultValue": null
+      },
+      {
+        "name": "preset",
+        "type": "DateReportEnum",
+        "defaultValue": null
+      }
+    ]
+  },
+  {
+    "name": "GetBeneficiaryMovementsOfFundsReport",
+    "fields": [
+      {
+        "name": "beneficiary_id",
+        "type": "String!",
+        "defaultValue": null
+      },
+      {
+        "name": "from",
+        "type": "DateTime!",
+        "defaultValue": null
+      },
+      {
+        "name": "to",
+        "type": "DateTime!",
+        "defaultValue": null
+      }
+    ]
+  },
+  {
+    "name": "GetCurrentTariff",
+    "fields": [
+      {
+        "name": "client_session_id",
+        "type": "Int!",
+        "defaultValue": null
+      }
+    ]
+  },
+  {
+    "name": "GoodHistoryInput",
+    "fields": [
+      {
+        "name": "id",
+        "type": "Int!",
+        "defaultValue": null
+      },
+      {
+        "name": "from",
+        "type": "DateTime!",
+        "defaultValue": null
+      },
+      {
+        "name": "to",
+        "type": "DateTime!",
+        "defaultValue": null
+      },
+      {
+        "name": "operations",
+        "type": "[WarehouseHistoryOperationType]!",
+        "defaultValue": null
+      },
+      {
+        "name": "page",
+        "type": "Int",
+        "defaultValue": null
+      },
+      {
+        "name": "first",
+        "type": "Int",
+        "defaultValue": null
+      }
+    ]
+  },
+  {
+    "name": "GoodInput",
+    "fields": [
+      {
+        "name": "title",
+        "type": "String!",
+        "defaultValue": null
+      },
+      {
+        "name": "subtitle",
+        "type": "String",
+        "defaultValue": null
+      },
+      {
+        "name": "comment",
+        "type": "String",
+        "defaultValue": null
+      },
+      {
+        "name": "cost",
+        "type": "Float!",
+        "defaultValue": null
+      },
+      {
+        "name": "wholesale_cost",
+        "type": "Float!",
+        "defaultValue": null
+      },
+      {
+        "name": "tax_percent",
+        "type": "Float",
+        "defaultValue": null
+      },
+      {
+        "name": "unit_name",
+        "type": "String",
+        "defaultValue": null
+      },
+      {
+        "name": "unit_value",
+        "type": "Float",
+        "defaultValue": null
+      },
+      {
+        "name": "amount",
+        "type": "Int",
+        "defaultValue": null
+      },
+      {
+        "name": "image",
+        "type": "String",
+        "defaultValue": null
+      },
+      {
+        "name": "use_global_discounts",
+        "type": "Boolean!",
+        "defaultValue": null
+      },
+      {
+        "name": "tax_system",
+        "type": "TaxSystem",
+        "defaultValue": null
+      },
+      {
+        "name": "vat",
+        "type": "Vat",
+        "defaultValue": null
+      },
+      {
+        "name": "eans",
+        "type": "[String]!",
+        "defaultValue": null
+      },
+      {
+        "name": "use_fair_sign",
+        "type": "Boolean",
+        "defaultValue": null
+      },
+      {
+        "name": "is_excise",
+        "type": "Boolean",
+        "defaultValue": null
+      },
+      {
+        "name": "price",
+        "type": "Float",
+        "defaultValue": null
+      },
+      {
+        "name": "show_in_shell",
+        "type": "Boolean",
+        "defaultValue": null
+      },
+      {
+        "name": "low_stock_notification",
+        "type": "LowStockNotificationInput",
+        "defaultValue": null
+      },
+      {
+        "name": "category_id",
+        "type": "Int",
+        "defaultValue": null
+      },
+      {
+        "name": "highlighted",
+        "type": "Boolean",
+        "defaultValue": null
+      }
+    ]
+  },
+  {
+    "name": "GoodsInput",
+    "fields": [
+      {
+        "name": "client_uuid",
+        "type": "String",
+        "defaultValue": null
+      },
+      {
+        "name": "category_id",
+        "type": "Int",
+        "defaultValue": null
+      },
+      {
+        "name": "title_search",
+        "type": "String",
+        "defaultValue": null
+      },
+      {
+        "name": "use_global_discounts",
+        "type": "Boolean",
+        "defaultValue": null
+      }
+    ]
+  },
+  {
+    "name": "HostAccessTokenInput",
+    "fields": [
+      {
+        "name": "mac_address",
+        "type": "MacAddress!",
+        "defaultValue": null
+      },
+      {
+        "name": "public_key",
+        "type": "String!",
+        "defaultValue": null
+      }
+    ]
+  },
+  {
+    "name": "HostDiskInfoInput",
+    "fields": [
+      {
+        "name": "letter",
+        "type": "String!",
+        "defaultValue": null
+      },
+      {
+        "name": "total",
+        "type": "Int!",
+        "defaultValue": null
+      },
+      {
+        "name": "used",
+        "type": "Int!",
+        "defaultValue": null
+      }
+    ]
+  },
+  {
+    "name": "HostGroupCustomizationInput",
+    "fields": [
+      {
+        "name": "color",
+        "type": "String",
+        "defaultValue": null
+      },
+      {
+        "name": "background",
+        "type": "String",
+        "defaultValue": null
+      },
+      {
+        "name": "screensaver",
+        "type": "String",
+        "defaultValue": null
+      }
+    ]
+  },
+  {
+    "name": "HostGroupInput",
+    "fields": [
+      {
+        "name": "title",
+        "type": "String!",
+        "defaultValue": null
+      },
+      {
+        "name": "customization",
+        "type": "HostGroupCustomizationInput",
+        "defaultValue": null
+      },
+      {
+        "name": "priority",
+        "type": "Int",
+        "defaultValue": null
+      }
+    ]
+  },
+  {
+    "name": "HostInput",
+    "fields": [
+      {
+        "name": "group_id",
+        "type": "Int",
+        "defaultValue": null
+      },
+      {
+        "name": "type_id",
+        "type": "Int",
+        "defaultValue": null
+      },
+      {
+        "name": "position",
+        "type": "Int",
+        "defaultValue": null
+      },
+      {
+        "name": "alias",
+        "type": "String",
+        "defaultValue": null
+      },
+      {
+        "name": "comment",
+        "type": "String",
+        "defaultValue": null
+      },
+      {
+        "name": "mac_addr",
+        "type": "MacAddress",
+        "defaultValue": null
+      },
+      {
+        "name": "ip_addr",
+        "type": "IpAddress",
+        "defaultValue": null
+      },
+      {
+        "name": "dns_name",
+        "type": "String",
+        "defaultValue": null
+      },
+      {
+        "name": "coord_x",
+        "type": "Int",
+        "defaultValue": null
+      },
+      {
+        "name": "coord_y",
+        "type": "Int",
+        "defaultValue": null
+      },
+      {
+        "name": "online_booking_enabled",
+        "type": "Boolean",
+        "defaultValue": null
+      },
+      {
+        "name": "type",
+        "type": "HostTypeValue",
+        "defaultValue": null
+      }
+    ]
+  },
+  {
+    "name": "HostSessionInput",
+    "fields": [
+      {
+        "name": "processor",
+        "type": "String",
+        "defaultValue": null
+      },
+      {
+        "name": "ram",
+        "type": "String",
+        "defaultValue": null
+      },
+      {
+        "name": "video",
+        "type": "String",
+        "defaultValue": null
+      },
+      {
+        "name": "disc",
+        "type": "String",
+        "defaultValue": null
+      },
+      {
+        "name": "shell_version",
+        "type": "String",
+        "defaultValue": null
+      },
+      {
+        "name": "ip_addr",
+        "type": "String",
+        "defaultValue": null
+      }
+    ]
+  },
+  {
+    "name": "HostsInput",
+    "fields": [
+      {
+        "name": "id",
+        "type": "Int!",
+        "defaultValue": null
+      },
+      {
+        "name": "coord_x",
+        "type": "Int!",
+        "defaultValue": null
+      },
+      {
+        "name": "coord_y",
+        "type": "Int!",
+        "defaultValue": null
+      }
+    ]
+  },
+  {
+    "name": "HostsOccupationReport",
+    "fields": [
+      {
+        "name": "from",
+        "type": "DateTime!",
+        "defaultValue": null
+      },
+      {
+        "name": "to",
+        "type": "DateTime!",
+        "defaultValue": null
+      }
+    ]
+  },
+  {
+    "name": "HostTypeInput",
+    "fields": [
+      {
+        "name": "title",
+        "type": "String!",
+        "defaultValue": null
+      },
+      {
+        "name": "description",
+        "type": "String!",
+        "defaultValue": null
+      }
+    ]
+  },
+  {
+    "name": "ImportUserColumnsInput",
+    "fields": [
+      {
+        "name": "first_name",
+        "type": "Int",
+        "defaultValue": null
+      },
+      {
+        "name": "last_name",
+        "type": "Int",
+        "defaultValue": null
+      },
+      {
+        "name": "phone",
+        "type": "Int",
+        "defaultValue": null
+      },
+      {
+        "name": "deposit",
+        "type": "Int",
+        "defaultValue": null
+      },
+      {
+        "name": "discount",
+        "type": "Int",
+        "defaultValue": null
+      },
+      {
+        "name": "email",
+        "type": "Int",
+        "defaultValue": null
+      }
+    ]
+  },
+  {
+    "name": "ImportUserHoursColumnsInput",
+    "fields": [
+      {
+        "name": "phone",
+        "type": "Int",
+        "defaultValue": null
+      },
+      {
+        "name": "time",
+        "type": "Int",
+        "defaultValue": null
+      }
+    ]
+  },
+  {
+    "name": "IPResidentInput",
+    "fields": [
+      {
+        "name": "first_name",
+        "type": "String!",
+        "defaultValue": null
+      },
+      {
+        "name": "middle_name",
+        "type": "String",
+        "defaultValue": null
+      },
+      {
+        "name": "last_name",
+        "type": "String!",
+        "defaultValue": null
+      },
+      {
+        "name": "inn",
+        "type": "String!",
+        "defaultValue": null
+      },
+      {
+        "name": "birth_date",
+        "type": "Date!",
+        "defaultValue": null
+      },
+      {
+        "name": "birth_place",
+        "type": "String",
+        "defaultValue": null
+      },
+      {
+        "name": "citizenship",
+        "type": "String!",
+        "defaultValue": null
+      },
+      {
+        "name": "passport",
+        "type": "PassportInput!",
+        "defaultValue": null
+      },
+      {
+        "name": "registration_address",
+        "type": "String!",
+        "defaultValue": null
+      },
+      {
+        "name": "residence_address",
+        "type": "String",
+        "defaultValue": null
+      },
+      {
+        "name": "registration_date",
+        "type": "Date!",
+        "defaultValue": null
+      },
+      {
+        "name": "phone",
+        "type": "String!",
+        "defaultValue": null
+      },
+      {
+        "name": "email",
+        "type": "String",
+        "defaultValue": null
+      }
+    ]
+  },
+  {
+    "name": "LicensePaymentInput",
+    "fields": [
+      {
+        "name": "license_price",
+        "type": "LicensePriceInput!",
+        "defaultValue": null
+      },
+      {
+        "name": "contractor_id",
+        "type": "Int",
+        "defaultValue": null
+      },
+      {
+        "name": "success_url",
+        "type": "String",
+        "defaultValue": null
+      },
+      {
+        "name": "fail_url",
+        "type": "String",
+        "defaultValue": null
+      }
+    ]
+  },
+  {
+    "name": "LicensePriceInput",
+    "fields": [
+      {
+        "name": "host_count",
+        "type": "Int!",
+        "defaultValue": null
+      },
+      {
+        "name": "license_tariff_id",
+        "type": "Int!",
+        "defaultValue": null
+      },
+      {
+        "name": "promocode",
+        "type": "String",
+        "defaultValue": null
+      },
+      {
+        "name": "license_payment_method",
+        "type": "LicensePaymentMethod!",
+        "defaultValue": null
+      },
+      {
+        "name": "auto_payment",
+        "type": "Boolean",
+        "defaultValue": null
+      },
+      {
+        "name": "club_id",
+        "type": "Int!",
+        "defaultValue": null
+      },
+      {
+        "name": "modules",
+        "type": "[Int]!",
+        "defaultValue": null
+      },
+      {
+        "name": "months",
+        "type": "Int!",
+        "defaultValue": null
+      }
+    ]
+  },
+  {
+    "name": "LicenseTariffCategoryInput",
+    "fields": [
+      {
+        "name": "id",
+        "type": "Int!",
+        "defaultValue": null
+      },
+      {
+        "name": "name",
+        "type": "String!",
+        "defaultValue": null
+      },
+      {
+        "name": "tariff_id",
+        "type": "Int!",
+        "defaultValue": null
+      }
+    ]
+  },
+  {
+    "name": "LicenseTariffInput",
+    "fields": [
+      {
+        "name": "name",
+        "type": "String!",
+        "defaultValue": null
+      },
+      {
+        "name": "description",
+        "type": "String",
+        "defaultValue": null
+      },
+      {
+        "name": "cost",
+        "type": "Float!",
+        "defaultValue": null
+      },
+      {
+        "name": "kz_cost",
+        "type": "Float!",
+        "defaultValue": null
+      }
+    ]
+  },
+  {
+    "name": "LicenseTariffModuleInput",
+    "fields": [
+      {
+        "name": "name",
+        "type": "String!",
+        "defaultValue": null
+      },
+      {
+        "name": "description",
+        "type": "String",
+        "defaultValue": null
+      },
+      {
+        "name": "cost",
+        "type": "Float!",
+        "defaultValue": null
+      },
+      {
+        "name": "kz_cost",
+        "type": "Float!",
+        "defaultValue": null
+      },
+      {
+        "name": "category_id",
+        "type": "Int!",
+        "defaultValue": null
+      },
+      {
+        "name": "alias",
+        "type": "String!",
+        "defaultValue": null
+      }
+    ]
+  },
+  {
+    "name": "ListBeneficiaryMovementsOfFunds",
+    "fields": [
+      {
+        "name": "type",
+        "type": "MovementTypeEnum",
+        "defaultValue": "DEPOSIT"
+      },
+      {
+        "name": "beneficiary_id",
+        "type": "String!",
+        "defaultValue": null
+      },
+      {
+        "name": "from",
+        "type": "DateTime",
+        "defaultValue": null
+      },
+      {
+        "name": "to",
+        "type": "DateTime",
+        "defaultValue": null
+      },
+      {
+        "name": "preset",
+        "type": "DateReportEnum",
+        "defaultValue": null
+      }
+    ]
+  },
+  {
+    "name": "LoginExistsInput",
+    "fields": [
+      {
+        "name": "login",
+        "type": "String!",
+        "defaultValue": null
+      }
+    ]
+  },
+  {
+    "name": "LoginInput",
+    "fields": [
+      {
+        "name": "login",
+        "type": "String!",
+        "defaultValue": null
+      },
+      {
+        "name": "password",
+        "type": "String!",
+        "defaultValue": null
+      },
+      {
+        "name": "company_id",
+        "type": "Int",
+        "defaultValue": null
+      }
+    ]
+  },
+  {
+    "name": "LoginQRInput",
+    "fields": [
+      {
+        "name": "qr",
+        "type": "String!",
+        "defaultValue": null
+      }
+    ]
+  },
+  {
+    "name": "LowStockNotificationInput",
+    "fields": [
+      {
+        "name": "enabled",
+        "type": "Boolean",
+        "defaultValue": null
+      },
+      {
+        "name": "threshold",
+        "type": "Int",
+        "defaultValue": null
+      }
+    ]
+  },
+  {
+    "name": "MagicInput",
+    "fields": [
+      {
+        "name": "id",
+        "type": "Int!",
+        "defaultValue": null
+      },
+      {
+        "name": "id2",
+        "type": "Int!",
+        "defaultValue": null
+      }
+    ]
+  },
+  {
+    "name": "MobileEventsInput",
+    "fields": [
+      {
+        "name": "types",
+        "type": "[String]!",
+        "defaultValue": null
+      },
+      {
+        "name": "start",
+        "type": "DateTime",
+        "defaultValue": null
+      },
+      {
+        "name": "finish",
+        "type": "DateTime",
+        "defaultValue": null
+      },
+      {
+        "name": "work_shift_id",
+        "type": "Int",
+        "defaultValue": null
+      },
+      {
+        "name": "q",
+        "type": "String",
+        "defaultValue": null
+      },
+      {
+        "name": "payment_method",
+        "type": "String",
+        "defaultValue": null
+      }
+    ]
+  },
+  {
+    "name": "NetworkCompanyInput",
+    "fields": [
+      {
+        "name": "max_discount_enabled",
+        "type": "Boolean",
+        "defaultValue": null
+      },
+      {
+        "name": "deposit_transfer_enabled",
+        "type": "Boolean",
+        "defaultValue": null
+      },
+      {
+        "name": "shortcut_sync",
+        "type": "SyncInput",
+        "defaultValue": null
+      }
+    ]
+  },
+  {
+    "name": "OrganizationConfirmationCodeInput",
+    "fields": [
+      {
+        "name": "phone",
+        "type": "String!",
+        "defaultValue": null
+      },
+      {
+        "name": "type",
+        "type": "OrganizationConfirmationCodeType!",
+        "defaultValue": null
+      },
+      {
+        "name": "code",
+        "type": "String!",
+        "defaultValue": null
+      }
+    ]
+  },
+  {
+    "name": "OrganizationInput",
+    "fields": [
+      {
+        "name": "email",
+        "type": "Email",
+        "defaultValue": null
+      },
+      {
+        "name": "news_consent",
+        "type": "Boolean",
+        "defaultValue": null
+      }
+    ]
+  },
+  {
+    "name": "OrganizationLoginInput",
+    "fields": [
+      {
+        "name": "phone",
+        "type": "String!",
+        "defaultValue": null
+      },
+      {
+        "name": "password",
+        "type": "String!",
+        "defaultValue": null
+      }
+    ]
+  },
+  {
+    "name": "OrganizationRegisterInput",
+    "fields": [
+      {
+        "name": "phone",
+        "type": "String!",
+        "defaultValue": null
+      },
+      {
+        "name": "email",
+        "type": "Email!",
+        "defaultValue": null
+      },
+      {
+        "name": "password",
+        "type": "String!",
+        "defaultValue": null
+      },
+      {
+        "name": "password_confirmation",
+        "type": "String!",
+        "defaultValue": null
+      },
+      {
+        "name": "captcha_token",
+        "type": "String!",
+        "defaultValue": null
+      },
+      {
+        "name": "news_consent",
+        "type": "Boolean",
+        "defaultValue": null
+      },
+      {
+        "name": "license_agreement",
+        "type": "Boolean",
+        "defaultValue": null
+      }
+    ]
+  },
+  {
+    "name": "OrganizationResetPasswordInput",
+    "fields": [
+      {
+        "name": "hash",
+        "type": "String!",
+        "defaultValue": null
+      },
+      {
+        "name": "code",
+        "type": "String!",
+        "defaultValue": null
+      },
+      {
+        "name": "password",
+        "type": "String!",
+        "defaultValue": null
+      },
+      {
+        "name": "password_confirmation",
+        "type": "String!",
+        "defaultValue": null
+      }
+    ]
+  },
+  {
+    "name": "OrganizationSendConfirmationCodeInput",
+    "fields": [
+      {
+        "name": "phone",
+        "type": "String!",
+        "defaultValue": null
+      },
+      {
+        "name": "type",
+        "type": "OrganizationConfirmationCodeType!",
+        "defaultValue": null
+      },
+      {
+        "name": "captcha_token",
+        "type": "String!",
+        "defaultValue": null
+      }
+    ]
+  },
+  {
+    "name": "OrganizationStartResetPasswordInput",
+    "fields": [
+      {
+        "name": "phone",
+        "type": "String!",
+        "defaultValue": null
+      },
+      {
+        "name": "captcha_token",
+        "type": "String!",
+        "defaultValue": null
+      }
+    ]
+  },
+  {
+    "name": "OrganizationVerifyConfirmationCodeInput",
+    "fields": [
+      {
+        "name": "hash",
+        "type": "String!",
+        "defaultValue": null
+      },
+      {
+        "name": "code",
+        "type": "String!",
+        "defaultValue": null
+      }
+    ]
+  },
+  {
+    "name": "OverviewExportInput",
+    "fields": [
+      {
+        "name": "from",
+        "type": "DateTime!",
+        "defaultValue": null
+      },
+      {
+        "name": "to",
+        "type": "DateTime!",
+        "defaultValue": null
+      }
+    ]
+  },
+  {
+    "name": "OwnerInput",
+    "fields": [
+      {
+        "name": "inn",
+        "type": "String!",
+        "defaultValue": null
+      },
+      {
+        "name": "company_id",
+        "type": "Int!",
+        "defaultValue": null
+      },
+      {
+        "name": "email",
+        "type": "Email!",
+        "defaultValue": null
+      },
+      {
+        "name": "private_policy",
+        "type": "String!",
+        "defaultValue": null
+      }
+    ]
+  },
+  {
+    "name": "PassportInput",
+    "fields": [
+      {
+        "name": "serial",
+        "type": "String!",
+        "defaultValue": null
+      },
+      {
+        "name": "number",
+        "type": "String!",
+        "defaultValue": null
+      },
+      {
+        "name": "date",
+        "type": "Date!",
+        "defaultValue": null
+      },
+      {
+        "name": "organization",
+        "type": "String",
+        "defaultValue": null
+      },
+      {
+        "name": "division_code",
+        "type": "String!",
+        "defaultValue": null
+      }
+    ]
+  },
+  {
+    "name": "PaymentInput",
+    "fields": [
+      {
+        "name": "method",
+        "type": "PaymentMethod!",
+        "defaultValue": null
+      },
+      {
+        "name": "client_uuid",
+        "type": "String",
+        "defaultValue": null
+      },
+      {
+        "name": "client_session_id",
+        "type": "Int",
+        "defaultValue": null
+      },
+      {
+        "name": "promo_code_id",
+        "type": "Int",
+        "defaultValue": null
+      },
+      {
+        "name": "discount_id",
+        "type": "Int",
+        "defaultValue": null
+      },
+      {
+        "name": "items",
+        "type": "[PaymentItemInput]!",
+        "defaultValue": null
+      },
+      {
+        "name": "card_sum",
+        "type": "Float",
+        "defaultValue": null
+      },
+      {
+        "name": "comment",
+        "type": "String",
+        "defaultValue": null
+      },
+      {
+        "name": "external_data",
+        "type": "ExternalPaymentDataInput",
+        "defaultValue": null
+      },
+      {
+        "name": "use_bonus",
+        "type": "Boolean",
+        "defaultValue": null
+      }
+    ]
+  },
+  {
+    "name": "PaymentItemInput",
+    "fields": [
+      {
+        "name": "type",
+        "type": "PaymentItemType!",
+        "defaultValue": null
+      },
+      {
+        "name": "entity_id",
+        "type": "Int",
+        "defaultValue": null
+      },
+      {
+        "name": "host_id",
+        "type": "Int",
+        "defaultValue": null
+      },
+      {
+        "name": "amount",
+        "type": "Int!",
+        "defaultValue": null
+      },
+      {
+        "name": "sum",
+        "type": "Float",
+        "defaultValue": null
+      }
+    ]
+  },
+  {
+    "name": "PaymentsReport",
+    "fields": [
+      {
+        "name": "from",
+        "type": "DateTime!",
+        "defaultValue": null
+      },
+      {
+        "name": "to",
+        "type": "DateTime!",
+        "defaultValue": null
+      }
+    ]
+  },
+  {
+    "name": "PaymentTransactionInput",
+    "fields": [
+      {
+        "name": "phone",
+        "type": "String",
+        "defaultValue": null
+      },
+      {
+        "name": "company_id",
+        "type": "Int!",
+        "defaultValue": null
+      },
+      {
+        "name": "service",
+        "type": "ServiceEnum!",
+        "defaultValue": null
+      },
+      {
+        "name": "amount",
+        "type": "Float!",
+        "defaultValue": null
+      },
+      {
+        "name": "return_format",
+        "type": "ReturnFormatEnum",
+        "defaultValue": "LINK"
+      },
+      {
+        "name": "success_url",
+        "type": "String",
+        "defaultValue": null
+      },
+      {
+        "name": "fail_url",
+        "type": "String",
+        "defaultValue": null
+      }
+    ]
+  },
+  {
+    "name": "PenaltyHostInput",
+    "fields": [
+      {
+        "name": "host_id",
+        "type": "Int!",
+        "defaultValue": null
+      },
+      {
+        "name": "seconds",
+        "type": "Int!",
+        "defaultValue": null
+      }
+    ]
+  },
+  {
+    "name": "PermissionInput",
+    "fields": [
+      {
+        "name": "id",
+        "type": "Int!",
+        "defaultValue": null
+      },
+      {
+        "name": "alias",
+        "type": "String!",
+        "defaultValue": null
+      },
+      {
+        "name": "enabled",
+        "type": "Boolean!",
+        "defaultValue": null
+      }
+    ]
+  },
+  {
+    "name": "PhoneExistsInput",
+    "fields": [
+      {
+        "name": "phone",
+        "type": "String!",
+        "defaultValue": null
+      }
+    ]
+  },
+  {
+    "name": "pickGameAccountInput",
+    "fields": [
+      {
+        "name": "shortcut_id",
+        "type": "Int!",
+        "defaultValue": null
+      }
+    ]
+  },
+  {
+    "name": "ProcessPostPaymentInput",
+    "fields": [
+      {
+        "name": "method",
+        "type": "PaymentMethod",
+        "defaultValue": null
+      },
+      {
+        "name": "cash_sum",
+        "type": "Float",
+        "defaultValue": null
+      },
+      {
+        "name": "comment",
+        "type": "String",
+        "defaultValue": null
+      },
+      {
+        "name": "confirm_pass",
+        "type": "String",
+        "defaultValue": null
+      }
+    ]
+  },
+  {
+    "name": "ProcessStatsInput",
+    "fields": [
+      {
+        "name": "windows",
+        "type": "[ProcessStatsItemInput]!",
+        "defaultValue": null
+      },
+      {
+        "name": "applications",
+        "type": "[ProcessStatsItemInput]!",
+        "defaultValue": null
+      }
+    ]
+  },
+  {
+    "name": "ProcessStatsItemInput",
+    "fields": [
+      {
+        "name": "name",
+        "type": "String!",
+        "defaultValue": null
+      },
+      {
+        "name": "path",
+        "type": "String!",
+        "defaultValue": null
+      },
+      {
+        "name": "seconds",
+        "type": "Int!",
+        "defaultValue": null
+      }
+    ]
+  },
+  {
+    "name": "PromoCodeInput",
+    "fields": [
+      {
+        "name": "client_id",
+        "type": "Int",
+        "defaultValue": null
+      },
+      {
+        "name": "code",
+        "type": "String!",
+        "defaultValue": null
+      },
+      {
+        "name": "value",
+        "type": "Float!",
+        "defaultValue": null
+      },
+      {
+        "name": "amount",
+        "type": "Int",
+        "defaultValue": null
+      },
+      {
+        "name": "entity",
+        "type": "CartEntity",
+        "defaultValue": null
+      },
+      {
+        "name": "entity_id",
+        "type": "Int",
+        "defaultValue": null
+      },
+      {
+        "name": "is_tracked",
+        "type": "Boolean",
+        "defaultValue": null
+      }
+    ]
+  },
+  {
+    "name": "PublicationPeriodInput",
+    "fields": [
+      {
+        "name": "from",
+        "type": "DateTime",
+        "defaultValue": null
+      },
+      {
+        "name": "until",
+        "type": "DateTime",
+        "defaultValue": null
+      }
+    ]
+  },
+  {
+    "name": "RefreshTokenInput",
+    "fields": [
+      {
+        "name": "refresh_token",
+        "type": "String!",
+        "defaultValue": null
+      }
+    ]
+  },
+  {
+    "name": "RefundPaymentInput",
+    "fields": [
+      {
+        "name": "id",
+        "type": "Int!",
+        "defaultValue": null
+      },
+      {
+        "name": "comment",
+        "type": "String",
+        "defaultValue": null
+      }
+    ]
+  },
+  {
+    "name": "RegisterHostInput",
+    "fields": [
+      {
+        "name": "group_id",
+        "type": "Int!",
+        "defaultValue": null
+      },
+      {
+        "name": "mac_addr",
+        "type": "MacAddress!",
+        "defaultValue": null
+      },
+      {
+        "name": "dns_name",
+        "type": "String!",
+        "defaultValue": null
+      },
+      {
+        "name": "alias",
+        "type": "String!",
+        "defaultValue": null
+      }
+    ]
+  },
+  {
+    "name": "RegisterInput",
+    "fields": [
+      {
+        "name": "login",
+        "type": "String!",
+        "defaultValue": null
+      },
+      {
+        "name": "email",
+        "type": "Email",
+        "defaultValue": null
+      },
+      {
+        "name": "phone",
+        "type": "String!",
+        "defaultValue": null
+      },
+      {
+        "name": "password",
+        "type": "String!",
+        "defaultValue": null
+      },
+      {
+        "name": "dob",
+        "type": "Date!",
+        "defaultValue": null
+      },
+      {
+        "name": "news_consent",
+        "type": "Boolean",
+        "defaultValue": null
+      },
+      {
+        "name": "captcha_token",
+        "type": "String",
+        "defaultValue": null
+      },
+      {
+        "name": "consents",
+        "type": "UserConsentsInput",
+        "defaultValue": null
+      },
+      {
+        "name": "type",
+        "type": "RegisterType",
+        "defaultValue": null
+      },
+      {
+        "name": "first_name",
+        "type": "String",
+        "defaultValue": null
+      }
+    ]
+  },
+  {
+    "name": "ReportInput",
+    "fields": [
+      {
+        "name": "start",
+        "type": "DateTime!",
+        "defaultValue": null
+      },
+      {
+        "name": "end",
+        "type": "DateTime!",
+        "defaultValue": null
+      }
+    ]
+  },
+  {
+    "name": "ReportSortInput",
+    "fields": [
+      {
+        "name": "field",
+        "type": "String!",
+        "defaultValue": null
+      },
+      {
+        "name": "direction",
+        "type": "String!",
+        "defaultValue": null
+      }
+    ]
+  },
+  {
+    "name": "ResetPasswordInput",
+    "fields": [
+      {
+        "name": "phone",
+        "type": "String!",
+        "defaultValue": null
+      },
+      {
+        "name": "confirmation_code",
+        "type": "String!",
+        "defaultValue": null
+      },
+      {
+        "name": "password",
+        "type": "String!",
+        "defaultValue": null
+      },
+      {
+        "name": "password_confirmation",
+        "type": "String!",
+        "defaultValue": null
+      }
+    ]
+  },
+  {
+    "name": "ResultHostCommandInput",
+    "fields": [
+      {
+        "name": "id",
+        "type": "Int!",
+        "defaultValue": null
+      },
+      {
+        "name": "status",
+        "type": "Boolean!",
+        "defaultValue": null
+      },
+      {
+        "name": "result",
+        "type": "String",
+        "defaultValue": null
+      }
+    ]
+  },
+  {
+    "name": "RewardRequest",
+    "fields": [
+      {
+        "name": "name",
+        "type": "String!",
+        "defaultValue": null
+      },
+      {
+        "name": "value",
+        "type": "Float!",
+        "defaultValue": null
+      }
+    ]
+  },
+  {
+    "name": "RulesMessage",
+    "fields": [
+      {
+        "name": "rule",
+        "type": "String!",
+        "defaultValue": null
+      },
+      {
+        "name": "message",
+        "type": "String!",
+        "defaultValue": null
+      }
+    ]
+  },
+  {
+    "name": "SalesExportInput",
+    "fields": [
+      {
+        "name": "from",
+        "type": "DateTime!",
+        "defaultValue": null
+      },
+      {
+        "name": "to",
+        "type": "DateTime!",
+        "defaultValue": null
+      }
+    ]
+  },
+  {
+    "name": "SearchComboInput",
+    "fields": [
+      {
+        "name": "q",
+        "type": "String",
+        "defaultValue": null
+      },
+      {
+        "name": "host_group_id",
+        "type": "Int",
+        "defaultValue": null
+      }
+    ]
+  },
+  {
+    "name": "SearchReportInput",
+    "fields": [
+      {
+        "name": "q",
+        "type": "String!",
+        "defaultValue": null
+      }
+    ]
+  },
+  {
+    "name": "SendConfirmationCodeInput",
+    "fields": [
+      {
+        "name": "phone",
+        "type": "String",
+        "defaultValue": null
+      },
+      {
+        "name": "type",
+        "type": "ConfirmationCodeType",
+        "defaultValue": null
+      },
+      {
+        "name": "method",
+        "type": "MethodType",
+        "defaultValue": null
+      },
+      {
+        "name": "captcha_token",
+        "type": "String",
+        "defaultValue": null
+      }
+    ]
+  },
+  {
+    "name": "SendConfirmationCodeToEnterInput",
+    "fields": [
+      {
+        "name": "login",
+        "type": "String!",
+        "defaultValue": null
+      },
+      {
+        "name": "password",
+        "type": "String!",
+        "defaultValue": null
+      },
+      {
+        "name": "email",
+        "type": "String!",
+        "defaultValue": null
+      }
+    ]
+  },
+  {
+    "name": "SendWakePacketInput",
+    "fields": [
+      {
+        "name": "host_id",
+        "type": "Int!",
+        "defaultValue": null
+      }
+    ]
+  },
+  {
+    "name": "SendWakePacketsInput",
+    "fields": [
+      {
+        "name": "host_ids",
+        "type": "[Int]!",
+        "defaultValue": null
+      }
+    ]
+  },
+  {
+    "name": "ServiceInput",
+    "fields": [
+      {
+        "name": "title",
+        "type": "String!",
+        "defaultValue": null
+      },
+      {
+        "name": "cost",
+        "type": "Float!",
+        "defaultValue": null
+      },
+      {
+        "name": "wholesale_cost",
+        "type": "Float!",
+        "defaultValue": null
+      },
+      {
+        "name": "tax_percent",
+        "type": "Float",
+        "defaultValue": null
+      },
+      {
+        "name": "use_global_discounts",
+        "type": "Boolean!",
+        "defaultValue": null
+      },
+      {
+        "name": "tax_system",
+        "type": "TaxSystem",
+        "defaultValue": null
+      },
+      {
+        "name": "vat",
+        "type": "Vat",
+        "defaultValue": null
+      },
+      {
+        "name": "ean",
+        "type": "String",
+        "defaultValue": null
+      }
+    ]
+  },
+  {
+    "name": "ServicesInput",
+    "fields": [
+      {
+        "name": "client_uuid",
+        "type": "String",
+        "defaultValue": null
+      },
+      {
+        "name": "use_global_discounts",
+        "type": "Boolean",
+        "defaultValue": null
+      }
+    ]
+  },
+  {
+    "name": "SessionsMoneyReport",
+    "fields": [
+      {
+        "name": "from",
+        "type": "DateTime!",
+        "defaultValue": null
+      },
+      {
+        "name": "to",
+        "type": "DateTime!",
+        "defaultValue": null
+      },
+      {
+        "name": "slice",
+        "type": "SliceType!",
+        "defaultValue": null
+      }
+    ]
+  },
+  {
+    "name": "SetBonusInput",
+    "fields": [
+      {
+        "name": "client_uuid",
+        "type": "String!",
+        "defaultValue": null
+      },
+      {
+        "name": "value",
+        "type": "Float!",
+        "defaultValue": null
+      }
+    ]
+  },
+  {
+    "name": "SetCloudPaymentsAccountToCompanyInput",
+    "fields": [
+      {
+        "name": "action",
+        "type": "CloudPaymentsAccountAction!",
+        "defaultValue": null
+      },
+      {
+        "name": "publicId",
+        "type": "String",
+        "defaultValue": null
+      },
+      {
+        "name": "secretKey",
+        "type": "String",
+        "defaultValue": null
+      },
+      {
+        "name": "vat",
+        "type": "Vat",
+        "defaultValue": null
+      }
+    ]
+  },
+  {
+    "name": "SetDepositInput",
+    "fields": [
+      {
+        "name": "client_uuid",
+        "type": "String!",
+        "defaultValue": null
+      },
+      {
+        "name": "value",
+        "type": "Float!",
+        "defaultValue": null
+      }
+    ]
+  },
+  {
+    "name": "SetTelegramChannelInput",
+    "fields": [
+      {
+        "name": "value",
+        "type": "String",
+        "defaultValue": null
+      }
+    ]
+  },
+  {
+    "name": "SetTelegramSettingsInput",
+    "fields": [
+      {
+        "name": "token",
+        "type": "String",
+        "defaultValue": null
+      },
+      {
+        "name": "chat_id",
+        "type": "String",
+        "defaultValue": null
+      },
+      {
+        "name": "notification",
+        "type": "String",
+        "defaultValue": null
+      }
+    ]
+  },
+  {
+    "name": "SetUserDiscountInput",
+    "fields": [
+      {
+        "name": "client_uuid",
+        "type": "String!",
+        "defaultValue": null
+      },
+      {
+        "name": "value",
+        "type": "Int!",
+        "defaultValue": null
+      }
+    ]
+  },
+  {
+    "name": "ShortcutGroupInput",
+    "fields": [
+      {
+        "name": "title",
+        "type": "String!",
+        "defaultValue": null
+      },
+      {
+        "name": "sort",
+        "type": "Int",
+        "defaultValue": null
+      },
+      {
+        "name": "groupType",
+        "type": "AppGroupType",
+        "defaultValue": null
+      }
+    ]
+  },
+  {
+    "name": "ShortcutGroupItem",
+    "fields": [
+      {
+        "name": "title",
+        "type": "String!",
+        "defaultValue": null
+      },
+      {
+        "name": "groupType",
+        "type": "AppGroupType",
+        "defaultValue": null
+      }
+    ]
+  },
+  {
+    "name": "ShortcutImageInput",
+    "fields": [
+      {
+        "name": "file",
+        "type": "Upload!",
+        "defaultValue": null
+      }
+    ]
+  },
+  {
+    "name": "ShortcutInput",
+    "fields": [
+      {
+        "name": "title",
+        "type": "String",
+        "defaultValue": null
+      },
+      {
+        "name": "group_id",
+        "type": "Int",
+        "defaultValue": null
+      },
+      {
+        "name": "game_account_group_id",
+        "type": "Int",
+        "defaultValue": null
+      },
+      {
+        "name": "path",
+        "type": "[String]!",
+        "defaultValue": null
+      },
+      {
+        "name": "paths",
+        "type": "ShortcutPath",
+        "defaultValue": null
+      },
+      {
+        "name": "type",
+        "type": "AppType",
+        "defaultValue": null
+      },
+      {
+        "name": "popular",
+        "type": "Boolean",
+        "defaultValue": null
+      },
+      {
+        "name": "sort",
+        "type": "Int",
+        "defaultValue": null
+      },
+      {
+        "name": "args",
+        "type": "String",
+        "defaultValue": null
+      },
+      {
+        "name": "icon_path",
+        "type": "String",
+        "defaultValue": null
+      },
+      {
+        "name": "password",
+        "type": "String",
+        "defaultValue": null
+      },
+      {
+        "name": "main_picture",
+        "type": "String",
+        "defaultValue": null
+      },
+      {
+        "name": "run_as_admin",
+        "type": "Boolean",
+        "defaultValue": null
+      },
+      {
+        "name": "work_dir",
+        "type": "String",
+        "defaultValue": null
+      },
+      {
+        "name": "only_for_registered",
+        "type": "Boolean",
+        "defaultValue": null
+      },
+      {
+        "name": "age_rating",
+        "type": "Int",
+        "defaultValue": null
+      },
+      {
+        "name": "free_run",
+        "type": "Boolean",
+        "defaultValue": null
+      },
+      {
+        "name": "high_access_only",
+        "type": "Boolean",
+        "defaultValue": null
+      },
+      {
+        "name": "description",
+        "type": "String",
+        "defaultValue": null
+      },
+      {
+        "name": "screenshots",
+        "type": "ShortcutScreenshots",
+        "defaultValue": null
+      },
+      {
+        "name": "template_id",
+        "type": "Int",
+        "defaultValue": null
+      }
+    ]
+  },
+  {
+    "name": "ShortcutPath",
+    "fields": [
+      {
+        "name": "value",
+        "type": "[String]!",
+        "defaultValue": null
+      }
+    ]
+  },
+  {
+    "name": "ShortcutScreenshots",
+    "fields": [
+      {
+        "name": "value",
+        "type": "[String]!",
+        "defaultValue": null
+      }
+    ]
+  },
+  {
+    "name": "ShortcutStatsInput",
+    "fields": [
+      {
+        "name": "id",
+        "type": "Int!",
+        "defaultValue": null
+      }
+    ]
+  },
+  {
+    "name": "SortInput",
+    "fields": [
+      {
+        "name": "field",
+        "type": "String!",
+        "defaultValue": null
+      },
+      {
+        "name": "direction",
+        "type": "String!",
+        "defaultValue": null
+      }
+    ]
+  },
+  {
+    "name": "StartClientSessionInput",
+    "fields": [
+      {
+        "name": "user_id",
+        "type": "Int",
+        "defaultValue": null
+      },
+      {
+        "name": "host_id",
+        "type": "Int",
+        "defaultValue": null
+      },
+      {
+        "name": "post_paid",
+        "type": "Boolean",
+        "defaultValue": null
+      }
+    ]
+  },
+  {
+    "name": "StartWorkShiftInput",
+    "fields": [
+      {
+        "name": "cash",
+        "type": "Float!",
+        "defaultValue": null
+      }
+    ]
+  },
+  {
+    "name": "StripeAccountInput",
+    "fields": [
+      {
+        "name": "secret_key",
+        "type": "String!",
+        "defaultValue": null
+      },
+      {
+        "name": "publishable_key",
+        "type": "String!",
+        "defaultValue": null
+      }
+    ]
+  },
+  {
+    "name": "SyncInput",
+    "fields": [
+      {
+        "name": "enabled",
+        "type": "Boolean!",
+        "defaultValue": null
+      },
+      {
+        "name": "mode",
+        "type": "SyncMode!",
+        "defaultValue": null
+      }
+    ]
+  },
+  {
+    "name": "TariffGridInput",
+    "fields": [
+      {
+        "name": "host_group_id",
+        "type": "Int",
+        "defaultValue": null
+      },
+      {
+        "name": "host_id",
+        "type": "Int",
+        "defaultValue": null
+      },
+      {
+        "name": "client_id",
+        "type": "Int",
+        "defaultValue": null
+      },
+      {
+        "name": "client_uuid",
+        "type": "String",
+        "defaultValue": null
+      },
+      {
+        "name": "shift",
+        "type": "Int",
+        "defaultValue": null
+      },
+      {
+        "name": "use_bonus",
+        "type": "Boolean",
+        "defaultValue": null
+      }
+    ]
+  },
+  {
+    "name": "TariffInput",
+    "fields": [
+      {
+        "name": "use_global_discounts",
+        "type": "Boolean!",
+        "defaultValue": null
+      },
+      {
+        "name": "has_fixed_finish_time",
+        "type": "Boolean!",
+        "defaultValue": null
+      },
+      {
+        "name": "duration",
+        "type": "Int!",
+        "defaultValue": null
+      },
+      {
+        "name": "title",
+        "type": "String!",
+        "defaultValue": null
+      },
+      {
+        "name": "is_active",
+        "type": "Boolean!",
+        "defaultValue": null
+      },
+      {
+        "name": "per_minute",
+        "type": "Boolean!",
+        "defaultValue": null
+      },
+      {
+        "name": "show_in_shell",
+        "type": "Boolean!",
+        "defaultValue": null
+      },
+      {
+        "name": "show_in_billing",
+        "type": "Boolean",
+        "defaultValue": null
+      },
+      {
+        "name": "schedules",
+        "type": "[TariffPeriodInput]!",
+        "defaultValue": null
+      },
+      {
+        "name": "sell_schedules",
+        "type": "[TariffPeriodInput]!",
+        "defaultValue": null
+      },
+      {
+        "name": "price_list",
+        "type": "[TariffPricelistInput]!",
+        "defaultValue": null
+      },
+      {
+        "name": "pausable",
+        "type": "Boolean",
+        "defaultValue": null
+      },
+      {
+        "name": "lifetime",
+        "type": "Int",
+        "defaultValue": null
+      },
+      {
+        "name": "ean",
+        "type": "String",
+        "defaultValue": null
+      },
+      {
+        "name": "highlighted",
+        "type": "Boolean",
+        "defaultValue": null
+      },
+      {
+        "name": "description",
+        "type": "String",
+        "defaultValue": null
+      },
+      {
+        "name": "sort",
+        "type": "Int",
+        "defaultValue": null
+      },
+      {
+        "name": "is_tracked",
+        "type": "Boolean",
+        "defaultValue": null
+      },
+      {
+        "name": "disable_sale_receipt_printing",
+        "type": "Boolean",
+        "defaultValue": null
+      },
+      {
+        "name": "online_booking_enabled",
+        "type": "Boolean",
+        "defaultValue": null
+      },
+      {
+        "name": "use_on_holidays",
+        "type": "Boolean",
+        "defaultValue": null
+      },
+      {
+        "name": "bonus_usage_disabled",
+        "type": "Boolean",
+        "defaultValue": null
+      }
+    ]
+  },
+  {
+    "name": "TariffPeriodInput",
+    "fields": [
+      {
+        "name": "start",
+        "type": "Int!",
+        "defaultValue": null
+      },
+      {
+        "name": "end",
+        "type": "Int!",
+        "defaultValue": null
+      }
+    ]
+  },
+  {
+    "name": "TariffPricelistCostMapInput",
+    "fields": [
+      {
+        "name": "title",
+        "type": "TariffPricelistCostMapType!",
+        "defaultValue": null
+      },
+      {
+        "name": "value",
+        "type": "Float!",
+        "defaultValue": null
+      },
+      {
+        "name": "currency",
+        "type": "String!",
+        "defaultValue": null
+      }
+    ]
+  },
+  {
+    "name": "TariffPricelistInput",
+    "fields": [
+      {
+        "name": "host_groups",
+        "type": "[Int]!",
+        "defaultValue": null
+      },
+      {
+        "name": "cost_map",
+        "type": "[TariffPricelistCostMapInput]!",
+        "defaultValue": null
+      }
+    ]
+  },
+  {
+    "name": "TariffPurchaseByQRInput",
+    "fields": [
+      {
+        "name": "tariff_id",
+        "type": "Int!",
+        "defaultValue": null
+      },
+      {
+        "name": "qr",
+        "type": "String!",
+        "defaultValue": null
+      }
+    ]
+  },
+  {
+    "name": "TariffsFilterInput",
+    "fields": [
+      {
+        "name": "use_global_discounts",
+        "type": "Boolean",
+        "defaultValue": null
+      }
+    ]
+  },
+  {
+    "name": "TransferDepositInput",
+    "fields": [
+      {
+        "name": "source_company_id",
+        "type": "Int!",
+        "defaultValue": null
+      },
+      {
+        "name": "target_company_id",
+        "type": "Int",
+        "defaultValue": null
+      },
+      {
+        "name": "value",
+        "type": "Float!",
+        "defaultValue": null
+      }
+    ]
+  },
+  {
+    "name": "ULResidentInput",
+    "fields": [
+      {
+        "name": "name",
+        "type": "String!",
+        "defaultValue": null
+      },
+      {
+        "name": "opf",
+        "type": "OpfType!",
+        "defaultValue": null
+      },
+      {
+        "name": "inn",
+        "type": "String!",
+        "defaultValue": null
+      },
+      {
+        "name": "ogrn",
+        "type": "String!",
+        "defaultValue": null
+      },
+      {
+        "name": "registration_date",
+        "type": "Date!",
+        "defaultValue": null
+      },
+      {
+        "name": "legal_entity_address",
+        "type": "String!",
+        "defaultValue": null
+      },
+      {
+        "name": "phone",
+        "type": "String!",
+        "defaultValue": null
+      },
+      {
+        "name": "email",
+        "type": "String",
+        "defaultValue": null
+      }
+    ]
+  },
+  {
+    "name": "UniqueUsersReport",
+    "fields": [
+      {
+        "name": "from",
+        "type": "DateTime!",
+        "defaultValue": null
+      },
+      {
+        "name": "to",
+        "type": "DateTime!",
+        "defaultValue": null
+      },
+      {
+        "name": "slice",
+        "type": "SliceType!",
+        "defaultValue": null
+      }
+    ]
+  },
+  {
+    "name": "UpdateBankAccountInput",
+    "fields": [
+      {
+        "name": "bank_name",
+        "type": "String!",
+        "defaultValue": null
+      },
+      {
+        "name": "bank_bik",
+        "type": "String!",
+        "defaultValue": null
+      },
+      {
+        "name": "bank_kpp",
+        "type": "String",
+        "defaultValue": null
+      },
+      {
+        "name": "bank_account",
+        "type": "String!",
+        "defaultValue": null
+      },
+      {
+        "name": "correspondent_account",
+        "type": "String!",
+        "defaultValue": null
+      }
+    ]
+  },
+  {
+    "name": "UpdateClientMeInput",
+    "fields": [
+      {
+        "name": "first_name",
+        "type": "String",
+        "defaultValue": null
+      },
+      {
+        "name": "last_name",
+        "type": "String",
+        "defaultValue": null
+      },
+      {
+        "name": "middle_name",
+        "type": "String",
+        "defaultValue": null
+      },
+      {
+        "name": "nickname",
+        "type": "String",
+        "defaultValue": null
+      },
+      {
+        "name": "email",
+        "type": "Email",
+        "defaultValue": null
+      },
+      {
+        "name": "dob",
+        "type": "Date",
+        "defaultValue": null
+      },
+      {
+        "name": "city",
+        "type": "String",
+        "defaultValue": null
+      },
+      {
+        "name": "avatar_url",
+        "type": "String",
+        "defaultValue": null
+      },
+      {
+        "name": "telegram_link",
+        "type": "String",
+        "defaultValue": null
+      },
+      {
+        "name": "discord_link",
+        "type": "String",
+        "defaultValue": null
+      },
+      {
+        "name": "steam_link",
+        "type": "String",
+        "defaultValue": null
+      },
+      {
+        "name": "vk_link",
+        "type": "String",
+        "defaultValue": null
+      },
+      {
+        "name": "is_private",
+        "type": "Boolean",
+        "defaultValue": null
+      },
+      {
+        "name": "favorite_club",
+        "type": "Int",
+        "defaultValue": null
+      }
+    ]
+  },
+  {
+    "name": "UpdateClubInput",
+    "fields": [
+      {
+        "name": "name",
+        "type": "String",
+        "defaultValue": null
+      },
+      {
+        "name": "address",
+        "type": "String",
+        "defaultValue": null
+      },
+      {
+        "name": "city",
+        "type": "String",
+        "defaultValue": null
+      },
+      {
+        "name": "street",
+        "type": "String",
+        "defaultValue": null
+      },
+      {
+        "name": "house_number",
+        "type": "String",
+        "defaultValue": null
+      },
+      {
+        "name": "contact_name",
+        "type": "String",
+        "defaultValue": null
+      },
+      {
+        "name": "contact_type",
+        "type": "OrganizationUserType",
+        "defaultValue": null
+      },
+      {
+        "name": "contact_phone",
+        "type": "String",
+        "defaultValue": null
+      },
+      {
+        "name": "url",
+        "type": "String",
+        "defaultValue": null
+      },
+      {
+        "name": "telegram",
+        "type": "String",
+        "defaultValue": null
+      },
+      {
+        "name": "info",
+        "type": "String",
+        "defaultValue": null
+      },
+      {
+        "name": "timezone",
+        "type": "Int",
+        "defaultValue": null
+      },
+      {
+        "name": "country_code",
+        "type": "String",
+        "defaultValue": null
+      },
+      {
+        "name": "verify",
+        "type": "Boolean",
+        "defaultValue": null
+      },
+      {
+        "name": "club_phone",
+        "type": "String",
+        "defaultValue": null
+      },
+      {
+        "name": "vk_url",
+        "type": "String",
+        "defaultValue": null
+      },
+      {
+        "name": "telegram_url",
+        "type": "String",
+        "defaultValue": null
+      },
+      {
+        "name": "whats_up_url",
+        "type": "String",
+        "defaultValue": null
+      },
+      {
+        "name": "region",
+        "type": "String",
+        "defaultValue": null
+      },
+      {
+        "name": "comment",
+        "type": "String",
+        "defaultValue": null
+      },
+      {
+        "name": "country",
+        "type": "String",
+        "defaultValue": null
+      },
+      {
+        "name": "lat",
+        "type": "Float",
+        "defaultValue": null
+      },
+      {
+        "name": "lng",
+        "type": "Float",
+        "defaultValue": null
+      },
+      {
+        "name": "work_schedule",
+        "type": "[ClubWorkScheduleInput]!",
+        "defaultValue": null
+      },
+      {
+        "name": "work_schedule_247",
+        "type": "Boolean",
+        "defaultValue": null
+      },
+      {
+        "name": "hardware",
+        "type": "[ClubHardwareInput]!",
+        "defaultValue": null
+      },
+      {
+        "name": "logo_url",
+        "type": "String",
+        "defaultValue": null
+      },
+      {
+        "name": "header_url",
+        "type": "String",
+        "defaultValue": null
+      },
+      {
+        "name": "pricelist_urls",
+        "type": "[String]!",
+        "defaultValue": null
+      },
+      {
+        "name": "interior_urls",
+        "type": "[String]!",
+        "defaultValue": null
+      },
+      {
+        "name": "services",
+        "type": "ClubServicesInput",
+        "defaultValue": null
+      },
+      {
+        "name": "metro",
+        "type": "String",
+        "defaultValue": null
+      }
+    ]
+  },
+  {
+    "name": "UpdateCompanyPermissionsInput",
+    "fields": [
+      {
+        "name": "company_permissions",
+        "type": "[CompanyPermissionsInput]!",
+        "defaultValue": null
+      }
+    ]
+  },
+  {
+    "name": "UpdateGameAccountInput",
+    "fields": [
+      {
+        "name": "login",
+        "type": "String!",
+        "defaultValue": null
+      },
+      {
+        "name": "password",
+        "type": "String",
+        "defaultValue": null
+      },
+      {
+        "name": "active",
+        "type": "Boolean!",
+        "defaultValue": null
+      },
+      {
+        "name": "group_id",
+        "type": "Int!",
+        "defaultValue": null
+      },
+      {
+        "name": "host_id",
+        "type": "Int",
+        "defaultValue": null
+      }
+    ]
+  },
+  {
+    "name": "UpdateGoodInput",
+    "fields": [
+      {
+        "name": "title",
+        "type": "String",
+        "defaultValue": null
+      },
+      {
+        "name": "subtitle",
+        "type": "String",
+        "defaultValue": null
+      },
+      {
+        "name": "comment",
+        "type": "String",
+        "defaultValue": null
+      },
+      {
+        "name": "cost",
+        "type": "Float",
+        "defaultValue": null
+      },
+      {
+        "name": "wholesale_cost",
+        "type": "Float",
+        "defaultValue": null
+      },
+      {
+        "name": "tax_percent",
+        "type": "Float",
+        "defaultValue": null
+      },
+      {
+        "name": "unit_name",
+        "type": "String",
+        "defaultValue": null
+      },
+      {
+        "name": "unit_value",
+        "type": "Float",
+        "defaultValue": null
+      },
+      {
+        "name": "amount",
+        "type": "Int",
+        "defaultValue": null
+      },
+      {
+        "name": "image",
+        "type": "String",
+        "defaultValue": null
+      },
+      {
+        "name": "use_global_discounts",
+        "type": "Boolean",
+        "defaultValue": null
+      },
+      {
+        "name": "tax_system",
+        "type": "TaxSystem",
+        "defaultValue": null
+      },
+      {
+        "name": "vat",
+        "type": "Vat",
+        "defaultValue": null
+      },
+      {
+        "name": "use_fair_sign",
+        "type": "Boolean",
+        "defaultValue": null
+      },
+      {
+        "name": "is_excise",
+        "type": "Boolean",
+        "defaultValue": null
+      },
+      {
+        "name": "price",
+        "type": "Float",
+        "defaultValue": null
+      },
+      {
+        "name": "show_in_shell",
+        "type": "Boolean",
+        "defaultValue": null
+      },
+      {
+        "name": "category_id",
+        "type": "Int",
+        "defaultValue": null
+      },
+      {
+        "name": "highlighted",
+        "type": "Boolean",
+        "defaultValue": null
+      }
+    ]
+  },
+  {
+    "name": "UpdateGoodsInput",
+    "fields": [
+      {
+        "name": "show_in_shell",
+        "type": "Boolean",
+        "defaultValue": null
+      },
+      {
+        "name": "category_id",
+        "type": "Int",
+        "defaultValue": null
+      },
+      {
+        "name": "low_stock_notification",
+        "type": "LowStockNotificationInput",
+        "defaultValue": null
+      },
+      {
+        "name": "highlighted",
+        "type": "Boolean",
+        "defaultValue": null
+      }
+    ]
+  },
+  {
+    "name": "UpdateHostCommandStatusInput",
+    "fields": [
+      {
+        "name": "id",
+        "type": "Int!",
+        "defaultValue": null
+      },
+      {
+        "name": "success",
+        "type": "Boolean!",
+        "defaultValue": null
+      }
+    ]
+  },
+  {
+    "name": "UpdateHostCommandTemplateInput",
+    "fields": [
+      {
+        "name": "id",
+        "type": "Int!",
+        "defaultValue": null
+      },
+      {
+        "name": "title",
+        "type": "String!",
+        "defaultValue": null
+      },
+      {
+        "name": "path",
+        "type": "String!",
+        "defaultValue": null
+      },
+      {
+        "name": "arguments",
+        "type": "String",
+        "defaultValue": null
+      }
+    ]
+  },
+  {
+    "name": "UpdateHostStateInput",
+    "fields": [
+      {
+        "name": "cpu_temp",
+        "type": "Float!",
+        "defaultValue": null
+      },
+      {
+        "name": "disk_temp",
+        "type": "Float!",
+        "defaultValue": null
+      },
+      {
+        "name": "disk_status",
+        "type": "[HostDiskInfoInput]!",
+        "defaultValue": null
+      },
+      {
+        "name": "active_window",
+        "type": "String!",
+        "defaultValue": null
+      },
+      {
+        "name": "com_result",
+        "type": "ResultHostCommandInput",
+        "defaultValue": null
+      }
+    ]
+  },
+  {
+    "name": "UpdateMeInput",
+    "fields": [
+      {
+        "name": "first_name",
+        "type": "String",
+        "defaultValue": null
+      },
+      {
+        "name": "last_name",
+        "type": "String",
+        "defaultValue": null
+      },
+      {
+        "name": "middle_name",
+        "type": "String",
+        "defaultValue": null
+      },
+      {
+        "name": "nickname",
+        "type": "String",
+        "defaultValue": null
+      },
+      {
+        "name": "email",
+        "type": "String",
+        "defaultValue": null
+      },
+      {
+        "name": "news_consent",
+        "type": "Boolean",
+        "defaultValue": null
+      },
+      {
+        "name": "password",
+        "type": "String",
+        "defaultValue": null
+      },
+      {
+        "name": "password_confirmation",
+        "type": "String",
+        "defaultValue": null
+      },
+      {
+        "name": "lead_source",
+        "type": "String",
+        "defaultValue": null
+      }
+    ]
+  },
+  {
+    "name": "UpdateMultipleSettingsInput",
+    "fields": [
+      {
+        "name": "list",
+        "type": "[UpdateSettingInput]!",
+        "defaultValue": null
+      }
+    ]
+  },
+  {
+    "name": "UpdateNetworkInput",
+    "fields": [
+      {
+        "name": "name",
+        "type": "String",
+        "defaultValue": null
+      },
+      {
+        "name": "main_company_id",
+        "type": "Int",
+        "defaultValue": null
+      },
+      {
+        "name": "description",
+        "type": "String",
+        "defaultValue": null
+      }
+    ]
+  },
+  {
+    "name": "UpdateNewsArticleInput",
+    "fields": [
+      {
+        "name": "title",
+        "type": "String",
+        "defaultValue": null
+      },
+      {
+        "name": "content",
+        "type": "String",
+        "defaultValue": null
+      },
+      {
+        "name": "image",
+        "type": "String",
+        "defaultValue": null
+      },
+      {
+        "name": "link",
+        "type": "ArticleLinkInput",
+        "defaultValue": null
+      },
+      {
+        "name": "active",
+        "type": "Boolean",
+        "defaultValue": null
+      },
+      {
+        "name": "publication_period",
+        "type": "PublicationPeriodInput",
+        "defaultValue": null
+      }
+    ]
+  },
+  {
+    "name": "UpdateOwnerInput",
+    "fields": [
+      {
+        "name": "private_policy",
+        "type": "String!",
+        "defaultValue": null
+      }
+    ]
+  },
+  {
+    "name": "UpdatePasswordInput",
+    "fields": [
+      {
+        "name": "old_password",
+        "type": "String!",
+        "defaultValue": null
+      },
+      {
+        "name": "password",
+        "type": "String!",
+        "defaultValue": null
+      },
+      {
+        "name": "password_confirmation",
+        "type": "String!",
+        "defaultValue": null
+      }
+    ]
+  },
+  {
+    "name": "UpdateSettingInput",
+    "fields": [
+      {
+        "name": "alias",
+        "type": "String!",
+        "defaultValue": null
+      },
+      {
+        "name": "value",
+        "type": "String",
+        "defaultValue": null
+      }
+    ]
+  },
+  {
+    "name": "UpdateShortcutGroupSortInput",
+    "fields": [
+      {
+        "name": "id",
+        "type": "Int!",
+        "defaultValue": null
+      },
+      {
+        "name": "sort",
+        "type": "Int!",
+        "defaultValue": null
+      }
+    ]
+  },
+  {
+    "name": "UpdateShortcutSortInput",
+    "fields": [
+      {
+        "name": "id",
+        "type": "Int!",
+        "defaultValue": null
+      },
+      {
+        "name": "sort",
+        "type": "Int!",
+        "defaultValue": null
+      }
+    ]
+  },
+  {
+    "name": "UpdateTariffsSortInput",
+    "fields": [
+      {
+        "name": "id",
+        "type": "Int!",
+        "defaultValue": null
+      },
+      {
+        "name": "sort",
+        "type": "Int!",
+        "defaultValue": null
+      }
+    ]
+  },
+  {
+    "name": "UpdateWorkerInput",
+    "fields": [
+      {
+        "name": "first_name",
+        "type": "String!",
+        "defaultValue": null
+      },
+      {
+        "name": "last_name",
+        "type": "String!",
+        "defaultValue": null
+      },
+      {
+        "name": "middle_name",
+        "type": "String!",
+        "defaultValue": null
+      },
+      {
+        "name": "role_ids",
+        "type": "[Int]!",
+        "defaultValue": null
+      }
+    ]
+  },
+  {
+    "name": "UserClubsInput",
+    "fields": [
+      {
+        "name": "login",
+        "type": "String!",
+        "defaultValue": null
+      },
+      {
+        "name": "password",
+        "type": "String!",
+        "defaultValue": null
+      }
+    ]
+  },
+  {
+    "name": "UserConsentsInput",
+    "fields": [
+      {
+        "name": "privacy_policy",
+        "type": "Boolean",
+        "defaultValue": null
+      },
+      {
+        "name": "marketing",
+        "type": "Boolean",
+        "defaultValue": null
+      }
+    ]
+  },
+  {
+    "name": "UserGroupInput",
+    "fields": [
+      {
+        "name": "title",
+        "type": "String!",
+        "defaultValue": null
+      },
+      {
+        "name": "discount",
+        "type": "Int!",
+        "defaultValue": null
+      }
+    ]
+  },
+  {
+    "name": "UsersBonusReport",
+    "fields": [
+      {
+        "name": "from",
+        "type": "DateTime!",
+        "defaultValue": null
+      },
+      {
+        "name": "to",
+        "type": "DateTime!",
+        "defaultValue": null
+      }
+    ]
+  },
+  {
+    "name": "UsersInput",
+    "fields": [
+      {
+        "name": "q",
+        "type": "String",
+        "defaultValue": null
+      }
+    ]
+  },
+  {
+    "name": "UserTableInput",
+    "fields": [
+      {
+        "name": "file",
+        "type": "Upload!",
+        "defaultValue": null
+      }
+    ]
+  },
+  {
+    "name": "ValidatePromoCodeInput",
+    "fields": [
+      {
+        "name": "client_id",
+        "type": "Int",
+        "defaultValue": null
+      },
+      {
+        "name": "entity",
+        "type": "CartEntity",
+        "defaultValue": null
+      },
+      {
+        "name": "entity_id",
+        "type": "Int",
+        "defaultValue": null
+      },
+      {
+        "name": "code",
+        "type": "String!",
+        "defaultValue": null
+      }
+    ]
+  },
+  {
+    "name": "ValidateQRInput",
+    "fields": [
+      {
+        "name": "qr",
+        "type": "String!",
+        "defaultValue": null
+      }
+    ]
+  },
+  {
+    "name": "VerifyUserInput",
+    "fields": [
+      {
+        "name": "code",
+        "type": "String!",
+        "defaultValue": null
+      }
+    ]
+  },
+  {
+    "name": "WithdrawToCheckingAccountInput",
+    "fields": [
+      {
+        "name": "beneficiary_id",
+        "type": "String!",
+        "defaultValue": null
+      },
+      {
+        "name": "code",
+        "type": "String!",
+        "defaultValue": null
+      }
+    ]
+  },
+  {
+    "name": "WorkersInput",
+    "fields": [
+      {
+        "name": "q",
+        "type": "String",
+        "defaultValue": null
+      }
+    ]
+  },
+  {
+    "name": "WorkerTaskInput",
+    "fields": [
+      {
+        "name": "title",
+        "type": "String!",
+        "defaultValue": null
+      },
+      {
+        "name": "assigned_to",
+        "type": "Int",
+        "defaultValue": null
+      },
+      {
+        "name": "deadline_at",
+        "type": "DateTime",
+        "defaultValue": null
+      }
+    ]
+  },
+  {
+    "name": "WorkShiftInput",
+    "fields": [
+      {
+        "name": "created_from",
+        "type": "DateTime",
+        "defaultValue": null
+      },
+      {
+        "name": "created_to",
+        "type": "DateTime",
+        "defaultValue": null
+      },
+      {
+        "name": "worker_id",
+        "type": "Int",
+        "defaultValue": null
+      }
+    ]
+  },
+  {
+    "name": "WorkShiftsReport",
+    "fields": [
+      {
+        "name": "from",
+        "type": "DateTime!",
+        "defaultValue": null
+      },
+      {
+        "name": "to",
+        "type": "DateTime!",
+        "defaultValue": null
+      },
+      {
+        "name": "workerUuid",
+        "type": "String",
+        "defaultValue": null
+      }
+    ]
+  }
+]
