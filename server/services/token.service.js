@@ -1,7 +1,6 @@
-const axios = require('axios');
-const https = require('https');
 const cron = require('node-cron');
 const { Club } = require('../models'); // Подключаем модель для поиска всех клубов
+const { executeSmartshellMutation } = require('../integrations/smartshell.api');
 const { normalizeClubSettings } = require('../utils/clubSettings');
 const {
   CredentialsEncryptionError,
@@ -10,10 +9,6 @@ const {
 
 const tokenCache = {};
 const errorCache = {};
-
-const agent = new https.Agent({
-  rejectUnauthorized: false,
-});
 
 const toPlainClub = (club) =>
   club?.get ? club.get({ plain: true }) : club || null;
@@ -150,56 +145,62 @@ const fetchNewManagerToken = async (clubOrId) => {
   const credentials = await getManagerCredentials(clubOrId);
   if (credentials.error) return credentials;
 
-  const {
-    dbClubId,
-    smartshellCompanyId,
-    managerLogin,
-    managerPassword,
-  } = credentials;
+  const { dbClubId, smartshellCompanyId, managerLogin, managerPassword } =
+    credentials;
 
-  console.log(
-    `Попытка получить токен Smartshell для club ${dbClubId}, company ${smartshellCompanyId}...`,
-  );
+  console.log(`Попытка получить токен Smartshell для club ${dbClubId}...`);
 
   const dataManagerLogin = {
-    query: `mutation Login {
-      login(input: { login: ${JSON.stringify(managerLogin)}, password: ${JSON.stringify(managerPassword)}, company_id: ${smartshellCompanyId} }) {
+    query: `mutation Login($login: String!, $password: String!, $companyId: Int!) {
+      login(input: { login: $login, password: $password, company_id: $companyId }) {
         access_token
       }
     }`,
+    variables: {
+      login: managerLogin,
+      password: managerPassword,
+      companyId: smartshellCompanyId,
+    },
   };
 
   try {
-    const res = await axios({
-      method: 'post',
-      url: `https://billing.smartshell.gg/api/graphql`,
-      data: dataManagerLogin,
-      httpsAgent: agent,
+    const response = await executeSmartshellMutation(dataManagerLogin, {
+      operationName: 'Login',
+      clubId: dbClubId,
+      requiresAuth: false,
     });
 
-    if (res.data.errors) {
-      const errorMessage = res.data.errors.map((e) => e.message).join(', ');
-      console.error(
-        `TOKEN_FETCH_ERROR [club ${dbClubId}, Smartshell company ${smartshellCompanyId}] ->`,
-        errorMessage,
-      );
+    if (response.error) {
       errorCache[dbClubId] = {
+        ...response,
         error: true,
-        code: 'SMARTSHELL_CREDENTIALS_REJECTED',
-        message: `Ошибка Smartshell: ${errorMessage}`,
-        statusCode: 502,
+        code: response.code || 'SMARTSHELL_TOKEN_FETCH_FAILED',
+        message:
+          response.message || 'Внутренняя ошибка сервера при получении токена.',
+        statusCode: response.statusCode || 502,
       };
       return errorCache[dbClubId];
-    } else {
-      console.log(
-        `Токен Smartshell для club ${dbClubId}, company ${smartshellCompanyId} успешно закэширован.`,
-      );
-      delete errorCache[dbClubId];
-      return res.data.data.login.access_token;
     }
+
+    const accessToken = response.data?.login?.access_token;
+    if (typeof accessToken !== 'string' || !accessToken) {
+      errorCache[dbClubId] = {
+        error: true,
+        code: 'SMARTSHELL_UNEXPECTED_RESPONSE',
+        category: 'unexpected_response',
+        message: 'Smartshell вернул неожиданный формат ответа авторизации',
+        statusCode: 502,
+        operationName: 'Login',
+      };
+      return errorCache[dbClubId];
+    }
+
+    console.log(`Токен Smartshell для club ${dbClubId} успешно закэширован.`);
+    delete errorCache[dbClubId];
+    return accessToken;
   } catch (error) {
     console.error(
-      `TOKEN_FETCH_AXIOS_ERROR [club ${dbClubId}, Smartshell company ${smartshellCompanyId}] ->`,
+      `TOKEN_FETCH_ERROR [club ${dbClubId}] ->`,
       error.message,
     );
     errorCache[dbClubId] = {

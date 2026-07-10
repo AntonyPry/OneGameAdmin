@@ -14,6 +14,17 @@ const {
 } = require('../utils/motivation');
 const { Op } = require('sequelize');
 
+const getDbClubId = (clubOrId) => {
+  const value =
+    clubOrId?.id !== undefined
+      ? clubOrId.id
+      : typeof clubOrId?.get === 'function'
+        ? clubOrId.get('id')
+        : clubOrId;
+  const parsed = Number.parseInt(String(value || '').trim(), 10);
+  return Number.isInteger(parsed) && parsed > 0 ? parsed : undefined;
+};
+
 const formatDate = (date) => {
   const pad = (num) => String(num).padStart(2, '0');
   return `${date.getFullYear()}-${pad(date.getMonth() + 1)}-${pad(date.getDate())} ${pad(date.getHours())}:${pad(date.getMinutes())}:${pad(date.getSeconds())}`;
@@ -108,7 +119,10 @@ const getActiveWorkshiftStartDate = async (club) => {
     }`,
   };
 
-  const response = await executeSmartshellQuery(queryData, managerBearer);
+  const response = await executeSmartshellQuery(queryData, managerBearer, {
+    operationName: 'ActiveWorkShift',
+    clubId: getDbClubId(club),
+  });
   if (response.error) return response;
 
   return response.data.activeWorkShift;

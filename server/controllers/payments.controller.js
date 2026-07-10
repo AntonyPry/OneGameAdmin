@@ -134,6 +134,7 @@ const sbpFromPeriod = async (req, res) => {
       startDate,
       endDate,
       managerBearer,
+      { clubId: req.dbClubId },
     );
     if (data.error) {
       await markExportError(exportHistory, data.message);
@@ -171,6 +172,7 @@ const cashOrdersFromPeriod = async (req, res) => {
       startDate,
       endDate,
       managerBearer,
+      { clubId: req.dbClubId },
     );
     if (data.error) {
       await markExportError(exportHistory, data.message);
@@ -228,6 +230,7 @@ const getFirstSessionsFromPeriod = async (req, res) => {
       startDate,
       endDate,
       managerBearer,
+      { clubId: req.dbClubId },
     );
 
     if (firstSessions.error) {
