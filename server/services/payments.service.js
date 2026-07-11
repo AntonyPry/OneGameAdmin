@@ -12,6 +12,8 @@ const parseDate = (timestamp) =>
 const parseTime = (timestamp) => timestamp.split(' ')[1];
 const formatOperator = (operator) =>
   operator ? `${operator.first_name} ${operator.last_name}` : '';
+const formatSmartshellDate = (date) =>
+  `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}-${String(date.getDate()).padStart(2, '0')} ${String(date.getHours()).padStart(2, '0')}:${String(date.getMinutes()).padStart(2, '0')}:${String(date.getSeconds()).padStart(2, '0')}`;
 const getPaymentItemType = (item = {}) => {
   if (['GOOD', 'SERVICE', 'PS'].includes(item.entity_type)) {
     return item.entity_type;
@@ -342,15 +344,13 @@ const getFirstClientSessions = async (startDate, endDate, managerBearer) => {
     const currentYear = currentStartDate.getFullYear();
     const monthStartDate = new Date(currentYear, currentMonth, 1, 0, 0, 0);
     const monthEndDate = new Date(currentYear, currentMonth + 1, 0, 23, 59, 59);
+    const effectiveMonthStart =
+      currentStartDate > monthStartDate ? currentStartDate : monthStartDate;
+    const effectiveMonthEnd =
+      endLimit < monthEndDate ? endLimit : monthEndDate;
 
-    const formattedMonthStart = monthStartDate
-      .toISOString()
-      .slice(0, 19)
-      .replace('T', ' ');
-    const formattedMonthEnd = monthEndDate
-      .toISOString()
-      .slice(0, 19)
-      .replace('T', ' ');
+    const formattedMonthStart = formatSmartshellDate(effectiveMonthStart);
+    const formattedMonthEnd = formatSmartshellDate(effectiveMonthEnd);
 
     const queryFactory = (page) => `query {
       eventList(input: { start: "${formattedMonthStart}", finish: "${formattedMonthEnd}", types: "CLIENT_SESSION_FINISHED" }, first: 1000, page: ${page}) {

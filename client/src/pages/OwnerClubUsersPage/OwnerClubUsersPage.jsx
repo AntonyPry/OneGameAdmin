@@ -77,6 +77,15 @@ const getUserName = (user) => {
   return fullName || user.email || `Пользователь #${user.id}`;
 };
 
+const formatDate = (value) => {
+  if (!value) return '—';
+
+  const date = new Date(value);
+  if (Number.isNaN(date.getTime())) return '—';
+
+  return date.toLocaleDateString('ru-RU');
+};
+
 const getMembership = (user) =>
   user?.membership || (user?.memberships || [])[0] || null;
 
@@ -170,6 +179,26 @@ const EmptyState = ({ title }) => (
     {title}
   </div>
 );
+
+const TrialBadge = ({ user }) => {
+  const expiresAt = user.freeTrialExpiresAt ?? user.free_trial_expires_at;
+  const isActive = Boolean(user.isFreeTrial ?? user.is_free_trial);
+
+  if (!expiresAt) {
+    return <Badge variant="outline">Без trial</Badge>;
+  }
+
+  return (
+    <div className="flex flex-col items-start gap-1">
+      <Badge variant={isActive ? 'secondary' : 'outline'}>
+        {isActive ? 'Trial активен' : 'Trial истек'}
+      </Badge>
+      <span className="text-xs text-muted-foreground">
+        до {formatDate(expiresAt)}
+      </span>
+    </div>
+  );
+};
 
 const OwnerClubUsersPage = () => {
   const { session, refreshSession } = useAuth();
@@ -452,12 +481,13 @@ const OwnerClubUsersPage = () => {
       {isLoading ? (
         <EmptyState title="Загрузка пользователей..." />
       ) : filteredUsers.length ? (
-        <div className="rounded-lg border border-border bg-card">
+        <div className="overflow-x-auto rounded-lg border border-border bg-card">
           <Table>
             <TableHeader className="bg-muted/50">
               <TableRow>
                 <TableHead>Пользователь</TableHead>
                 <TableHead>Роль в клубе</TableHead>
+                <TableHead>Бесплатный период</TableHead>
                 <TableHead className="w-24 text-right">Действия</TableHead>
               </TableRow>
             </TableHeader>
@@ -479,6 +509,9 @@ const OwnerClubUsersPage = () => {
                       <Badge variant="outline">
                         {ROLE_LABELS[membership?.role] || membership?.role}
                       </Badge>
+                    </TableCell>
+                    <TableCell className="min-w-40">
+                      <TrialBadge user={user} />
                     </TableCell>
                     <TableCell>
                       <div className="flex justify-end gap-1">

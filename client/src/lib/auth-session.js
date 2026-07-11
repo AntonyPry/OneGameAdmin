@@ -37,9 +37,79 @@ export const ROLE_LABELS = Object.freeze({
 
 const isBrowser = () => typeof window !== 'undefined' && window.localStorage;
 
+const hasOwn = (object, key) =>
+  Object.prototype.hasOwnProperty.call(object || {}, key);
+
 const normalizeId = (value) => {
   if (value === null || value === undefined || value === '') return null;
   return String(value);
+};
+
+const normalizeDateIso = (value) => {
+  if (!value) return null;
+
+  const date = value instanceof Date ? value : new Date(value);
+  if (Number.isNaN(date.getTime())) return null;
+
+  return date.toISOString();
+};
+
+const getOwnValue = (object, fields) => {
+  for (const field of fields) {
+    if (hasOwn(object, field)) return object[field];
+  }
+
+  return undefined;
+};
+
+const pickOwnValue = (sources, fallback = undefined) => {
+  for (const { object, fields } of sources) {
+    const value = getOwnValue(object, fields);
+    if (value !== undefined) return value;
+  }
+
+  return fallback;
+};
+
+const getTrialInfo = (payload, user, previous) => {
+  const rawExpiresAt = pickOwnValue(
+    [
+      { object: payload, fields: ['freeTrialExpiresAt', 'free_trial_expires_at'] },
+      { object: user, fields: ['freeTrialExpiresAt', 'free_trial_expires_at'] },
+    ],
+    previous.freeTrialExpiresAt ?? null,
+  );
+  const freeTrialExpiresAt = normalizeDateIso(rawExpiresAt);
+  const computedIsFreeTrial = Boolean(
+    freeTrialExpiresAt && new Date(freeTrialExpiresAt).getTime() >= Date.now(),
+  );
+  const rawIsFreeTrial = pickOwnValue([
+    { object: payload, fields: ['isFreeTrial', 'is_free_trial'] },
+    { object: user, fields: ['isFreeTrial', 'is_free_trial'] },
+  ]);
+  const rawDaysLeft = pickOwnValue([
+    { object: payload, fields: ['freeTrialDaysLeft'] },
+    { object: user, fields: ['freeTrialDaysLeft'] },
+  ]);
+  const numericDaysLeft = Number(rawDaysLeft);
+  const computedDaysLeft = freeTrialExpiresAt
+    ? Math.max(
+        0,
+        Math.ceil((new Date(freeTrialExpiresAt).getTime() - Date.now()) / 86400000),
+      )
+    : 0;
+
+  return {
+    freeTrialExpiresAt,
+    free_trial_expires_at: freeTrialExpiresAt,
+    isFreeTrial:
+      rawIsFreeTrial === undefined ? computedIsFreeTrial : Boolean(rawIsFreeTrial),
+    is_free_trial:
+      rawIsFreeTrial === undefined ? computedIsFreeTrial : Boolean(rawIsFreeTrial),
+    freeTrialDaysLeft: Number.isFinite(numericDaysLeft)
+      ? Math.max(0, numericDaysLeft)
+      : computedDaysLeft,
+  };
 };
 
 export const normalizeSystemRole = (role) => {
@@ -174,12 +244,18 @@ export const createEmptySession = () => ({
   activeClubId: null,
   activeClubRole: null,
   systemRole: SYSTEM_ROLES.USER,
+  freeTrialExpiresAt: null,
+  free_trial_expires_at: null,
+  isFreeTrial: false,
+  is_free_trial: false,
+  freeTrialDaysLeft: 0,
 });
 
 export const buildAuthSession = (payload = {}, options = {}) => {
   const previous = options.previous || createEmptySession();
   const token = payload.token || options.token || previous.token || null;
-  const user = payload.user || previous.user || null;
+  const payloadUser = payload.user || null;
+  const user = payloadUser || previous.user || null;
   const systemRole = normalizeSystemRole(
     payload.systemRole ??
       payload.system_role ??
@@ -187,6 +263,7 @@ export const buildAuthSession = (payload = {}, options = {}) => {
       user?.system_role ??
       previous.systemRole,
   );
+  const trialInfo = getTrialInfo(payload, payloadUser || user, previous);
   const memberships = normalizeMemberships(payload);
   const effectiveMemberships =
     memberships.length > 0 ? memberships : previous.memberships || [];
@@ -207,12 +284,14 @@ export const buildAuthSession = (payload = {}, options = {}) => {
           ...user,
           systemRole,
           system_role: systemRole,
+          ...trialInfo,
         }
       : null,
     memberships: effectiveMemberships,
     activeClubId,
     activeClubRole: activeMembership?.role || null,
     systemRole,
+    ...trialInfo,
   };
 };
 
@@ -290,6 +369,8 @@ export const isAuthenticatedSession = (session) => Boolean(session?.token);
 
 export const isPlatformAdminSession = (session) =>
   normalizeSystemRole(session?.systemRole) === SYSTEM_ROLES.PLATFORM_ADMIN;
+
+export const isFreeTrialSession = (session) => Boolean(session?.isFreeTrial);
 
 export const hasActiveClub = (session) => Boolean(session?.activeClubId);
 

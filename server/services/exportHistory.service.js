@@ -21,6 +21,7 @@ const USER_PUBLIC_ATTRIBUTES = [
   'first_name',
   'last_name',
   'system_role',
+  'free_trial_expires_at',
 ];
 
 const DEFAULT_LIMIT = 10;
@@ -57,6 +58,8 @@ const serializeUser = (user) => {
     last_name: plainUser.last_name,
     systemRole: plainUser.system_role,
     system_role: plainUser.system_role,
+    freeTrialExpiresAt: plainUser.free_trial_expires_at,
+    free_trial_expires_at: plainUser.free_trial_expires_at,
   };
 };
 

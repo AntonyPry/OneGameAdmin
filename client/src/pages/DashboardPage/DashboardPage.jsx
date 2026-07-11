@@ -98,6 +98,7 @@ const EMPTY_USER_FORM = {
   password: '',
   passwordConfirmation: '',
   systemRole: SYSTEM_ROLES.USER,
+  freeTrialExpiresAt: '',
 };
 
 const EMPTY_MEMBERSHIP_DRAFT = {
@@ -111,6 +112,18 @@ const getServerMessage = (error, fallback) =>
 const toId = (value) =>
   value === null || value === undefined ? '' : String(value);
 
+const toDateInputValue = (value) => {
+  if (!value) return '';
+
+  const date = new Date(value);
+  if (Number.isNaN(date.getTime())) return '';
+
+  const year = date.getFullYear();
+  const month = String(date.getMonth() + 1).padStart(2, '0');
+  const day = String(date.getDate()).padStart(2, '0');
+  return `${year}-${month}-${day}`;
+};
+
 const normalizeUserForm = (user = {}) => ({
   id: user.id ? String(user.id) : null,
   email: user.email || '',
@@ -119,6 +132,9 @@ const normalizeUserForm = (user = {}) => ({
   password: '',
   passwordConfirmation: '',
   systemRole: user.systemRole ?? user.system_role ?? SYSTEM_ROLES.USER,
+  freeTrialExpiresAt: toDateInputValue(
+    user.freeTrialExpiresAt ?? user.free_trial_expires_at,
+  ),
 });
 
 const getUserName = (user) => {
@@ -335,6 +351,26 @@ const RoleBadge = ({ role }) => (
     </span>
   </Badge>
 );
+
+const TrialBadge = ({ user }) => {
+  const expiresAt = user.freeTrialExpiresAt ?? user.free_trial_expires_at;
+  const isActive = Boolean(user.isFreeTrial ?? user.is_free_trial);
+
+  if (!expiresAt) {
+    return <Badge variant="outline">Без trial</Badge>;
+  }
+
+  return (
+    <div className="flex flex-col items-start gap-1">
+      <Badge variant={isActive ? 'secondary' : 'outline'}>
+        {isActive ? 'Trial активен' : 'Trial истек'}
+      </Badge>
+      <span className="text-xs text-muted-foreground">
+        до {formatDate(expiresAt)}
+      </span>
+    </div>
+  );
+};
 
 const DashboardPage = () => {
   const navigate = useNavigate();
@@ -612,6 +648,7 @@ const DashboardPage = () => {
         first_name: userDialog.form.firstName.trim(),
         last_name: userDialog.form.lastName.trim(),
         system_role: userDialog.form.systemRole,
+        freeTrialExpiresAt: userDialog.form.freeTrialExpiresAt || null,
       };
 
       let userId = userDialog.form.id;
@@ -975,7 +1012,7 @@ const DashboardPage = () => {
           {isLoading ? (
             <EmptyState title="Загрузка клубов..." />
           ) : filteredClubRows.length ? (
-            <div className="rounded-lg border border-border bg-card">
+            <div className="overflow-x-auto rounded-lg border border-border bg-card">
               <Table>
                 <TableHeader className="bg-muted/50">
                   <TableRow>
@@ -1079,12 +1116,13 @@ const DashboardPage = () => {
           {isLoading ? (
             <EmptyState title="Загрузка пользователей..." />
           ) : filteredUsers.length ? (
-            <div className="rounded-lg border border-border bg-card">
+            <div className="overflow-x-auto rounded-lg border border-border bg-card">
               <Table>
                 <TableHeader className="bg-muted/50">
                   <TableRow>
                     <TableHead>Пользователь</TableHead>
                     <TableHead>Системная роль</TableHead>
+                    <TableHead>Бесплатный период</TableHead>
                     <TableHead>Доступы</TableHead>
                     <TableHead className="w-24"></TableHead>
                   </TableRow>
@@ -1100,6 +1138,9 @@ const DashboardPage = () => {
                       </TableCell>
                       <TableCell>
                         <RoleBadge role={user.systemRole ?? user.system_role} />
+                      </TableCell>
+                      <TableCell className="min-w-40">
+                        <TrialBadge user={user} />
                       </TableCell>
                       <TableCell className="min-w-72">
                         <div className="flex max-w-xl flex-wrap gap-1.5">
@@ -1378,6 +1419,27 @@ const DashboardPage = () => {
                       ))}
                     </SelectContent>
                   </Select>
+                </div>
+
+                <div className="space-y-1.5">
+                  <Label htmlFor="user-free-trial-expires-at">
+                    Бесплатный период до
+                  </Label>
+                  <Input
+                    id="user-free-trial-expires-at"
+                    type="date"
+                    value={userDialog.form.freeTrialExpiresAt}
+                    onChange={(event) =>
+                      setUserDialog((current) => ({
+                        ...current,
+                        form: {
+                          ...current.form,
+                          freeTrialExpiresAt: event.target.value,
+                        },
+                        errors: {},
+                      }))
+                    }
+                  />
                 </div>
               </div>
             </section>
