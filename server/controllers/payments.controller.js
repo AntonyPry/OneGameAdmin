@@ -3,6 +3,12 @@ const paymentsService = require('../services/payments.service');
 const excelService = require('../services/excel.service');
 const exportHistoryService = require('../services/exportHistory.service');
 const { getManagerToken } = require('../services/token.service');
+const {
+  formatDateTime,
+  getTrialStatsWindow,
+  isFreeTrialActive,
+  validateTrialDateRange,
+} = require('../utils/freeTrial');
 
 const EXCEL_CONTENT_TYPE =
   'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet';
@@ -23,6 +29,28 @@ const sendServiceError = (res, result, fallbackStatus = 400) =>
   res
     .status(result.statusCode || (isUpstreamTokenError(result) ? 502 : fallbackStatus))
     .send(result);
+
+const sendTrialGuardError = (res, guard) =>
+  res.status(guard.statusCode).send({
+    error: true,
+    code: guard.code,
+    message: guard.message,
+    ...(guard.details ? { details: guard.details } : {}),
+  });
+
+const validateExportTrialWindow = (req, res, range, reportName) => {
+  const guard = validateTrialDateRange(req.user, {
+    ...range,
+    reportName,
+  });
+
+  if (!guard.ok) {
+    sendTrialGuardError(res, guard);
+    return false;
+  }
+
+  return true;
+};
 
 const startExportHistory = async (req, reportType, { startDate, endDate }) => {
   try {
@@ -82,6 +110,17 @@ const paymentsFromPeriod = async (req, res) => {
 
   try {
     let { startDate, endDate } = req.body;
+    if (
+      !validateExportTrialWindow(
+        req,
+        res,
+        { startDate, endDate },
+        'экспорт оплат',
+      )
+    ) {
+      return;
+    }
+
     exportHistory = await startExportHistory(
       req,
       exportHistoryService.REPORT_TYPES.PAYMENTS,
@@ -118,6 +157,17 @@ const sbpFromPeriod = async (req, res) => {
 
   try {
     let { startDate, endDate } = req.body;
+    if (
+      !validateExportTrialWindow(
+        req,
+        res,
+        { startDate, endDate },
+        'экспорт СБП',
+      )
+    ) {
+      return;
+    }
+
     exportHistory = await startExportHistory(
       req,
       exportHistoryService.REPORT_TYPES.SBP,
@@ -155,6 +205,17 @@ const cashOrdersFromPeriod = async (req, res) => {
 
   try {
     let { startDate, endDate } = req.body;
+    if (
+      !validateExportTrialWindow(
+        req,
+        res,
+        { startDate, endDate },
+        'экспорт кассовых ордеров',
+      )
+    ) {
+      return;
+    }
+
     exportHistory = await startExportHistory(
       req,
       exportHistoryService.REPORT_TYPES.CASH_ORDERS,
@@ -191,8 +252,11 @@ const getFirstSessionsFromPeriod = async (req, res) => {
   let exportHistory = null;
 
   try {
-    // Дата открытия теперь берется прямо из объекта req.currentClub
-    if (!req.currentClub.opening_date) {
+    const now = new Date();
+    const isTrial = isFreeTrialActive(req.user, now);
+
+    // Для trial не используем all-time период: отчет ограничивается последними 7 днями.
+    if (!isTrial && !req.currentClub.opening_date) {
       exportHistory = await startExportHistory(
         req,
         exportHistoryService.REPORT_TYPES.FIRST_SESSIONS,
@@ -207,11 +271,35 @@ const getFirstSessionsFromPeriod = async (req, res) => {
         .json({ message: 'В настройках клуба не указана дата открытия' });
     }
 
-    const startDate = new Date(req.currentClub.opening_date)
-      .toISOString()
-      .slice(0, 19)
-      .replace('T', ' ');
-    const endDate = new Date().toISOString().slice(0, 19).replace('T', ' ');
+    const trialWindow = getTrialStatsWindow(now);
+    const openingDate = req.currentClub.opening_date
+      ? new Date(req.currentClub.opening_date)
+      : null;
+    const trialStart =
+      openingDate && openingDate.getTime() > trialWindow.minStart.getTime()
+        ? openingDate
+        : trialWindow.minStart;
+    const startDate = isTrial
+      ? formatDateTime(trialStart)
+      : new Date(req.currentClub.opening_date)
+          .toISOString()
+          .slice(0, 19)
+          .replace('T', ' ');
+    const endDate = isTrial
+      ? formatDateTime(now)
+      : now.toISOString().slice(0, 19).replace('T', ' ');
+
+    if (
+      !validateExportTrialWindow(
+        req,
+        res,
+        { startDate, endDate },
+        'отчет по первым сессиям',
+      )
+    ) {
+      return;
+    }
+
     exportHistory = await startExportHistory(
       req,
       exportHistoryService.REPORT_TYPES.FIRST_SESSIONS,

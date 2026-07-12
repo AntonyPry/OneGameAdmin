@@ -1,5 +1,6 @@
 // controllers/admin.controller.js
 const adminService = require('../services/admin.service');
+const { validateTrialDateRange } = require('../utils/freeTrial');
 
 const currentStats = async (req, res) => {
   try {
@@ -9,6 +10,21 @@ const currentStats = async (req, res) => {
       return res.status(400).send({
         error: true,
         message: 'Необходимы параметры startDate и endDate',
+      });
+    }
+
+    const trialGuard = validateTrialDateRange(req.user, {
+      startDate,
+      endDate,
+      reportName: 'текущая статистика',
+    });
+
+    if (!trialGuard.ok) {
+      return res.status(trialGuard.statusCode).send({
+        error: true,
+        code: trialGuard.code,
+        message: trialGuard.message,
+        ...(trialGuard.details ? { details: trialGuard.details } : {}),
       });
     }
 

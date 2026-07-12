@@ -3,6 +3,7 @@
 const jwt = require('jsonwebtoken');
 const { User, Club } = require('../models');
 const { normalizeClubRole, normalizeSystemRole } = require('../rbac/roles');
+const { getFreeTrialFields } = require('../utils/freeTrial');
 
 const USER_PUBLIC_ATTRIBUTES = [
   'id',
@@ -10,6 +11,7 @@ const USER_PUBLIC_ATTRIBUTES = [
   'first_name',
   'last_name',
   'system_role',
+  'free_trial_expires_at',
 ];
 
 const CLUB_PUBLIC_ATTRIBUTES = [
@@ -92,6 +94,7 @@ const serializeClub = (club) => {
 const serializeUserSession = (user) => {
   const plainUser = user?.get ? user.get({ plain: true }) : user;
   const systemRole = normalizeSystemRole(plainUser.system_role);
+  const freeTrial = getFreeTrialFields(plainUser);
   const clubs = (plainUser.clubs || []).map(serializeClub);
   const memberships = clubs.map((club) => club.membership);
 
@@ -105,10 +108,12 @@ const serializeUserSession = (user) => {
       lastName: plainUser.last_name,
       systemRole,
       system_role: systemRole,
+      ...freeTrial,
       clubs,
     },
     systemRole,
     system_role: systemRole,
+    ...freeTrial,
     clubs,
     memberships,
   };

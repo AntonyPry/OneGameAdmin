@@ -82,6 +82,8 @@ const QUICK_PERIODS = [
   { key: 'month', label: 'Месяц' },
 ];
 
+const TRIAL_WINDOW_DAYS = 7;
+
 const STATUS_META = {
   pending: {
     label: 'Формируется',
@@ -118,6 +120,17 @@ const startOfDay = (date) =>
 const addDays = (date, amount) =>
   new Date(date.getFullYear(), date.getMonth(), date.getDate() + amount);
 
+const endOfDay = (date) =>
+  new Date(
+    date.getFullYear(),
+    date.getMonth(),
+    date.getDate(),
+    23,
+    59,
+    59,
+    999,
+  );
+
 const startOfWeek = (date) => {
   const day = date.getDay() || 7;
   return addDays(startOfDay(date), 1 - day);
@@ -143,6 +156,22 @@ const getQuickPeriodRange = (periodKey) => {
   }
 
   return { from: today, to: today };
+};
+
+const getTrialWindow = () => {
+  const today = new Date();
+  return {
+    from: startOfDay(addDays(today, -(TRIAL_WINDOW_DAYS - 1))),
+    to: endOfDay(today),
+  };
+};
+
+const isRangeInsideWindow = (range, windowRange) => {
+  if (!range?.from || !range?.to) return false;
+  return (
+    startOfDay(range.from).getTime() >= windowRange.from.getTime() &&
+    endOfDay(range.to).getTime() <= windowRange.to.getTime()
+  );
 };
 
 const formatDate = (value) => {
@@ -233,7 +262,17 @@ const ExportStatisticsPage = () => {
   const [historyError, setHistoryError] = useState('');
   const [isHistoryLoading, setIsHistoryLoading] = useState(false);
 
+  const isTrial = Boolean(session.isFreeTrial ?? session.is_free_trial);
+  const trialWindow = useMemo(() => getTrialWindow(), []);
+  const trialWindowLabel = useMemo(
+    () => formatRange({ from: trialWindow.from, to: trialWindow.to }),
+    [trialWindow],
+  );
   const selectedPeriodLabel = useMemo(() => formatRange(dateRange), [dateRange]);
+  const isSelectedPeriodAllowed = useMemo(
+    () => !isTrial || isRangeInsideWindow(dateRange, trialWindow),
+    [dateRange, isTrial, trialWindow],
+  );
 
   const loadHistory = useCallback(async () => {
     if (!session.activeClubId) {
@@ -263,12 +302,41 @@ const ExportStatisticsPage = () => {
     loadHistory();
   }, [loadHistory]);
 
+  useEffect(() => {
+    if (!isTrial || isSelectedPeriodAllowed) return;
+
+    setDateRange(getQuickPeriodRange('today'));
+    setActiveQuickPeriod('today');
+    setDownloadError(`В бесплатном периоде доступен период ${trialWindowLabel}`);
+  }, [isSelectedPeriodAllowed, isTrial, trialWindowLabel]);
+
   const applyQuickPeriod = (periodKey) => {
-    setDateRange(getQuickPeriodRange(periodKey));
+    const nextRange = getQuickPeriodRange(periodKey);
+    if (isTrial && !isRangeInsideWindow(nextRange, trialWindow)) {
+      const message = `В бесплатном периоде доступен период ${trialWindowLabel}`;
+      setDownloadError(message);
+      toast.error(message);
+      return;
+    }
+
+    setDownloadError('');
+    setDateRange(nextRange);
     setActiveQuickPeriod(periodKey);
   };
 
   const handleDateRangeChange = (nextRange) => {
+    if (
+      isTrial &&
+      nextRange?.from &&
+      nextRange?.to &&
+      !isRangeInsideWindow(nextRange, trialWindow)
+    ) {
+      setDownloadError(`В бесплатном периоде доступен период ${trialWindowLabel}`);
+      setActiveQuickPeriod('custom');
+      return;
+    }
+
+    setDownloadError('');
     setDateRange(nextRange);
     setActiveQuickPeriod('custom');
   };
@@ -279,6 +347,17 @@ const ExportStatisticsPage = () => {
 
     if (report.requiresPeriod && (!rangeOverride?.from || !rangeOverride?.to)) {
       toast.error('Выберите диапазон дат');
+      return;
+    }
+
+    if (
+      isTrial &&
+      report.requiresPeriod &&
+      !isRangeInsideWindow(rangeOverride, trialWindow)
+    ) {
+      const message = `В бесплатном периоде доступен период ${trialWindowLabel}`;
+      setDownloadError(message);
+      toast.error(message);
       return;
     }
 
@@ -295,7 +374,9 @@ const ExportStatisticsPage = () => {
       : {};
     const filePeriod = report.requiresPeriod
       ? `${formatDate(rangeOverride.from)}-${formatDate(rangeOverride.to)}`
-      : 'за_все_время';
+      : isTrial
+        ? 'последние_7_дней'
+        : 'за_все_время';
 
     try {
       setLoadingReportKey(report.key);
@@ -360,26 +441,45 @@ const ExportStatisticsPage = () => {
         </div>
       )}
 
+      {isTrial && (
+        <div className="flex items-start gap-2 rounded-md border border-border bg-muted/40 p-3 text-sm text-muted-foreground">
+          <AlertCircle className="mt-0.5 h-4 w-4 shrink-0" />
+          <span>Бесплатный период: доступен диапазон {trialWindowLabel}</span>
+        </div>
+      )}
+
       <section className="space-y-3">
         <div className="flex flex-col gap-3 rounded-lg border border-border bg-card p-3 lg:flex-row lg:items-center lg:justify-between">
           <div className="flex min-w-0 flex-wrap gap-2">
-            {QUICK_PERIODS.map((period) => (
-              <Button
-                key={period.key}
-                type="button"
-                variant={
-                  activeQuickPeriod === period.key ? 'default' : 'outline'
-                }
-                onClick={() => applyQuickPeriod(period.key)}
-              >
-                {period.label}
-              </Button>
-            ))}
+            {QUICK_PERIODS.map((period) => {
+              const periodRange = getQuickPeriodRange(period.key);
+              const isDisabled =
+                isTrial && !isRangeInsideWindow(periodRange, trialWindow);
+
+              return (
+                <Button
+                  key={period.key}
+                  type="button"
+                  variant={
+                    activeQuickPeriod === period.key ? 'default' : 'outline'
+                  }
+                  onClick={() => applyQuickPeriod(period.key)}
+                  disabled={isDisabled}
+                >
+                  {period.label}
+                </Button>
+              );
+            })}
           </div>
           <DatePickerWithRange
             date={dateRange}
             setDate={handleDateRangeChange}
             className="w-full lg:w-[280px]"
+            disabled={
+              isTrial
+                ? [{ before: trialWindow.from }, { after: trialWindow.to }]
+                : undefined
+            }
           />
         </div>
       </section>
@@ -396,7 +496,11 @@ const ExportStatisticsPage = () => {
               </CardHeader>
               <CardContent className="flex flex-col gap-4">
                 <div className="text-sm text-muted-foreground">
-                  {report.requiresPeriod ? selectedPeriodLabel : 'Все время'}
+                  {report.requiresPeriod
+                    ? selectedPeriodLabel
+                    : isTrial
+                      ? `Последние ${TRIAL_WINDOW_DAYS} дней`
+                      : 'Все время'}
                 </div>
                 <Button
                   type="button"
@@ -406,7 +510,9 @@ const ExportStatisticsPage = () => {
                   disabled={
                     Boolean(loadingReportKey) ||
                     (report.requiresPeriod &&
-                      (!dateRange?.from || !dateRange?.to))
+                      (!dateRange?.from ||
+                        !dateRange?.to ||
+                        !isSelectedPeriodAllowed))
                   }
                 >
                   {isLoading ? (
@@ -459,7 +565,7 @@ const ExportStatisticsPage = () => {
             Загрузка истории...
           </div>
         ) : history.length ? (
-          <div className="rounded-lg border border-border bg-card">
+          <div className="overflow-x-auto rounded-lg border border-border bg-card">
             <Table>
               <TableHeader className="bg-muted/50">
                 <TableRow>

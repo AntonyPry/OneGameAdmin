@@ -113,6 +113,7 @@ const currentClubBasePayload = {
         first_name: payload.first_name,
         last_name: payload.last_name,
         system_role: payload.system_role,
+        free_trial_expires_at: payload.free_trial_expires_at,
         createdAt: new Date('2026-01-01T00:00:00.000Z'),
         updatedAt: new Date('2026-01-01T00:00:00.000Z'),
       };
@@ -134,6 +135,25 @@ const currentClubBasePayload = {
     const serialized = JSON.stringify(user);
     assert.strictEqual(serialized.includes('password'), false);
     assert.strictEqual(serialized.includes('password_hash'), false);
+
+    const trialUser = await platformService.createUser({
+      ...basePayload,
+      email: 'trial-created-user@example.test',
+      password: 'ValidCreatePassword',
+      passwordConfirmation: 'ValidCreatePassword',
+      freeTrialExpiresAt: '2099-01-07T12:00:00Z',
+    });
+
+    assert(
+      createdRow.free_trial_expires_at instanceof Date,
+      'platform create must save free_trial_expires_at',
+    );
+    assert.strictEqual(
+      createdRow.free_trial_expires_at.toISOString(),
+      '2099-01-07T12:00:00.000Z',
+    );
+    assert.strictEqual(trialUser.freeTrialExpiresAt, '2099-01-07T12:00:00.000Z');
+    assert.strictEqual(trialUser.isFreeTrial, true);
 
     Club.findByPk = async () => ({
       id: 1,
@@ -171,6 +191,57 @@ const currentClubBasePayload = {
       serializedCurrentClubUser.includes('password_hash'),
       false,
     );
+    assert.strictEqual(
+      currentClubUser.freeTrialExpiresAt,
+      null,
+      'non-trial owner-created users must not receive trial by default',
+    );
+
+    const inheritedTrialUser = await platformService.createCurrentClubUser(
+      1,
+      {
+        ...currentClubBasePayload,
+        email: 'trial-inherited-user@example.test',
+        password: 'ValidCreatePassword',
+        passwordConfirmation: 'ValidCreatePassword',
+      },
+      {
+        actorUser: {
+          id: 500,
+          freeTrialExpiresAt: '2099-02-01T20:59:59.000Z',
+        },
+      },
+    );
+
+    assert.strictEqual(
+      createdRow.free_trial_expires_at.toISOString(),
+      '2099-02-01T20:59:59.000Z',
+    );
+    assert.strictEqual(
+      inheritedTrialUser.freeTrialExpiresAt,
+      '2099-02-01T20:59:59.000Z',
+    );
+
+    await expectApiError(
+      () =>
+        platformService.createCurrentClubUser(
+          1,
+          {
+            ...currentClubBasePayload,
+            email: 'owner-override-trial@example.test',
+            password: 'ValidCreatePassword',
+            passwordConfirmation: 'ValidCreatePassword',
+            freeTrialExpiresAt: '2099-03-01',
+          },
+          {
+            actorUser: {
+              id: 500,
+              freeTrialExpiresAt: '2099-02-01T20:59:59.000Z',
+            },
+          },
+        ),
+      'Владельцу нельзя менять бесплатный период пользователя',
+    );
 
     let updatedRow = null;
     const editableUser = {
@@ -179,6 +250,7 @@ const currentClubBasePayload = {
       first_name: 'Editable',
       last_name: 'User',
       system_role: 'user',
+      free_trial_expires_at: null,
       createdAt: new Date('2026-01-01T00:00:00.000Z'),
       updatedAt: new Date('2026-01-01T00:00:00.000Z'),
       update: async (payload) => {
@@ -214,6 +286,24 @@ const currentClubBasePayload = {
     const serializedUpdatedUser = JSON.stringify(updatedUser);
     assert.strictEqual(serializedUpdatedUser.includes('password'), false);
     assert.strictEqual(serializedUpdatedUser.includes('password_hash'), false);
+
+    const updatedTrialUser = await platformService.updateUser(99, {
+      freeTrialExpiresAt: '2099-04-01T12:00:00Z',
+    });
+    assert.strictEqual(
+      updatedRow.free_trial_expires_at.toISOString(),
+      '2099-04-01T12:00:00.000Z',
+    );
+    assert.strictEqual(
+      updatedTrialUser.freeTrialExpiresAt,
+      '2099-04-01T12:00:00.000Z',
+    );
+
+    const clearedTrialUser = await platformService.updateUser(99, {
+      freeTrialExpiresAt: null,
+    });
+    assert.strictEqual(updatedRow.free_trial_expires_at, null);
+    assert.strictEqual(clearedTrialUser.freeTrialExpiresAt, null);
 
     const currentClubEditableUser = {
       ...editableUser,
@@ -266,6 +356,14 @@ const currentClubBasePayload = {
     assert.strictEqual(
       serializedUpdatedCurrentClubUser.includes('password_hash'),
       false,
+    );
+
+    await expectApiError(
+      () =>
+        platformService.updateCurrentClubUser(1, 99, {
+          freeTrialExpiresAt: '2099-05-01',
+        }),
+      'Владельцу нельзя менять бесплатный период пользователя',
     );
 
     await expectApiError(

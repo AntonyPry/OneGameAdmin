@@ -12,7 +12,7 @@ import {
   PopoverTrigger,
 } from '@/components/ui/popover';
 
-export function DatePickerWithRange({ className, date, setDate }) {
+export function DatePickerWithRange({ className, date, setDate, disabled }) {
   return (
     <div className={cn('grid gap-2', className)}>
       <Popover>
@@ -49,6 +49,7 @@ export function DatePickerWithRange({ className, date, setDate }) {
             onSelect={setDate}
             numberOfMonths={1}
             locale={ru}
+            disabled={disabled}
           />
         </PopoverContent>
       </Popover>

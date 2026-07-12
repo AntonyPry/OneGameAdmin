@@ -19,6 +19,10 @@ module.exports = (sequelize, DataTypes) => {
         allowNull: false,
         defaultValue: 'user',
       },
+      free_trial_expires_at: {
+        type: DataTypes.DATE,
+        allowNull: true,
+      },
     },
     {
       tableName: 'Users',

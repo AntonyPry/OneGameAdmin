@@ -84,6 +84,7 @@ const createCurrentUser = async (req, res) => {
     const user = await platformService.createCurrentClubUser(
       req.dbClubId,
       req.body || {},
+      { actorUser: req.user },
     );
     return res.status(201).send({ error: false, user });
   } catch (error) {

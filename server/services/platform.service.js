@@ -12,6 +12,12 @@ const {
 } = require('../rbac/roles');
 const { normalizeClubSettings } = require('../utils/clubSettings');
 const {
+  getFreeTrialFields,
+  getRawTrialExpiresAt,
+  isFreeTrialActive,
+  parseFreeTrialExpiresAt,
+} = require('../utils/freeTrial');
+const {
   ENCRYPTION_KEY_ENV,
   CredentialsEncryptionError,
   encryptCredential,
@@ -24,6 +30,7 @@ const USER_PUBLIC_ATTRIBUTES = [
   'first_name',
   'last_name',
   'system_role',
+  'free_trial_expires_at',
   'createdAt',
   'updatedAt',
 ];
@@ -275,6 +282,25 @@ const parseDateOrNull = (value, fieldName) => {
   return date;
 };
 
+const hasFreeTrialPatch = (payload = {}) =>
+  hasOwn(payload, 'freeTrialExpiresAt') ||
+  hasOwn(payload, 'free_trial_expires_at');
+
+const parsePayloadFreeTrialExpiresAt = (payload = {}) => {
+  if (!hasFreeTrialPatch(payload)) return undefined;
+
+  const value = getFirstDefinedValue(payload, [
+    'freeTrialExpiresAt',
+    'free_trial_expires_at',
+  ]);
+
+  try {
+    return parseFreeTrialExpiresAt(value);
+  } catch (error) {
+    throw badRequest(error.message);
+  }
+};
+
 const parseNonNegativeNumber = (value, fieldName) => {
   const number = Number(value);
 
@@ -415,6 +441,7 @@ const parsePassword = (payload, { required = false } = {}) => {
 const serializeUserBase = (user) => {
   const plainUser = toPlain(user);
   const systemRole = normalizeSystemRole(plainUser.system_role);
+  const freeTrial = getFreeTrialFields(plainUser);
 
   return {
     id: plainUser.id,
@@ -425,6 +452,7 @@ const serializeUserBase = (user) => {
     last_name: plainUser.last_name,
     systemRole,
     system_role: systemRole,
+    ...freeTrial,
     createdAt: plainUser.createdAt,
     updatedAt: plainUser.updatedAt,
   };
@@ -619,6 +647,12 @@ const getCurrentClubUserInclude = (clubId) => [
 const assertOwnerPayloadDoesNotEditSystemRole = (payload) => {
   if (hasOwn(payload, 'system_role') || hasOwn(payload, 'systemRole')) {
     throw badRequest('Владельцу нельзя менять системную роль пользователя');
+  }
+};
+
+const assertOwnerPayloadDoesNotEditFreeTrial = (payload) => {
+  if (hasFreeTrialPatch(payload)) {
+    throw badRequest('Владельцу нельзя менять бесплатный период пользователя');
   }
 };
 
@@ -1416,9 +1450,10 @@ const getCurrentClubUser = async (clubId, userId) => {
   });
 };
 
-const createCurrentClubUser = async (clubId, payload = {}) => {
+const createCurrentClubUser = async (clubId, payload = {}, options = {}) => {
   assertPlainObject(payload, 'body');
   assertOwnerPayloadDoesNotEditSystemRole(payload);
+  assertOwnerPayloadDoesNotEditFreeTrial(payload);
 
   const dbClubId = parsePositiveInteger(clubId, 'clubId', { required: true });
   const role = validateClubRole(payload.role);
@@ -1429,6 +1464,9 @@ const createCurrentClubUser = async (clubId, payload = {}) => {
   const password = parsePassword(payload, { required: true });
   const passwordHash = await bcrypt.hash(password, 10);
   const club = await findClubOrThrow(dbClubId);
+  const inheritedFreeTrialExpiresAt = isFreeTrialActive(options.actorUser)
+    ? parseFreeTrialExpiresAt(getRawTrialExpiresAt(options.actorUser))
+    : null;
 
   return sequelize.transaction(async (transaction) => {
     const user = await User.create(
@@ -1444,6 +1482,7 @@ const createCurrentClubUser = async (clubId, payload = {}) => {
           'last_name',
         ),
         system_role: SYSTEM_ROLES.USER,
+        free_trial_expires_at: inheritedFreeTrialExpiresAt,
       },
       { transaction },
     );
@@ -1465,6 +1504,7 @@ const createCurrentClubUser = async (clubId, payload = {}) => {
 const updateCurrentClubUser = async (clubId, userId, payload = {}) => {
   assertPlainObject(payload, 'body');
   assertOwnerPayloadDoesNotEditSystemRole(payload);
+  assertOwnerPayloadDoesNotEditFreeTrial(payload);
 
   const { user, membership, club } = await findCurrentClubUserOrThrow(
     clubId,
@@ -1689,6 +1729,7 @@ const createUser = async (payload = {}) => {
   const password = parsePassword(payload, { required: true });
   const passwordHash = await bcrypt.hash(password, 10);
   const systemRole = validateSystemRole(payload.system_role ?? payload.systemRole);
+  const freeTrialExpiresAt = parsePayloadFreeTrialExpiresAt(payload);
 
   const user = await User.create({
     email,
@@ -1699,6 +1740,7 @@ const createUser = async (payload = {}) => {
     ),
     last_name: requiredString(payload.last_name ?? payload.lastName, 'last_name'),
     system_role: systemRole || SYSTEM_ROLES.USER,
+    free_trial_expires_at: freeTrialExpiresAt ?? null,
   });
 
   return serializeUserBase(user);
@@ -1740,6 +1782,10 @@ const updateUser = async (userId, payload = {}, { actorUserId } = {}) => {
     }
 
     updatePayload.system_role = systemRole;
+  }
+
+  if (hasFreeTrialPatch(payload)) {
+    updatePayload.free_trial_expires_at = parsePayloadFreeTrialExpiresAt(payload);
   }
 
   const password = parsePassword(payload);
