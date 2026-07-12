@@ -14,6 +14,16 @@ const formatOperator = (operator) =>
   operator ? `${operator.first_name} ${operator.last_name}` : '';
 const formatSmartshellDate = (date) =>
   `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}-${String(date.getDate()).padStart(2, '0')} ${String(date.getHours()).padStart(2, '0')}:${String(date.getMinutes()).padStart(2, '0')}:${String(date.getSeconds()).padStart(2, '0')}`;
+const getDbClubId = (clubOrId) => {
+  const value =
+    clubOrId?.id !== undefined
+      ? clubOrId.id
+      : typeof clubOrId?.get === 'function'
+        ? clubOrId.get('id')
+        : clubOrId;
+  const parsed = Number.parseInt(String(value || '').trim(), 10);
+  return Number.isInteger(parsed) && parsed > 0 ? parsed : undefined;
+};
 const getPaymentItemType = (item = {}) => {
   if (['GOOD', 'SERVICE', 'PS'].includes(item.entity_type)) {
     return item.entity_type;
@@ -29,6 +39,7 @@ const fetchPaginatedData = async (
   queryFactory,
   managerBearer,
   dataPath = 'eventList',
+  options = {},
 ) => {
   let page = 1;
   let allData = [];
@@ -36,7 +47,10 @@ const fetchPaginatedData = async (
 
   while (hasMorePages) {
     const query = queryFactory(page);
-    const response = await executeSmartshellQuery({ query }, managerBearer);
+    const response = await executeSmartshellQuery({ query }, managerBearer, {
+      operationName: dataPath,
+      clubId: options.clubId,
+    });
 
     if (response.error) {
       console.error(
@@ -44,13 +58,27 @@ const fetchPaginatedData = async (
         response.message,
       );
       return {
+        ...response,
         error: true,
-        message: 'Ошибка при получении данных от Smartshell',
+        message: response.message || 'Ошибка при получении данных от Smartshell',
       };
     }
 
-    const rootData = response.data[dataPath];
-    if (!rootData || !rootData.data) break;
+    const rootData = response.data?.[dataPath];
+    if (
+      !rootData ||
+      !Array.isArray(rootData.data) ||
+      !rootData.paginatorInfo
+    ) {
+      return {
+        error: true,
+        code: 'SMARTSHELL_UNEXPECTED_RESPONSE',
+        category: 'unexpected_response',
+        message: 'Smartshell вернул неожиданный формат ответа',
+        statusCode: 502,
+        operationName: dataPath,
+      };
+    }
 
     allData.push(...rootData.data);
 
@@ -67,7 +95,7 @@ const fetchPaginatedData = async (
   return { error: false, result: allData };
 };
 
-const getPaymentData = async (startDate, endDate, managerBearer) => {
+const getPaymentData = async (startDate, endDate, managerBearer, options = {}) => {
   const queryFactory = (page) => `query {
     eventList(input: { start: "${startDate}", finish: "${endDate}", types: "PAYMENT_CREATED" }, first: 1000, page: ${page}) {
       paginatorInfo { count currentPage lastPage }
@@ -80,7 +108,12 @@ const getPaymentData = async (startDate, endDate, managerBearer) => {
     }
   }`;
 
-  const res = await fetchPaginatedData(queryFactory, managerBearer);
+  const res = await fetchPaginatedData(
+    queryFactory,
+    managerBearer,
+    'eventList',
+    options,
+  );
   if (res.error) return res;
 
   const result = [];
@@ -110,7 +143,7 @@ const getPaymentData = async (startDate, endDate, managerBearer) => {
   return { result };
 };
 
-const getSbpData = async (startDate, endDate, managerBearer) => {
+const getSbpData = async (startDate, endDate, managerBearer, options = {}) => {
   const queryFactory = (page) => `query {
     eventList(input: { start: "${startDate}", finish: "${endDate}", types: "DEPOSIT_ADDED_ONLINE" }, first: 1000, page: ${page}) {
       paginatorInfo { count currentPage lastPage }
@@ -124,7 +157,12 @@ const getSbpData = async (startDate, endDate, managerBearer) => {
     }
   }`;
 
-  const res = await fetchPaginatedData(queryFactory, managerBearer);
+  const res = await fetchPaginatedData(
+    queryFactory,
+    managerBearer,
+    'eventList',
+    options,
+  );
   if (res.error) return res;
 
   const result = res.result.map((payment) => ({
@@ -146,7 +184,12 @@ const getSbpData = async (startDate, endDate, managerBearer) => {
   return { result };
 };
 
-const getTariffPerMinuteData = async (startDate, endDate, managerBearer) => {
+const getTariffPerMinuteData = async (
+  startDate,
+  endDate,
+  managerBearer,
+  options = {},
+) => {
   const queryFactory = (page) => `query {
     eventList(input: { start: "${startDate}", finish: "${endDate}", types: "CLIENT_SESSION_FINISHED" }, first: 1000, page: ${page}) {
       paginatorInfo { count currentPage lastPage }
@@ -161,7 +204,12 @@ const getTariffPerMinuteData = async (startDate, endDate, managerBearer) => {
     }
   }`;
 
-  const res = await fetchPaginatedData(queryFactory, managerBearer);
+  const res = await fetchPaginatedData(
+    queryFactory,
+    managerBearer,
+    'eventList',
+    options,
+  );
   if (res.error) return res;
 
   const result = res.result
@@ -188,7 +236,7 @@ const getTariffPerMinuteData = async (startDate, endDate, managerBearer) => {
   return { result };
 };
 
-const getBonusData = async (startDate, endDate, managerBearer) => {
+const getBonusData = async (startDate, endDate, managerBearer, options = {}) => {
   const queryFactory = (page) => `query {
     eventList(input: { start: "${startDate}", finish: "${endDate}", types: "BONUS_PAYMENT_CREATED" }, first: 1000, page: ${page}) {
       paginatorInfo { count currentPage lastPage }
@@ -202,7 +250,12 @@ const getBonusData = async (startDate, endDate, managerBearer) => {
     }
   }`;
 
-  const res = await fetchPaginatedData(queryFactory, managerBearer);
+  const res = await fetchPaginatedData(
+    queryFactory,
+    managerBearer,
+    'eventList',
+    options,
+  );
   if (res.error) return res;
 
   const result = res.result.map((payment) => ({
@@ -225,7 +278,12 @@ const getBonusData = async (startDate, endDate, managerBearer) => {
   return { result };
 };
 
-const getPaymentRefundData = async (startDate, endDate, managerBearer) => {
+const getPaymentRefundData = async (
+  startDate,
+  endDate,
+  managerBearer,
+  options = {},
+) => {
   const queryFactory = (page) => `query {
     eventList(input: { start: "${startDate}", finish: "${endDate}", types: "PAYMENT_REFUND" }, first: 1000, page: ${page}) {
       paginatorInfo { count currentPage lastPage }
@@ -238,7 +296,12 @@ const getPaymentRefundData = async (startDate, endDate, managerBearer) => {
     }
   }`;
 
-  const res = await fetchPaginatedData(queryFactory, managerBearer);
+  const res = await fetchPaginatedData(
+    queryFactory,
+    managerBearer,
+    'eventList',
+    options,
+  );
   if (res.error) return res;
 
   const result = [];
@@ -273,7 +336,7 @@ const getPaymentRefundData = async (startDate, endDate, managerBearer) => {
   return { result };
 };
 
-const getCashOrders = async (startDate, endDate, managerBearer) => {
+const getCashOrders = async (startDate, endDate, managerBearer, options = {}) => {
   const queryFactory = (page) => `query {
     eventList(input: { start: "${startDate}", finish: "${endDate}", types: "CASH_ORDER_CREATED" }, first: 1000, page: ${page}) {
       paginatorInfo { count currentPage lastPage }
@@ -284,7 +347,12 @@ const getCashOrders = async (startDate, endDate, managerBearer) => {
     }
   }`;
 
-  const res = await fetchPaginatedData(queryFactory, managerBearer);
+  const res = await fetchPaginatedData(
+    queryFactory,
+    managerBearer,
+    'eventList',
+    options,
+  );
   if (res.error) return res;
 
   const result = res.result.map((order) => ({
@@ -301,7 +369,12 @@ const getCashOrders = async (startDate, endDate, managerBearer) => {
   return { result };
 };
 
-const getAllShiftsForPeriod = async (startDate, endDate, managerBearer) => {
+const getAllShiftsForPeriod = async (
+  startDate,
+  endDate,
+  managerBearer,
+  options = {},
+) => {
   const queryFactory = (page) => `query {
     workShifts(input: { created_from: "${startDate}", created_to: "${endDate}" }, page: ${page}, first: 500) {
       paginatorInfo { hasMorePages }
@@ -316,6 +389,7 @@ const getAllShiftsForPeriod = async (startDate, endDate, managerBearer) => {
     queryFactory,
     managerBearer,
     'workShifts',
+    options,
   );
   if (res.error) return res;
 
@@ -333,7 +407,12 @@ const getAllShiftsForPeriod = async (startDate, endDate, managerBearer) => {
   return { result };
 };
 
-const getFirstClientSessions = async (startDate, endDate, managerBearer) => {
+const getFirstClientSessions = async (
+  startDate,
+  endDate,
+  managerBearer,
+  options = {},
+) => {
   const result = [];
   const seenClients = new Set();
   let currentStartDate = new Date(startDate);
@@ -359,7 +438,12 @@ const getFirstClientSessions = async (startDate, endDate, managerBearer) => {
       }
     }`;
 
-    const res = await fetchPaginatedData(queryFactory, managerBearer);
+    const res = await fetchPaginatedData(
+      queryFactory,
+      managerBearer,
+      'eventList',
+      options,
+    );
     if (res.error) return res;
 
     res.result.forEach((event) => {
@@ -388,6 +472,7 @@ const getResultsArray = async (startDate, endDate, club) => {
   try {
     const managerBearer = await getManagerToken(club);
     if (managerBearer.error) return managerBearer;
+    const clubId = getDbClubId(club);
 
     const shiftsStartDateObj = new Date(startDate);
     shiftsStartDateObj.setDate(shiftsStartDateObj.getDate() - 1);
@@ -399,20 +484,24 @@ const getResultsArray = async (startDate, endDate, club) => {
 
     const [paymentResults, shiftsData] = await Promise.all([
       Promise.all([
-        getPaymentData(startDate, endDate, managerBearer),
-        getSbpData(startDate, endDate, managerBearer),
-        getTariffPerMinuteData(startDate, endDate, managerBearer),
-        getBonusData(startDate, endDate, managerBearer),
-        getPaymentRefundData(startDate, endDate, managerBearer),
+        getPaymentData(startDate, endDate, managerBearer, { clubId }),
+        getSbpData(startDate, endDate, managerBearer, { clubId }),
+        getTariffPerMinuteData(startDate, endDate, managerBearer, { clubId }),
+        getBonusData(startDate, endDate, managerBearer, { clubId }),
+        getPaymentRefundData(startDate, endDate, managerBearer, { clubId }),
       ]),
       getAllShiftsForPeriod(
         formattedShiftsStartDate,
         formattedShiftsEndDate,
         managerBearer,
+        { clubId },
       ),
     ]);
 
     if (shiftsData.error) return shiftsData;
+
+    const paymentError = paymentResults.find((result) => result?.error);
+    if (paymentError) return paymentError;
 
     const paymentData = paymentResults.flatMap((res) => res.result || []);
     const shifts = shiftsData.result.sort(
