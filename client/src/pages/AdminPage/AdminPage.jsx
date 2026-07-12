@@ -5,7 +5,9 @@ import { CLUB_ROLES, isPlatformAdminSession } from '@/lib/auth-session';
 import {
   AlertCircle,
   CheckCircle2,
+  Clock,
   Copy,
+  Database,
   Loader2,
   ShieldCheck,
   XCircle,
@@ -67,8 +69,21 @@ const DEFAULT_AWARDS = {
   totalAward: 0,
 };
 
+const DEFAULT_RELIABILITY = {
+  source: null,
+  dataSource: null,
+  freshness: null,
+  warnings: [],
+  partialData: false,
+  generatedAt: null,
+  shiftWindow: null,
+  metadata: null,
+};
+
 const getErrorMessage = (error, fallback) =>
   error.response?.data?.message || error.message || fallback;
+
+const getErrorCode = (error) => error.response?.data?.code || '';
 
 const toMoneyNumber = (value) => Math.floor(Number(value) || 0);
 
@@ -78,6 +93,60 @@ const percent = (fact, plan) =>
   plan > 0 ? Math.floor(((Number(fact) || 0) / plan) * 100) : 0;
 
 const ratePercent = (rate) => `${Math.round((Number(rate) || 0) * 100)}%`;
+
+const formatMetadataDateTime = (value) => {
+  if (!value) return '—';
+  const normalizedValue =
+    typeof value === 'string' && value.includes(' ')
+      ? `${value.replace(' ', 'T')}+03:00`
+      : value;
+  const date = new Date(normalizedValue);
+  if (Number.isNaN(date.getTime())) return '—';
+
+  return date.toLocaleString('ru-RU', {
+    day: '2-digit',
+    month: '2-digit',
+    hour: '2-digit',
+    minute: '2-digit',
+  });
+};
+
+const getSourceLabel = (source) => {
+  if (source === 'smartshell_event_list') return 'Smartshell eventList';
+  if (source) return source;
+  return 'Источник не указан';
+};
+
+const normalizeWarning = (warning) => {
+  if (!warning) return null;
+  if (typeof warning === 'string') {
+    return { code: 'WARNING', message: warning, severity: 'warning' };
+  }
+
+  return {
+    code: warning.code || 'WARNING',
+    message: warning.message || warning.code || 'Есть предупреждение',
+    severity: warning.severity || 'warning',
+  };
+};
+
+const normalizeReliability = (payload = {}) => {
+  const metadata = payload.metadata || {};
+  const warnings = (metadata.warnings || payload.warnings || [])
+    .map(normalizeWarning)
+    .filter(Boolean);
+
+  return {
+    source: metadata.source || payload.source || null,
+    dataSource: metadata.dataSource || payload.dataSource || null,
+    freshness: metadata.freshness || payload.freshness || null,
+    warnings,
+    partialData: Boolean(metadata.partialData ?? payload.partialData),
+    generatedAt: metadata.generatedAt || payload.generatedAt || null,
+    shiftWindow: metadata.shiftWindow || payload.shiftWindow || null,
+    metadata,
+  };
+};
 
 const Statistic = ({ title, value, subtext, isGoalMet, valueClass }) => (
   <div className="min-w-0 space-y-1">
@@ -159,6 +228,8 @@ const AdminPage = () => {
     useState(DEFAULT_AWARDS);
   const [currentWorkshift, setCurrentWorkshift] = useState(null);
   const [loadError, setLoadError] = useState('');
+  const [loadErrorCode, setLoadErrorCode] = useState('');
+  const [reliability, setReliability] = useState(DEFAULT_RELIABILITY);
   const [isInitialLoad, setIsInitialLoad] = useState(true);
   const [isRefreshing, setIsRefreshing] = useState(false);
   const [isManagerModalOpen, setIsManagerModalOpen] = useState(false);
@@ -194,6 +265,7 @@ const AdminPage = () => {
     setCurrentStatsObject(DEFAULT_CURRENT_STATS);
     setPlanStatsObject(DEFAULT_PLAN_STATS);
     setCurrentAwardsObject(DEFAULT_AWARDS);
+    setReliability(DEFAULT_RELIABILITY);
   };
 
   const getAdminStatsData = async () => {
@@ -209,6 +281,7 @@ const AdminPage = () => {
     try {
       setIsRefreshing(true);
       setLoadError('');
+      setLoadErrorCode('');
       const responseWorkshift = await api.get('/api/admin/getActiveWorkshift');
       const activeWorkshift = responseWorkshift.data?.currentWorkshift;
 
@@ -262,10 +335,22 @@ const AdminPage = () => {
           ...DEFAULT_AWARDS,
           ...(responseStats.data.currentAwardsObject || {}),
         });
+        setReliability(normalizeReliability(responseStats.data));
       }
     } catch (error) {
+      const code = getErrorCode(error);
+      if (code === 'NO_ACTIVE_WORKSHIFT') {
+        setCurrentWorkshift(null);
+        resetShiftStats();
+        setLoadError('');
+        setLoadErrorCode('');
+        setReliability(normalizeReliability(error.response?.data || {}));
+        return;
+      }
+
       setCurrentWorkshift(null);
       resetShiftStats();
+      setLoadErrorCode(code);
       setLoadError(
         getErrorMessage(
           error,
@@ -356,6 +441,27 @@ const AdminPage = () => {
       : shiftType === 'Ночь'
         ? 'Ночная смена'
         : 'Смена';
+  const reliabilitySource = reliability.source || reliability.dataSource;
+  const reliabilityWarnings = reliability.warnings || [];
+  const freshness = reliability.freshness || {};
+  const shiftWindow = reliability.shiftWindow || {};
+  const generatedAtLabel = formatMetadataDateTime(
+    reliability.generatedAt || freshness.generatedAt,
+  );
+  const latestEventLabel = formatMetadataDateTime(freshness.latestEventAt);
+  const shiftWindowLabel =
+    shiftWindow.normalizedStart && shiftWindow.normalizedEnd
+      ? `${formatMetadataDateTime(shiftWindow.normalizedStart)} - ${formatMetadataDateTime(
+          shiftWindow.normalizedEnd,
+        )}`
+      : '—';
+  const reliabilityBadge = reliability.partialData
+    ? 'Данные частичные'
+    : 'Данные загружены';
+  const isSmartshellLoadError = String(loadErrorCode).startsWith('SMARTSHELL');
+  const loadErrorTitle = isSmartshellLoadError
+    ? 'Smartshell сейчас недоступен'
+    : 'Не удалось загрузить смену';
 
   const handleCopy = () => {
     const checkStatus =
@@ -412,10 +518,13 @@ PS: ${currentStatsObject?.psRevenue || 0}
           <div className="mx-auto mb-4 flex h-11 w-11 items-center justify-center rounded-full bg-destructive/10 text-destructive">
             <AlertCircle className="h-5 w-5" />
           </div>
-          <h3 className="mb-3 text-xl font-bold">
-            Не удалось загрузить смену
-          </h3>
+          <h3 className="mb-3 text-xl font-bold">{loadErrorTitle}</h3>
           <p className="mb-4 text-sm text-muted-foreground">{loadError}</p>
+          {loadErrorCode && (
+            <Badge variant="outline" className="mb-4">
+              {loadErrorCode}
+            </Badge>
+          )}
           <Button onClick={getAdminStatsData} disabled={isRefreshing}>
             {isRefreshing && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
             Повторить
@@ -431,6 +540,7 @@ PS: ${currentStatsObject?.psRevenue || 0}
           <h3 className="mb-3 text-xl font-bold">Активная смена не открыта</h3>
           <p className="mb-4 text-sm text-muted-foreground">
             Сейчас в Smartshell нет открытой рабочей смены для активного клуба.
+            Это отдельное состояние, не ошибка загрузки.
           </p>
           <Button onClick={getAdminStatsData} disabled={isRefreshing}>
             {isRefreshing && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
@@ -458,6 +568,73 @@ PS: ${currentStatsObject?.psRevenue || 0}
           Статистика текущей смены и расчет выплаты.
         </p>
       </div>
+
+      <Card
+        className={`shadow-sm ${
+          reliability.partialData
+            ? 'border-amber-500/50 bg-amber-500/10'
+            : 'border-border'
+        }`}
+      >
+        <CardContent className="space-y-4 p-4 md:p-5">
+          <div className="flex flex-col gap-3 lg:flex-row lg:items-start lg:justify-between">
+            <div className="min-w-0 space-y-2">
+              <div className="flex flex-wrap items-center gap-2">
+                <Database className="h-4 w-4 text-muted-foreground" />
+                <span className="text-sm font-semibold">
+                  Источник: {getSourceLabel(reliabilitySource)}
+                </span>
+                <Badge
+                  variant={reliability.partialData ? 'secondary' : 'outline'}
+                >
+                  {reliabilityBadge}
+                </Badge>
+              </div>
+              <div className="flex flex-wrap gap-x-4 gap-y-1 text-xs text-muted-foreground">
+                <span>Обновлено: {generatedAtLabel}</span>
+                <span>Последнее событие: {latestEventLabel}</span>
+                <span>Окно: {shiftWindowLabel}</span>
+              </div>
+            </div>
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={getAdminStatsData}
+              disabled={isRefreshing}
+            >
+              {isRefreshing ? (
+                <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+              ) : (
+                <Clock className="mr-2 h-4 w-4" />
+              )}
+              Обновить
+            </Button>
+          </div>
+
+          {reliabilityWarnings.length > 0 && (
+            <div className="space-y-2 rounded-md border border-amber-500/30 bg-background/70 p-3">
+              {reliabilityWarnings.map((warning, index) => (
+                <div
+                  key={`${warning.code}-${index}`}
+                  className="flex min-w-0 items-start gap-2 text-sm"
+                >
+                  <AlertCircle className="mt-0.5 h-4 w-4 shrink-0 text-amber-600" />
+                  <div className="min-w-0">
+                    <div className="break-words font-medium">
+                      {warning.message}
+                    </div>
+                    {warning.code && (
+                      <div className="mt-0.5 break-all text-xs text-muted-foreground">
+                        {warning.code}
+                      </div>
+                    )}
+                  </div>
+                </div>
+              ))}
+            </div>
+          )}
+        </CardContent>
+      </Card>
 
       <Card className="shadow-md">
         <CardContent className="space-y-5 p-5 md:p-6">
