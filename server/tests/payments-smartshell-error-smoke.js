@@ -31,6 +31,7 @@ const paymentCreatedEvent = {
 
 (async () => {
   const calls = [];
+  let failedEventType = 'DEPOSIT_ADDED_ONLINE';
 
   require.cache[smartshellApiPath] = {
     id: smartshellApiPath,
@@ -40,7 +41,10 @@ const paymentCreatedEvent = {
       executeSmartshellQuery: async ({ query }, token, options = {}) => {
         calls.push({ query, token, options });
 
-        if (query.includes('DEPOSIT_ADDED_ONLINE')) {
+        if (
+          failedEventType &&
+          query.includes(`types: "${failedEventType}"`)
+        ) {
           return {
             error: true,
             code: 'SMARTSHELL_TIMEOUT',
@@ -57,7 +61,7 @@ const paymentCreatedEvent = {
           return paginatedResponse('workShifts');
         }
 
-        if (query.includes('PAYMENT_CREATED')) {
+        if (query.includes('types: "PAYMENT_CREATED"')) {
           return paginatedResponse('eventList', [paymentCreatedEvent]);
         }
 
@@ -100,6 +104,36 @@ const paymentCreatedEvent = {
     calls.some((call) => call.query.includes('DEPOSIT_ADDED_ONLINE')),
     'failed payment branch should have been called',
   );
+
+  const partialResult = await paymentsService.getResultsArray(
+    '2026-07-10 09:00:00',
+    '2026-07-10 21:00:00',
+    { id: 7 },
+    { allowPartial: true, includeMetadata: true },
+  );
+
+  assert.strictEqual(partialResult.error, false);
+  assert.strictEqual(partialResult.source, 'smartshell_event_list');
+  assert.strictEqual(partialResult.partialData, true);
+  assert(partialResult.result.length > 0);
+  assert.strictEqual(partialResult.warnings.length, 1);
+  assert.strictEqual(partialResult.warnings[0].code, 'SMARTSHELL_TIMEOUT');
+
+  failedEventType = 'PAYMENT_CREATED';
+  const criticalFailureResult = await paymentsService.getResultsArray(
+    '2026-07-10 09:00:00',
+    '2026-07-10 21:00:00',
+    { id: 7 },
+    { allowPartial: true, includeMetadata: true },
+  );
+
+  assert.strictEqual(criticalFailureResult.error, true);
+  assert.strictEqual(criticalFailureResult.code, 'SMARTSHELL_TIMEOUT');
+  assert.strictEqual(criticalFailureResult.category, 'timeout');
+  assert.strictEqual(criticalFailureResult.statusCode, 504);
+  assert.strictEqual(criticalFailureResult.operationName, 'eventList');
+  assert.strictEqual(criticalFailureResult.retryable, true);
+  assert.strictEqual(criticalFailureResult.result, undefined);
 
   console.log('payments smartshell error smoke passed');
 })()

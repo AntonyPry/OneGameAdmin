@@ -33,6 +33,26 @@ const getPaymentItemType = (item = {}) => {
   return item.entity_type || 'TARIFF';
 };
 
+const createSmartshellWarning = (error = {}, fallback = {}) => ({
+  code: error.code || fallback.code || 'SMARTSHELL_PARTIAL_DATA',
+  category: error.category || fallback.category || 'partial_data',
+  message:
+    error.message ||
+    fallback.message ||
+    'Часть данных Smartshell не была загружена',
+  operationName: error.operationName || fallback.operationName || null,
+  statusCode: error.statusCode || fallback.statusCode || null,
+  retryable: Boolean(error.retryable),
+});
+
+const getEventListBranchWarning = (branch, error) =>
+  createSmartshellWarning(error, {
+    code: 'SMARTSHELL_EVENT_LIST_BRANCH_FAILED',
+    category: 'partial_data',
+    message: `Не удалось загрузить часть событий Smartshell: ${branch.label}`,
+    operationName: 'eventList',
+  });
+
 const fetchPaginatedData = async (
   queryFactory,
   managerBearer,
@@ -468,7 +488,9 @@ const getFirstClientSessions = async (
   return { result };
 };
 
-const getResultsArray = async (startDate, endDate, club) => {
+const getResultsArray = async (startDate, endDate, club, options = {}) => {
+  const { allowPartial = false, includeMetadata = false } = options;
+
   try {
     const managerBearer = await getManagerToken(club);
     if (managerBearer.error) return managerBearer;
@@ -482,14 +504,45 @@ const getResultsArray = async (startDate, endDate, club) => {
     shiftsEndDateObj.setDate(shiftsEndDateObj.getDate() + 1);
     const formattedShiftsEndDate = `${shiftsEndDateObj.getFullYear()}-${String(shiftsEndDateObj.getMonth() + 1).padStart(2, '0')}-${String(shiftsEndDateObj.getDate()).padStart(2, '0')} 23:59:59`;
 
+    const paymentBranches = [
+      {
+        key: 'payment_created',
+        label: 'созданные оплаты',
+        critical: true,
+        request: getPaymentData(startDate, endDate, managerBearer, { clubId }),
+      },
+      {
+        key: 'sbp_deposits',
+        label: 'пополнения СБП',
+        critical: false,
+        request: getSbpData(startDate, endDate, managerBearer, { clubId }),
+      },
+      {
+        key: 'per_minute_sessions',
+        label: 'поминутные сессии',
+        critical: false,
+        request: getTariffPerMinuteData(startDate, endDate, managerBearer, {
+          clubId,
+        }),
+      },
+      {
+        key: 'bonus_payments',
+        label: 'начисления бонусов',
+        critical: false,
+        request: getBonusData(startDate, endDate, managerBearer, { clubId }),
+      },
+      {
+        key: 'payment_refunds',
+        label: 'возвраты оплат',
+        critical: false,
+        request: getPaymentRefundData(startDate, endDate, managerBearer, {
+          clubId,
+        }),
+      },
+    ];
+
     const [paymentResults, shiftsData] = await Promise.all([
-      Promise.all([
-        getPaymentData(startDate, endDate, managerBearer, { clubId }),
-        getSbpData(startDate, endDate, managerBearer, { clubId }),
-        getTariffPerMinuteData(startDate, endDate, managerBearer, { clubId }),
-        getBonusData(startDate, endDate, managerBearer, { clubId }),
-        getPaymentRefundData(startDate, endDate, managerBearer, { clubId }),
-      ]),
+      Promise.all(paymentBranches.map((branch) => branch.request)),
       getAllShiftsForPeriod(
         formattedShiftsStartDate,
         formattedShiftsEndDate,
@@ -498,15 +551,65 @@ const getResultsArray = async (startDate, endDate, club) => {
       ),
     ]);
 
-    if (shiftsData.error) return shiftsData;
+    const warnings = [];
+    let partialData = false;
+    let shifts = [];
 
-    const paymentError = paymentResults.find((result) => result?.error);
-    if (paymentError) return paymentError;
+    if (shiftsData.error) {
+      if (!allowPartial) return shiftsData;
 
-    const paymentData = paymentResults.flatMap((res) => res.result || []);
-    const shifts = shiftsData.result.sort(
-      (a, b) => a.start_at_num - b.start_at_num,
+      partialData = true;
+      warnings.push(
+        createSmartshellWarning(shiftsData, {
+          code: 'SMARTSHELL_WORK_SHIFTS_SUPPORT_FAILED',
+          category: 'partial_data',
+          message:
+            'Не удалось загрузить список смен для привязки части событий к оператору',
+          operationName: 'workShifts',
+        }),
+      );
+    } else {
+      shifts = shiftsData.result.sort((a, b) => a.start_at_num - b.start_at_num);
+    }
+
+    const failedPaymentResults = paymentResults
+      .map((result, index) => ({ result, branch: paymentBranches[index] }))
+      .filter(({ result }) => result?.error);
+    const criticalPaymentError = failedPaymentResults.find(
+      ({ branch }) => branch.critical,
     );
+
+    if (criticalPaymentError) {
+      return {
+        ...criticalPaymentError.result,
+        code:
+          criticalPaymentError.result.code ||
+          'SMARTSHELL_PRIMARY_EVENT_LIST_FAILED',
+        statusCode: criticalPaymentError.result.statusCode || 502,
+      };
+    }
+
+    if (failedPaymentResults.length && !allowPartial) {
+      return failedPaymentResults[0].result;
+    }
+
+    failedPaymentResults.forEach(({ result, branch }) => {
+      partialData = true;
+      warnings.push(getEventListBranchWarning(branch, result));
+    });
+
+    const successfulPaymentResults = paymentResults.filter((res) => !res?.error);
+    const paymentData = successfulPaymentResults.flatMap((res) => res.result || []);
+
+    if (!successfulPaymentResults.length && failedPaymentResults.length) {
+      return {
+        ...failedPaymentResults[0].result,
+        code:
+          failedPaymentResults[0].result.code ||
+          'SMARTSHELL_EVENT_LIST_UNAVAILABLE',
+        statusCode: failedPaymentResults[0].result.statusCode || 502,
+      };
+    }
 
     const transactionsMap = new Map();
     paymentData.forEach((event) => {
@@ -547,7 +650,18 @@ const getResultsArray = async (startDate, endDate, club) => {
       return event;
     });
 
-    return processedEvents.sort((a, b) => a.idForSort - b.idForSort);
+    const sortedEvents = processedEvents.sort((a, b) => a.idForSort - b.idForSort);
+    if (includeMetadata || allowPartial) {
+      return {
+        error: false,
+        result: sortedEvents,
+        source: 'smartshell_event_list',
+        partialData,
+        warnings,
+      };
+    }
+
+    return sortedEvents;
   } catch (error) {
     console.log('getResultsArray ERROR ->', error);
     return { error: true, message: error.message };

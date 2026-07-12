@@ -36,6 +36,101 @@ const numberWithDefault = (value, fallback = 0) => {
   return Math.max(0, Math.round(numberValue));
 };
 
+const CURRENT_STATS_SOURCE = 'smartshell_event_list';
+const SHIFT_SPECIFIC_TIMEOUT_MS = 8000;
+
+const createReliabilityWarning = ({
+  code,
+  message,
+  category = 'reliability',
+  severity = 'warning',
+  operationName,
+  statusCode,
+  retryable,
+} = {}) => ({
+  code: code || 'CURRENT_STATS_RELIABILITY_WARNING',
+  category,
+  severity,
+  message: message || 'Есть предупреждение по надежности данных смены',
+  operationName: operationName || null,
+  statusCode: statusCode || null,
+  retryable: Boolean(retryable),
+});
+
+const smartshellErrorToWarning = (error = {}, fallback = {}) =>
+  createReliabilityWarning({
+    code: error.code || fallback.code,
+    category: error.category || fallback.category || 'smartshell',
+    message: error.message || fallback.message,
+    operationName: error.operationName || fallback.operationName,
+    statusCode: error.statusCode || fallback.statusCode,
+    retryable: error.retryable,
+  });
+
+const toIsoString = (value) => {
+  if (!value) return null;
+  const date =
+    value instanceof Date ? value : new Date(String(value).replace(' ', 'T') + '+03:00');
+  return Number.isNaN(date.getTime()) ? null : date.toISOString();
+};
+
+const getLatestEventAt = (events = []) =>
+  events
+    .map((event) => toIsoString(event.timestamp))
+    .filter(Boolean)
+    .sort()
+    .at(-1) || null;
+
+const getLagSeconds = (generatedAt, latestEventAt) => {
+  if (!latestEventAt) return null;
+  const generatedTime = generatedAt.getTime();
+  const latestTime = new Date(latestEventAt).getTime();
+  if (!Number.isFinite(generatedTime) || !Number.isFinite(latestTime)) return null;
+  return Math.max(0, Math.round((generatedTime - latestTime) / 1000));
+};
+
+const getIdLiteral = (id) =>
+  /^\d+$/.test(String(id)) ? String(id) : JSON.stringify(String(id));
+
+const summarizeShiftSpecificShape = (value) => {
+  if (Array.isArray(value)) {
+    return {
+      kind: 'array',
+      length: value.length,
+      itemKeys:
+        value[0] && typeof value[0] === 'object'
+          ? Object.keys(value[0]).sort()
+          : [],
+    };
+  }
+
+  if (value && typeof value === 'object') {
+    return {
+      kind: 'object',
+      keys: Object.keys(value).sort(),
+      hasGoodsBreakdown: Array.isArray(value.goods),
+      hasServicesBreakdown: Array.isArray(value.services),
+      hasPcBreakdown: false,
+      hasPsBreakdown: false,
+    };
+  }
+
+  return { kind: value === null ? 'null' : typeof value };
+};
+
+const createNoActiveShiftMetadata = (generatedAt) => ({
+  source: null,
+  dataSource: null,
+  freshness: {
+    status: 'no_active_shift',
+    generatedAt: generatedAt.toISOString(),
+  },
+  warnings: [],
+  partialData: false,
+  generatedAt: generatedAt.toISOString(),
+  shiftWindow: null,
+});
+
 const sumPlanBarRevenue = (plan = {}) =>
   numberWithDefault(plan.foodRevenue) +
   numberWithDefault(plan.drinksRevenue) +
@@ -115,7 +210,7 @@ const getActiveWorkshiftStartDate = async (club) => {
 
   const queryData = {
     query: `query ActiveWorkShift {
-      activeWorkShift { created_at worker { last_name first_name } }
+      activeWorkShift { id created_at worker { last_name first_name } }
     }`,
   };
 
@@ -126,6 +221,132 @@ const getActiveWorkshiftStartDate = async (club) => {
   if (response.error) return response;
 
   return response.data.activeWorkShift;
+};
+
+const getShiftSpecificReliabilityData = async (workshiftStart, club) => {
+  if (!workshiftStart?.id) {
+    return {
+      partialData: false,
+      supportingSources: [],
+      warnings: [
+        createReliabilityWarning({
+          code: 'SMARTSHELL_SHIFT_ID_MISSING',
+          category: 'smartshell_shift_specific',
+          severity: 'info',
+          message:
+            'Smartshell activeWorkShift не вернул id, shift-specific источники не проверялись',
+          operationName: 'activeWorkShift',
+        }),
+      ],
+    };
+  }
+
+  const managerBearer = await getManagerToken(club);
+  if (managerBearer.error) {
+    return {
+      partialData: true,
+      supportingSources: [],
+      warnings: [
+        smartshellErrorToWarning(managerBearer, {
+          code: 'SMARTSHELL_SHIFT_SPECIFIC_TOKEN_FAILED',
+          category: 'smartshell_shift_specific',
+          message:
+            'Не удалось получить токен для проверки shift-specific источников',
+        }),
+      ],
+    };
+  }
+
+  const idLiteral = getIdLiteral(workshiftStart.id);
+  const overviewQuery = `query WorkShiftPaymentOverviewReliability {
+    getWorkShiftPaymentOverviewData(id: ${idLiteral}) {
+      id total deposit online_deposit bonus refunded cash card created_at finished_at
+      goods { __typename }
+      services { __typename }
+      combos { __typename }
+    }
+  }`;
+  const detailedQuery = `query DetailedWorkShiftMoneyReliability {
+    getDetailedWorkShiftMoneyData(id: ${idLiteral}) {
+      id total deposit bonus refunded created_at finished_at
+      cash { __typename }
+      card { __typename }
+    }
+  }`;
+
+  const [overview, detailed] = await Promise.all([
+    executeSmartshellQuery({ query: overviewQuery }, managerBearer, {
+      operationName: 'WorkShiftPaymentOverviewReliability',
+      clubId: getDbClubId(club),
+      retries: 0,
+      timeoutMs: SHIFT_SPECIFIC_TIMEOUT_MS,
+    }),
+    executeSmartshellQuery({ query: detailedQuery }, managerBearer, {
+      operationName: 'DetailedWorkShiftMoneyReliability',
+      clubId: getDbClubId(club),
+      retries: 0,
+      timeoutMs: SHIFT_SPECIFIC_TIMEOUT_MS,
+    }),
+  ]);
+
+  const warnings = [];
+  const supportingSources = [];
+
+  if (overview.error) {
+    warnings.push(
+      smartshellErrorToWarning(overview, {
+        code: 'SMARTSHELL_SHIFT_PAYMENT_OVERVIEW_UNAVAILABLE',
+        category: 'smartshell_shift_specific',
+        message:
+          'Shift-specific payment overview Smartshell недоступен; расчет оставлен на eventList',
+      }),
+    );
+  } else {
+    supportingSources.push({
+      source: 'smartshell_get_work_shift_payment_overview_data',
+      status: 'available',
+      shape: summarizeShiftSpecificShape(
+        overview.data?.getWorkShiftPaymentOverviewData,
+      ),
+    });
+  }
+
+  if (detailed.error) {
+    warnings.push(
+      smartshellErrorToWarning(detailed, {
+        code: 'SMARTSHELL_DETAILED_SHIFT_MONEY_UNAVAILABLE',
+        category: 'smartshell_shift_specific',
+        message:
+          'Shift-specific detailed money Smartshell недоступен; расчет оставлен на eventList',
+      }),
+    );
+  } else {
+    supportingSources.push({
+      source: 'smartshell_get_detailed_work_shift_money_data',
+      status: 'available',
+      shape: summarizeShiftSpecificShape(
+        detailed.data?.getDetailedWorkShiftMoneyData,
+      ),
+    });
+  }
+
+  if (supportingSources.length) {
+    warnings.push(
+      createReliabilityWarning({
+        code: 'SMARTSHELL_SHIFT_SPECIFIC_SOURCE_NOT_PRIMARY',
+        category: 'source_decision',
+        severity: 'info',
+        message:
+          'Shift-specific Smartshell queries доступны, но не покрывают полный разрез total/bar/goods/services/ps/pc; primary источник оставлен eventList',
+      }),
+    );
+  }
+
+  return {
+    partialData: warnings.some((warning) => warning.severity !== 'info'),
+    supportingSources,
+    warnings,
+  };
 };
 
 function getEnabledResponsibilityItems(clubSettings) {
@@ -276,8 +497,48 @@ const calculateCurrentStats = async ({
   dbClubId,
   club,
 }) => {
+  const generatedAt = new Date();
   const smena = endDate.split(' ')[1].split(':')[0] === '09' ? 'night' : 'day';
   const queryDate = endDate.split(' ')[0];
+  const dbClub = club || (await Club.findByPk(dbClubId));
+  const clubSettings = normalizeClubSettings(dbClub?.settings, dbClub);
+  const workshiftStart = await getActiveWorkshiftStartDate(club || dbClubId);
+
+  if (workshiftStart?.error) {
+    return {
+      ...workshiftStart,
+      code: workshiftStart.code || 'SMARTSHELL_WORKSHIFT_ERROR',
+      statusCode: workshiftStart.statusCode || 502,
+      source: null,
+      dataSource: null,
+      partialData: false,
+      generatedAt: generatedAt.toISOString(),
+      warnings: [
+        smartshellErrorToWarning(workshiftStart, {
+          code: 'SMARTSHELL_WORKSHIFT_ERROR',
+          category: 'smartshell',
+          message: 'Не удалось получить активную смену из Smartshell',
+          operationName: 'activeWorkShift',
+        }),
+      ],
+    };
+  }
+
+  if (!workshiftStart) {
+    const metadata = createNoActiveShiftMetadata(generatedAt);
+    return {
+      error: true,
+      code: 'NO_ACTIVE_WORKSHIFT',
+      category: 'no_active_shift',
+      message: 'Активная смена не открыта',
+      statusCode: 409,
+      ...metadata,
+      metadata: {
+        status: 'no_active_shift',
+        ...metadata,
+      },
+    };
+  }
 
   const planStatsRecord = await MonthlyPlan.findOne({
     where: { club_id: dbClubId, date: queryDate, shift_type: smena },
@@ -313,19 +574,48 @@ const calculateCurrentStats = async ({
     start.setHours(21, 0, 0, 0);
 
   const startSmena = formatDate(start);
-  const resultsArray = await getResultsArray(
+  const resultsResponse = await getResultsArray(
     startSmena,
     endDate,
     club || dbClubId,
+    { allowPartial: true, includeMetadata: true },
   );
 
-  if (resultsArray.error) {
+  if (resultsResponse.error) {
     return {
-      ...resultsArray,
-      code: resultsArray.code || 'SMARTSHELL_STATS_ERROR',
-      statusCode: resultsArray.statusCode || 502,
+      ...resultsResponse,
+      code: resultsResponse.code || 'SMARTSHELL_STATS_ERROR',
+      statusCode: resultsResponse.statusCode || 502,
+      source: CURRENT_STATS_SOURCE,
+      dataSource: CURRENT_STATS_SOURCE,
+      partialData: false,
+      generatedAt: generatedAt.toISOString(),
+      warnings: [
+        smartshellErrorToWarning(resultsResponse, {
+          code: 'SMARTSHELL_STATS_ERROR',
+          category: 'smartshell',
+          message: 'Не удалось загрузить primary eventList данные смены',
+          operationName: 'eventList',
+        }),
+      ],
     };
   }
+
+  const resultsArray = Array.isArray(resultsResponse)
+    ? resultsResponse
+    : resultsResponse.result || [];
+  const eventListWarnings = Array.isArray(resultsResponse.warnings)
+    ? resultsResponse.warnings.map((warning) =>
+        createReliabilityWarning({
+          code: warning.code,
+          category: warning.category || 'smartshell_event_list',
+          message: warning.message,
+          operationName: warning.operationName,
+          statusCode: warning.statusCode,
+          retryable: warning.retryable,
+        }),
+      )
+    : [];
 
   const currentStatsObject = {
     totalRevenue: 0,
@@ -366,27 +656,6 @@ const calculateCurrentStats = async ({
     }
   }
 
-  const dbClub = club || (await Club.findByPk(dbClubId));
-  const clubSettings = normalizeClubSettings(dbClub?.settings, dbClub);
-  const workshiftStart = await getActiveWorkshiftStartDate(club || dbClubId);
-
-  if (workshiftStart?.error) {
-    return {
-      ...workshiftStart,
-      code: workshiftStart.code || 'SMARTSHELL_WORKSHIFT_ERROR',
-      statusCode: workshiftStart.statusCode || 502,
-    };
-  }
-
-  if (!workshiftStart) {
-    return {
-      error: true,
-      code: 'NO_ACTIVE_WORKSHIFT',
-      message: 'Смена не найдена',
-      statusCode: 400,
-    };
-  }
-
   const responsibilitiesCheck = await getResponsibilitiesCheck(
     workshiftStart,
     dbClubId,
@@ -402,7 +671,57 @@ const calculateCurrentStats = async ({
     workshiftStart,
   );
 
-  return { currentStatsObject, planStatsObject, currentAwardsObject };
+  const shiftSpecific = await getShiftSpecificReliabilityData(
+    workshiftStart,
+    club || dbClubId,
+  );
+  const warnings = [...eventListWarnings, ...shiftSpecific.warnings];
+  const partialData =
+    Boolean(resultsResponse.partialData) || Boolean(shiftSpecific.partialData);
+  const latestEventAt = getLatestEventAt(resultsArray);
+  const freshness = {
+    status: partialData ? 'partial' : 'fresh',
+    generatedAt: generatedAt.toISOString(),
+    latestEventAt,
+    dataLagSeconds: getLagSeconds(generatedAt, latestEventAt),
+    eventCount: resultsArray.length,
+  };
+  const shiftWindow = {
+    shiftType: smena,
+    requestedStart: startDate,
+    requestedEnd: endDate,
+    normalizedStart: startSmena,
+    normalizedEnd: endDate,
+    activeWorkShiftId: workshiftStart.id || null,
+    activeWorkShiftCreatedAt: workshiftStart.created_at || null,
+    timezone: 'Europe/Moscow',
+  };
+  const metadata = {
+    status: partialData ? 'partial' : 'ok',
+    source: CURRENT_STATS_SOURCE,
+    dataSource: CURRENT_STATS_SOURCE,
+    dataSourceLabel: 'Smartshell eventList',
+    freshness,
+    warnings,
+    partialData,
+    generatedAt: generatedAt.toISOString(),
+    shiftWindow,
+    supportingSources: shiftSpecific.supportingSources,
+  };
+
+  return {
+    currentStatsObject,
+    planStatsObject,
+    currentAwardsObject,
+    source: metadata.source,
+    dataSource: metadata.dataSource,
+    freshness,
+    warnings,
+    partialData,
+    generatedAt: metadata.generatedAt,
+    shiftWindow,
+    metadata,
+  };
 };
 
 const saveAdminResponsibilities = async ({
