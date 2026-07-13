@@ -21,6 +21,14 @@ import {
   CardContent,
 } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogTitle,
+} from '@/components/ui/dialog';
+import { InfoHint } from '@/components/ui/info-hint';
 
 import ManagerModal from './ManagerModal';
 
@@ -112,7 +120,10 @@ const formatMetadataDateTime = (value) => {
 };
 
 const getSourceLabel = (source) => {
-  if (source === 'smartshell_event_list') return 'Smartshell eventList';
+  if (source === 'smartshell_event_list') return 'События Smartshell';
+  if (source === 'smartshell_get_work_shift_payment_overview_data') {
+    return 'Сводка смены Smartshell';
+  }
   if (source) return source;
   return 'Источник не указан';
 };
@@ -148,9 +159,27 @@ const normalizeReliability = (payload = {}) => {
   };
 };
 
-const Statistic = ({ title, value, subtext, isGoalMet, valueClass }) => (
+const MetricLabel = ({ children, description }) => (
+  <span className="inline-flex min-w-0 items-center gap-1">
+    <span className="min-w-0 truncate">{children}</span>
+    {description && (
+      <InfoHint label={`Пояснение: ${children}`}>{description}</InfoHint>
+    )}
+  </span>
+);
+
+const Statistic = ({
+  title,
+  value,
+  subtext,
+  isGoalMet,
+  valueClass,
+  description,
+}) => (
   <div className="min-w-0 space-y-1">
-    <span className="text-sm font-medium text-muted-foreground">{title}</span>
+    <span className="text-sm font-medium text-muted-foreground">
+      <MetricLabel description={description}>{title}</MetricLabel>
+    </span>
     <div className="flex min-w-0 flex-wrap items-baseline gap-x-2 gap-y-1">
       <span
         className={`${valueClass || 'text-2xl font-bold'} ${isGoalMet ? 'text-green-600' : ''}`}
@@ -166,7 +195,7 @@ const Statistic = ({ title, value, subtext, isGoalMet, valueClass }) => (
   </div>
 );
 
-const PayoutLine = ({ label, value, tone = 'default', detail }) => {
+const PayoutLine = ({ label, value, tone = 'default', detail, description }) => {
   const toneClass =
     tone === 'positive'
       ? 'text-green-600'
@@ -175,21 +204,32 @@ const PayoutLine = ({ label, value, tone = 'default', detail }) => {
         : 'text-foreground';
 
   return (
-    <div className="flex items-start justify-between gap-4 text-sm">
+    <div className="flex flex-col gap-1 text-sm sm:flex-row sm:items-start sm:justify-between sm:gap-4">
       <div className="min-w-0">
-        <div className="font-medium">{label}</div>
+        <div className="font-medium">
+          <MetricLabel description={description}>{label}</MetricLabel>
+        </div>
         {detail && (
           <div className="mt-0.5 text-xs text-muted-foreground">{detail}</div>
         )}
       </div>
-      <div className={`shrink-0 text-right font-semibold ${toneClass}`}>
+      <div
+        className={`shrink-0 whitespace-nowrap text-left font-semibold sm:text-right ${toneClass}`}
+      >
         {value}
       </div>
     </div>
   );
 };
 
-const DecisionMetric = ({ title, value, detail, tone = 'default', badge }) => {
+const DecisionMetric = ({
+  title,
+  value,
+  detail,
+  tone = 'default',
+  badge,
+  description,
+}) => {
   const toneClass =
     tone === 'positive'
       ? 'text-green-600'
@@ -201,7 +241,7 @@ const DecisionMetric = ({ title, value, detail, tone = 'default', badge }) => {
     <div className="min-w-0 rounded-md border border-border bg-background p-4">
       <div className="mb-2 flex min-w-0 items-center justify-between gap-2">
         <span className="min-w-0 text-sm font-medium text-muted-foreground">
-          {title}
+          <MetricLabel description={description}>{title}</MetricLabel>
         </span>
         {badge}
       </div>
@@ -233,6 +273,7 @@ const AdminPage = () => {
   const [isInitialLoad, setIsInitialLoad] = useState(true);
   const [isRefreshing, setIsRefreshing] = useState(false);
   const [isManagerModalOpen, setIsManagerModalOpen] = useState(false);
+  const [isDataDetailsOpen, setIsDataDetailsOpen] = useState(false);
 
   const formatDate = (date) => {
     const pad = (num) => String(num).padStart(2, '0');
@@ -481,7 +522,7 @@ ${currentWorkshift?.created_at?.split(' ')[0] || '-'} - ${getShiftType()}
 Общая: ${totalFact}/${totalPlan} (${percent(totalFact, totalPlan)}%)
 Бар: ${currentStatsObject?.barRevenue || currentStatsObject?.goodsRevenue || 0}
 Услуги: ${currentStatsObject?.servicesRevenue || 0}
-PS: ${currentStatsObject?.psRevenue || 0}
+Приставки: ${currentStatsObject?.psRevenue || 0}
 ПК: ${currentStatsObject?.pcRevenue || 0}
 
 Выплата:
@@ -552,89 +593,51 @@ PS: ${currentStatsObject?.psRevenue || 0}
 
   return (
     <div className="mx-auto min-h-screen max-w-7xl space-y-8 p-4 md:p-8">
-      <div>
-        <div className="flex flex-wrap items-center gap-3">
-          <h1 className="text-2xl font-bold md:text-3xl">
-            Панель администратора
-          </h1>
-          {isRefreshing && (
-            <Loader2
-              className="h-5 w-5 animate-spin text-muted-foreground"
-              title="Обновление данных..."
-            />
-          )}
-        </div>
-        <p className="mt-2 text-muted-foreground">
-          Статистика текущей смены и расчет выплаты.
-        </p>
-      </div>
-
-      <Card
-        className={`shadow-sm ${
-          reliability.partialData
-            ? 'border-amber-500/50 bg-amber-500/10'
-            : 'border-border'
-        }`}
-      >
-        <CardContent className="space-y-4 p-4 md:p-5">
-          <div className="flex flex-col gap-3 lg:flex-row lg:items-start lg:justify-between">
-            <div className="min-w-0 space-y-2">
-              <div className="flex flex-wrap items-center gap-2">
-                <Database className="h-4 w-4 text-muted-foreground" />
-                <span className="text-sm font-semibold">
-                  Источник: {getSourceLabel(reliabilitySource)}
-                </span>
-                <Badge
-                  variant={reliability.partialData ? 'secondary' : 'outline'}
-                >
-                  {reliabilityBadge}
-                </Badge>
-              </div>
-              <div className="flex flex-wrap gap-x-4 gap-y-1 text-xs text-muted-foreground">
-                <span>Обновлено: {generatedAtLabel}</span>
-                <span>Последнее событие: {latestEventLabel}</span>
-                <span>Окно: {shiftWindowLabel}</span>
-              </div>
-            </div>
-            <Button
-              variant="outline"
-              size="sm"
-              onClick={getAdminStatsData}
-              disabled={isRefreshing}
-            >
-              {isRefreshing ? (
-                <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-              ) : (
-                <Clock className="mr-2 h-4 w-4" />
-              )}
-              Обновить
-            </Button>
+      <div className="flex flex-col gap-3 lg:flex-row lg:items-start lg:justify-between">
+        <div className="min-w-0">
+          <div className="flex flex-wrap items-center gap-3">
+            <h1 className="text-2xl font-bold md:text-3xl">
+              Панель администратора
+            </h1>
+            {isRefreshing && (
+              <Loader2
+                className="h-5 w-5 animate-spin text-muted-foreground"
+                title="Обновление данных..."
+              />
+            )}
           </div>
-
-          {reliabilityWarnings.length > 0 && (
-            <div className="space-y-2 rounded-md border border-amber-500/30 bg-background/70 p-3">
-              {reliabilityWarnings.map((warning, index) => (
-                <div
-                  key={`${warning.code}-${index}`}
-                  className="flex min-w-0 items-start gap-2 text-sm"
-                >
-                  <AlertCircle className="mt-0.5 h-4 w-4 shrink-0 text-amber-600" />
-                  <div className="min-w-0">
-                    <div className="break-words font-medium">
-                      {warning.message}
-                    </div>
-                    {warning.code && (
-                      <div className="mt-0.5 break-all text-xs text-muted-foreground">
-                        {warning.code}
-                      </div>
-                    )}
-                  </div>
-                </div>
-              ))}
-            </div>
-          )}
-        </CardContent>
-      </Card>
+          <p className="mt-2 text-muted-foreground">
+            Статистика текущей смены и расчет выплаты.
+          </p>
+        </div>
+        <div className="flex flex-wrap gap-2">
+          <Button
+            variant="outline"
+            onClick={() => setIsDataDetailsOpen(true)}
+            title="Показать источник и статус данных"
+          >
+            <Database className="h-4 w-4" />
+            Источник данных
+            {reliability.partialData && (
+              <Badge variant="secondary" className="ml-1">
+                Частично
+              </Badge>
+            )}
+          </Button>
+          <Button
+            variant="outline"
+            onClick={getAdminStatsData}
+            disabled={isRefreshing}
+          >
+            {isRefreshing ? (
+              <Loader2 className="h-4 w-4 animate-spin" />
+            ) : (
+              <Clock className="h-4 w-4" />
+            )}
+            Обновить
+          </Button>
+        </div>
+      </div>
 
       <Card className="shadow-md">
         <CardContent className="space-y-5 p-5 md:p-6">
@@ -655,6 +658,7 @@ PS: ${currentStatsObject?.psRevenue || 0}
               title="Текущая выплата"
               value={money(currentAwardsObject?.totalAward)}
               detail="Итог с учетом проверки смены"
+              description="Сколько администратор заработал за текущую смену по уже загруженным данным: база смены, бонус за задачи, проценты с бара и услуг минус штрафы."
             />
             <DecisionMetric
               title="Осталось до x2"
@@ -671,12 +675,14 @@ PS: ${currentStatsObject?.psRevenue || 0}
                   : 'Добавьте общий план смены'
               }
               tone={planCompleted ? 'positive' : 'warning'}
+              description="Сколько выручки еще нужно до выполнения общего плана. Когда общий план выполнен, проценты с бара и услуг умножаются на x2."
             />
             <DecisionMetric
               title="Статус x2"
               value={planCompleted ? 'Применён' : 'Не применён'}
               detail={hasPlanForShift ? x2RateDetail : 'Нет общего плана'}
               tone={planCompleted ? 'positive' : 'default'}
+              description="Показывает, применен ли повышающий множитель к процентам с бара и услуг. Проверяется только общий план смены, без отдельных планов по категориям."
             />
             <DecisionMetric
               title="Без штрафов"
@@ -687,12 +693,17 @@ PS: ${currentStatsObject?.psRevenue || 0}
                   : 'Штрафы не снижают итог'
               }
               tone={penaltyLoss > 0 ? 'warning' : 'positive'}
+              description="Сколько получилось бы к выплате, если бы проверка смены не нашла нарушений и штрафов."
             />
           </div>
 
           <div className="space-y-2">
             <div className="flex flex-col gap-1 text-sm sm:flex-row sm:items-center sm:justify-between">
-              <span className="font-medium">Прогресс общего плана</span>
+              <span className="font-medium">
+                <MetricLabel description="Доля выполнения общего плана смены. В общий план входит вся релевантная выручка: ПК, приставки, бар и услуги.">
+                  Прогресс общего плана
+                </MetricLabel>
+              </span>
               <span className="text-muted-foreground">
                 {hasPlanForShift ? `${percent(totalFact, totalPlan)}%` : '—'}
               </span>
@@ -739,31 +750,41 @@ PS: ${currentStatsObject?.psRevenue || 0}
                     currentStatsObject?.barRevenue ||
                       currentStatsObject?.goodsRevenue,
                   )}
+                  description="Выручка с товаров и бара за текущую смену. От этой суммы считается процент администратора по категории «бар»."
                 />
                 <Statistic
                   title="Услуги"
                   value={money(currentStatsObject?.servicesRevenue)}
+                  description="Выручка с дополнительных услуг: аренда, дополнительный человек за приставкой, пробковый сбор, массаж и похожие услуги."
                 />
                 <Statistic
-                  title="PS"
+                  title="Приставки"
                   value={money(currentStatsObject?.psRevenue)}
+                  description="Выручка по приставкам, которая не относится к дополнительным услугам. Участвует в общем плане смены."
                 />
                 <Statistic
                   title="ПК"
                   value={money(currentStatsObject?.pcRevenue)}
+                  description="Выручка по компьютерным местам, тарифам и сессиям ПК. Участвует в общем плане смены."
                 />
               </div>
               <Separator />
               <div className="grid grid-cols-1 gap-4 sm:grid-cols-3">
-                <Statistic title="Общая выручка" value={money(totalFact)} />
+                <Statistic
+                  title="Общая выручка"
+                  value={money(totalFact)}
+                  description="Вся выручка текущей смены, которую система учитывает при проверке выполнения общего плана."
+                />
                 <Statistic
                   title="Общий план"
                   value={hasPlanForShift ? money(totalPlan) : '—'}
+                  description="План выручки на смену. При его выполнении проценты с бара и услуг начисляются в двойном размере."
                 />
                 <Statistic
                   title="Выполнение"
                   value={`${percent(totalFact, totalPlan)}%`}
                   isGoalMet={planCompleted}
+                  description="Процент выполнения общего плана: текущая общая выручка делится на план смены."
                 />
               </div>
             </CardContent>
@@ -786,11 +807,13 @@ PS: ${currentStatsObject?.psRevenue || 0}
                       : '—'
                   }
                   valueClass="text-xl font-semibold"
+                  description="Время открытия текущей рабочей смены в Smartshell."
                 />
                 <Statistic
                   title="В работе"
                   value={getWorkshiftDuration()}
                   valueClass="text-xl font-semibold"
+                  description="Сколько времени прошло с момента открытия текущей смены."
                 />
               </div>
             </CardContent>
@@ -806,6 +829,7 @@ PS: ${currentStatsObject?.psRevenue || 0}
                   label="База смены"
                   value={money(currentAwardsObject?.baseSalary)}
                   detail={shiftBadge}
+                  description="Фиксированная оплата за тип смены: дневная или ночная."
                 />
                 <PayoutLine
                   label="Бонус за все задачи"
@@ -816,6 +840,7 @@ PS: ${currentStatsObject?.psRevenue || 0}
                       : 'default'
                   }
                   detail={`Доступно ${money(taskBonus.configured || 0)}`}
+                  description="Бонус начисляется, если все задачи выполнены и проверка смены не нашла нарушений."
                 />
                 <PayoutLine
                   label="Бар"
@@ -824,6 +849,7 @@ PS: ${currentStatsObject?.psRevenue || 0}
                     currentAwardsObject?.barBonus > 0 ? 'positive' : 'default'
                   }
                   detail={`${money(bonusBreakdown.bar?.revenue)} x ${ratePercent(bonusBreakdown.bar?.rate)}`}
+                  description="Процент администратора с выручки бара. При выполнении общего плана ставка умножается на x2."
                 />
                 <PayoutLine
                   label="Услуги"
@@ -834,6 +860,7 @@ PS: ${currentStatsObject?.psRevenue || 0}
                       : 'default'
                   }
                   detail={`${money(bonusBreakdown.services?.revenue)} x ${ratePercent(bonusBreakdown.services?.rate)}`}
+                  description="Процент администратора с дополнительных услуг. При выполнении общего плана ставка умножается на x2."
                 />
                 <PayoutLine
                   label="Штрафы"
@@ -846,6 +873,7 @@ PS: ${currentStatsObject?.psRevenue || 0}
                       ? `${penalties.items?.length || 0} наруш.`
                       : 'Нет штрафов'
                   }
+                  description="Сумма удержаний по проверке смены: сообщения, звонки, чистота, рабочее место, тайный гость и другие правила мотивации."
                 />
               </div>
 
@@ -965,6 +993,102 @@ PS: ${currentStatsObject?.psRevenue || 0}
           </Card>
         </div>
       </div>
+
+      <Dialog open={isDataDetailsOpen} onOpenChange={setIsDataDetailsOpen}>
+        <DialogContent className="max-h-[90vh] overflow-y-auto sm:max-w-[620px]">
+          <DialogHeader>
+            <DialogTitle>Источник данных смены</DialogTitle>
+            <DialogDescription>
+              Техническая информация о загрузке данных из Smartshell.
+            </DialogDescription>
+          </DialogHeader>
+
+          <div className="space-y-4">
+            <div
+              className={`rounded-md border p-4 ${
+                reliability.partialData
+                  ? 'border-amber-500/40 bg-amber-500/10'
+                  : 'border-border bg-muted/30'
+              }`}
+            >
+              <div className="flex flex-wrap items-center gap-2">
+                <Database className="h-4 w-4 text-muted-foreground" />
+                <span className="font-semibold">
+                  {getSourceLabel(reliabilitySource)}
+                </span>
+                <Badge
+                  variant={reliability.partialData ? 'secondary' : 'outline'}
+                >
+                  {reliabilityBadge}
+                </Badge>
+              </div>
+              <div className="mt-3 grid grid-cols-1 gap-2 text-sm text-muted-foreground sm:grid-cols-2">
+                <div>
+                  <div className="text-xs uppercase text-muted-foreground">
+                    Обновлено
+                  </div>
+                  <div className="text-foreground">{generatedAtLabel}</div>
+                </div>
+                <div>
+                  <div className="text-xs uppercase text-muted-foreground">
+                    Последнее событие
+                  </div>
+                  <div className="text-foreground">{latestEventLabel}</div>
+                </div>
+                <div className="sm:col-span-2">
+                  <div className="text-xs uppercase text-muted-foreground">
+                    Окно смены
+                  </div>
+                  <div className="break-words text-foreground">
+                    {shiftWindowLabel}
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            {reliabilityWarnings.length > 0 ? (
+              <div className="space-y-2 rounded-md border border-amber-500/30 bg-amber-500/10 p-3">
+                <div className="font-medium">Предупреждения</div>
+                {reliabilityWarnings.map((warning, index) => (
+                  <div
+                    key={`${warning.code}-${index}`}
+                    className="flex min-w-0 items-start gap-2 text-sm"
+                  >
+                    <AlertCircle className="mt-0.5 h-4 w-4 shrink-0 text-amber-600" />
+                    <div className="min-w-0">
+                      <div className="break-words font-medium">
+                        {warning.message}
+                      </div>
+                      {warning.code && (
+                        <div className="mt-0.5 break-all text-xs text-muted-foreground">
+                          {warning.code}
+                        </div>
+                      )}
+                    </div>
+                  </div>
+                ))}
+              </div>
+            ) : (
+              <div className="rounded-md border border-border bg-muted/30 p-3 text-sm text-muted-foreground">
+                Предупреждений по загрузке данных нет.
+              </div>
+            )}
+
+            <Button
+              variant="outline"
+              onClick={getAdminStatsData}
+              disabled={isRefreshing}
+            >
+              {isRefreshing ? (
+                <Loader2 className="h-4 w-4 animate-spin" />
+              ) : (
+                <Clock className="h-4 w-4" />
+              )}
+              Обновить данные
+            </Button>
+          </div>
+        </DialogContent>
+      </Dialog>
 
       <ManagerModal
         modalOpen={isManagerModalOpen}

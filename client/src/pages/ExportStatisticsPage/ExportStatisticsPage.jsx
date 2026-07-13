@@ -32,6 +32,7 @@ import {
   TableHeader,
   TableRow,
 } from '@/components/ui/table';
+import { InfoHint } from '@/components/ui/info-hint';
 
 const REPORTS = [
   {
@@ -101,6 +102,74 @@ const STATUS_META = {
     variant: 'destructive',
     icon: XCircle,
   },
+};
+
+const REPORT_SOURCE_LABELS = {
+  overviewReport: 'Общие итоги',
+  salesReport: 'Продажи',
+  sessionsMoneyReport: 'Сессии',
+  topSoldOverviewItemsReport: 'Топ продаж',
+  boughtTariffsReport: 'Купленные тарифы',
+};
+
+const REPORT_SOURCE_DESCRIPTIONS = {
+  overviewReport:
+    'Итоговая сводка Smartshell по выбранному периоду: общие суммы и ключевые показатели.',
+  salesReport:
+    'Продажи товаров, тарифов и услуг за выбранный период по данным Smartshell.',
+  sessionsMoneyReport:
+    'Деньги, связанные с игровыми сессиями за выбранный период.',
+  topSoldOverviewItemsReport:
+    'Позиции, которые чаще всего приносили выручку в выбранном периоде.',
+  boughtTariffsReport:
+    'Купленные тарифы и пакеты за выбранный период.',
+};
+
+const METRIC_LABELS = {
+  amount: 'Количество',
+  average: 'Среднее значение',
+  bonus: 'Бонусы',
+  bonuses: 'Бонусы',
+  card: 'Оплаты картой',
+  cash: 'Наличные',
+  count: 'Количество',
+  deposit: 'Пополнения',
+  deposits: 'Пополнения',
+  discount: 'Скидки',
+  discounts: 'Скидки',
+  income: 'Доход',
+  items: 'Позиции',
+  money: 'Деньги',
+  payment: 'Оплата',
+  payments: 'Оплаты',
+  percent: 'Процент',
+  profit: 'Прибыль',
+  quantity: 'Количество',
+  qty: 'Количество',
+  refund: 'Возвраты',
+  refunds: 'Возвраты',
+  revenue: 'Выручка',
+  sale: 'Продажа',
+  sales: 'Продажи',
+  service: 'Услуги',
+  services: 'Услуги',
+  session: 'Сессия',
+  sessions: 'Сессии',
+  sessions_count: 'Сессии',
+  sum: 'Сумма',
+  tariff: 'Тариф',
+  tariffs: 'Тарифы',
+  total: 'Итого',
+  total_amount: 'Общее количество',
+  total_count: 'Общее количество',
+  total_revenue: 'Общая выручка',
+  total_sum: 'Итого сумма',
+};
+
+const UNIT_LABELS = {
+  count: 'Количество',
+  percent: 'Процент',
+  rub: 'Сумма',
 };
 
 const saveBlob = (blob, fileName) => {
@@ -264,6 +333,82 @@ const formatMetricValue = (value, unit) => {
   }).format(numberValue);
 };
 
+const normalizeLookupKey = (value) =>
+  String(value || '')
+    .trim()
+    .replace(/([a-z])([A-Z])/g, '$1_$2')
+    .toLowerCase()
+    .replace(/[\s-]+/g, '_')
+    .replace(/[^a-z0-9а-яё_%]+/gi, '');
+
+const hasRussianText = (value) => /[а-яё]/i.test(String(value || ''));
+
+const isTechnicalMetricLabel = (value) =>
+  /^(value\d+|summary\d*|data\d*|metric\d*)$/i.test(String(value || ''));
+
+const getReportSourceLabel = (source) =>
+  REPORT_SOURCE_LABELS[source] || 'Отчет Smartshell';
+
+const getReportSourceDescription = (source) =>
+  REPORT_SOURCE_DESCRIPTIONS[source] ||
+  'Показатель из отчета Smartshell за выбранный период.';
+
+const getMetricLabel = (label, { source, unit, fallback } = {}) => {
+  const key = normalizeLookupKey(label);
+
+  if (REPORT_SOURCE_LABELS[label]) return REPORT_SOURCE_LABELS[label];
+  if (METRIC_LABELS[key]) return METRIC_LABELS[key];
+  if (!label || isTechnicalMetricLabel(label)) {
+    return fallback || UNIT_LABELS[unit] || getReportSourceLabel(source);
+  }
+
+  if (!hasRussianText(label) && unit) {
+    return fallback || UNIT_LABELS[unit] || getReportSourceLabel(source);
+  }
+
+  return String(label);
+};
+
+const getSectionTitle = (section) => {
+  const rawTitle = section?.title;
+  const sourceLabel = getReportSourceLabel(section?.source);
+  const key = normalizeLookupKey(rawTitle);
+
+  if (METRIC_LABELS[key]) return METRIC_LABELS[key];
+  if (!rawTitle || !hasRussianText(rawTitle)) return sourceLabel;
+
+  return getMetricLabel(rawTitle, {
+    source: section?.source,
+    fallback: sourceLabel,
+  });
+};
+
+const getMetricDescription = ({ label, source, unit, kind }) => {
+  const sourceText = getReportSourceDescription(source);
+  const unitText =
+    unit === 'rub'
+      ? 'Значение показано в рублях.'
+      : unit === 'percent'
+        ? 'Значение показано в процентах.'
+        : unit === 'count'
+          ? 'Значение показывает количество.'
+          : 'Значение приведено в формате, который отдал Smartshell.';
+
+  if (kind === 'amount') {
+    return 'Количество операций, сессий, товаров или тарифов в этой строке отчета.';
+  }
+
+  if (kind === 'sum') {
+    return 'Денежная сумма по этой строке отчета за выбранный период.';
+  }
+
+  if (kind === 'row') {
+    return 'Строка отчета Smartshell. Смотрите соседние колонки, чтобы понять количество и сумму по этой позиции.';
+  }
+
+  return `${sourceText} ${unitText}`;
+};
+
 const formatReportAmount = (value) =>
   value === null || value === undefined ? '—' : formatMetricValue(value, 'count');
 
@@ -281,6 +426,13 @@ const StatusBadge = ({ status }) => {
     </Badge>
   );
 };
+
+const MetricHeader = ({ children, description, className = '' }) => (
+  <span className={`inline-flex min-w-0 items-center gap-1 ${className}`}>
+    <span className="min-w-0 truncate">{children}</span>
+    <InfoHint label={`Пояснение: ${children}`}>{description}</InfoHint>
+  </span>
+);
 
 const ExportStatisticsPage = () => {
   const { session } = useAuth();
@@ -656,19 +808,34 @@ const ExportStatisticsPage = () => {
               <>
                 {(periodOverview.totals || []).length > 0 && (
                   <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-4">
-                    {periodOverview.totals.slice(0, 8).map((total) => (
-                      <div
-                        key={`${total.source}-${total.key}`}
-                        className="min-w-0 rounded-md border border-border bg-muted/30 p-3"
-                      >
-                        <div className="truncate text-xs text-muted-foreground">
-                          {total.label}
+                    {periodOverview.totals.slice(0, 8).map((total) => {
+                      const totalLabel = getMetricLabel(total.label, {
+                        source: total.source,
+                        unit: total.unit,
+                      });
+
+                      return (
+                        <div
+                          key={`${total.source}-${total.key}`}
+                          className="min-w-0 rounded-md border border-border bg-muted/30 p-3"
+                        >
+                          <div className="text-xs text-muted-foreground">
+                            <MetricHeader
+                              description={getMetricDescription({
+                                label: total.label,
+                                source: total.source,
+                                unit: total.unit,
+                              })}
+                            >
+                              {totalLabel}
+                            </MetricHeader>
+                          </div>
+                          <div className="mt-1 break-words text-xl font-semibold">
+                            {formatMetricValue(total.value, total.unit)}
+                          </div>
                         </div>
-                        <div className="mt-1 break-words text-xl font-semibold">
-                          {formatMetricValue(total.value, total.unit)}
-                        </div>
-                      </div>
-                    ))}
+                      );
+                    })}
                   </div>
                 )}
 
@@ -679,10 +846,36 @@ const ExportStatisticsPage = () => {
                       <Table>
                         <TableHeader className="bg-muted/50">
                           <TableRow>
-                            <TableHead>Позиция</TableHead>
-                            <TableHead>Раздел</TableHead>
-                            <TableHead className="text-right">Кол-во</TableHead>
-                            <TableHead className="text-right">Сумма</TableHead>
+                            <TableHead>
+                              <MetricHeader description="Название товара, тарифа, услуги или другой позиции, которая принесла выручку.">
+                                Позиция
+                              </MetricHeader>
+                            </TableHead>
+                            <TableHead>
+                              <MetricHeader description="Раздел отчета Smartshell, из которого взята эта позиция.">
+                                Раздел
+                              </MetricHeader>
+                            </TableHead>
+                            <TableHead className="text-right">
+                              <MetricHeader
+                                className="justify-end"
+                                description={getMetricDescription({
+                                  kind: 'amount',
+                                })}
+                              >
+                                Количество
+                              </MetricHeader>
+                            </TableHead>
+                            <TableHead className="text-right">
+                              <MetricHeader
+                                className="justify-end"
+                                description={getMetricDescription({
+                                  kind: 'sum',
+                                })}
+                              >
+                                Сумма
+                              </MetricHeader>
+                            </TableHead>
                           </TableRow>
                         </TableHeader>
                         <TableBody>
@@ -692,7 +885,10 @@ const ExportStatisticsPage = () => {
                                 {item.title}
                               </TableCell>
                               <TableCell className="min-w-36 text-muted-foreground">
-                                {item.category}
+                                {getMetricLabel(item.category, {
+                                  source: item.source,
+                                  fallback: getReportSourceLabel(item.source),
+                                })}
                               </TableCell>
                               <TableCell className="text-right">
                                 {formatReportAmount(item.amount)}
@@ -710,42 +906,87 @@ const ExportStatisticsPage = () => {
 
                 {(periodOverview.sections || []).length > 0 && (
                   <div className="grid grid-cols-1 gap-4 lg:grid-cols-2">
-                    {periodOverview.sections.slice(0, 4).map((section) => (
-                      <div
-                        key={section.key}
-                        className="min-w-0 rounded-md border border-border"
-                      >
-                        <div className="border-b border-border bg-muted/40 px-3 py-2 text-sm font-medium">
-                          {section.title}
-                        </div>
-                        <div className="overflow-x-auto">
-                          <Table>
-                            <TableHeader>
-                              <TableRow>
-                                <TableHead>Показатель</TableHead>
-                                <TableHead className="text-right">Кол-во</TableHead>
-                                <TableHead className="text-right">Сумма</TableHead>
-                              </TableRow>
-                            </TableHeader>
-                            <TableBody>
-                              {(section.rows || []).slice(0, 6).map((row, index) => (
-                                <TableRow key={`${section.key}-${row.label}-${index}`}>
-                                  <TableCell className="min-w-40">
-                                    {row.label}
-                                  </TableCell>
-                                  <TableCell className="text-right">
-                                    {formatReportAmount(row.amount)}
-                                  </TableCell>
-                                  <TableCell className="text-right font-medium">
-                                    {formatReportMoney(row.sum ?? row.value)}
-                                  </TableCell>
+                    {periodOverview.sections.slice(0, 4).map((section) => {
+                      const sectionTitle = getSectionTitle(section);
+
+                      return (
+                        <div
+                          key={section.key}
+                          className="min-w-0 rounded-md border border-border"
+                        >
+                          <div className="border-b border-border bg-muted/40 px-3 py-2 text-sm font-medium">
+                            <MetricHeader
+                              description={getReportSourceDescription(
+                                section.source,
+                              )}
+                            >
+                              {sectionTitle}
+                            </MetricHeader>
+                          </div>
+                          <div className="overflow-x-auto">
+                            <Table>
+                              <TableHeader>
+                                <TableRow>
+                                  <TableHead>
+                                    <MetricHeader
+                                      description={getMetricDescription({
+                                        kind: 'row',
+                                      })}
+                                    >
+                                      Показатель
+                                    </MetricHeader>
+                                  </TableHead>
+                                  <TableHead className="text-right">
+                                    <MetricHeader
+                                      className="justify-end"
+                                      description={getMetricDescription({
+                                        kind: 'amount',
+                                      })}
+                                    >
+                                      Количество
+                                    </MetricHeader>
+                                  </TableHead>
+                                  <TableHead className="text-right">
+                                    <MetricHeader
+                                      className="justify-end"
+                                      description={getMetricDescription({
+                                        kind: 'sum',
+                                      })}
+                                    >
+                                      Сумма
+                                    </MetricHeader>
+                                  </TableHead>
                                 </TableRow>
-                              ))}
-                            </TableBody>
-                          </Table>
+                              </TableHeader>
+                              <TableBody>
+                                {(section.rows || [])
+                                  .slice(0, 6)
+                                  .map((row, index) => (
+                                    <TableRow
+                                      key={`${section.key}-${row.label}-${index}`}
+                                    >
+                                      <TableCell className="min-w-40">
+                                        {isTechnicalMetricLabel(row.label)
+                                          ? getMetricLabel(row.label, {
+                                              source: row.source,
+                                              fallback: 'Позиция отчета',
+                                            })
+                                          : row.label}
+                                      </TableCell>
+                                      <TableCell className="text-right">
+                                        {formatReportAmount(row.amount)}
+                                      </TableCell>
+                                      <TableCell className="text-right font-medium">
+                                        {formatReportMoney(row.sum ?? row.value)}
+                                      </TableCell>
+                                    </TableRow>
+                                  ))}
+                              </TableBody>
+                            </Table>
+                          </div>
                         </div>
-                      </div>
-                    ))}
+                      );
+                    })}
                   </div>
                 )}
               </>
