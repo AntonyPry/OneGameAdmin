@@ -127,43 +127,96 @@ const REPORT_SOURCE_DESCRIPTIONS = {
 
 const METRIC_LABELS = {
   amount: 'Количество',
+  avg_goods_receipt: 'Средний чек товаров',
+  avg_hour_cost: 'Средняя стоимость часа',
+  avg_revenue_per_host: 'Средняя выручка на место',
   average: 'Среднее значение',
+  bepaid_erip_count: 'Платежи bePaid ЕРИП',
+  bepaid_erip_sum: 'Сумма bePaid ЕРИП',
   bonus: 'Бонусы',
+  bonus_count: 'Бонусные операции',
+  bonus_sum: 'Начислено бонусов',
+  bonus_cashback: 'Бонусный кешбэк',
   bonuses: 'Бонусы',
   card: 'Оплаты картой',
+  card_count: 'Оплаты картой',
+  card_sum: 'Сумма оплат картой',
   cash: 'Наличные',
+  cash_count: 'Оплаты наличными',
+  cash_revenue: 'Выручка наличными',
+  cash_sum: 'Сумма наличными',
+  client_apru: 'Средняя выручка на клиента',
+  cloudpayments_count: 'Оплаты CloudPayments',
+  cloudpayments_sum: 'Сумма CloudPayments',
   count: 'Количество',
   deposit: 'Пополнения',
+  deposit_count: 'Пополнения баланса',
+  deposit_revenue: 'Пополнения баланса',
+  deposit_sum: 'Сумма пополнений',
   deposits: 'Пополнения',
   discount: 'Скидки',
   discounts: 'Скидки',
+  guest_sessions: 'Гостевые сессии',
+  guest_sessions_percent: 'Доля гостевых сессий',
+  good_count: 'Продано товаров',
+  good_sum: 'Выручка бара и товаров',
   income: 'Доход',
   items: 'Позиции',
+  kaspi_pay_count: 'Платежи Kaspi Pay',
+  kaspi_pay_sum: 'Сумма Kaspi Pay',
   money: 'Деньги',
+  new_clients_count: 'Новые клиенты',
+  new_clients_percent: 'Доля новых клиентов',
+  online_count: 'Онлайн-оплаты',
+  online_sum: 'Сумма онлайн-оплат',
   payment: 'Оплата',
   payments: 'Оплаты',
   percent: 'Процент',
+  pko_amount: 'Приходные кассовые ордера',
   profit: 'Прибыль',
   quantity: 'Количество',
   qty: 'Количество',
+  regular_clients_percent: 'Постоянные клиенты',
+  repeat_visits: 'Повторные визиты',
+  repeat_visits_percent: 'Доля повторных визитов',
   refund: 'Возвраты',
   refunds: 'Возвраты',
   revenue: 'Выручка',
+  rko_amount: 'Расходные кассовые ордера',
   sale: 'Продажа',
   sales: 'Продажи',
   service: 'Услуги',
+  service_count: 'Продано услуг',
+  service_sum: 'Выручка услуг',
   services: 'Услуги',
   session: 'Сессия',
   sessions: 'Сессии',
   sessions_count: 'Сессии',
+  stripe_count: 'Платежи Stripe',
+  stripe_sum: 'Сумма Stripe',
   sum: 'Сумма',
   tariff: 'Тариф',
+  tariff_count: 'Продано тарифов',
+  tariff_revenue: 'Выручка по тарифам',
+  tariff_sum: 'Выручка по тарифам',
   tariffs: 'Тарифы',
+  tinkoff_sbp_count: 'Оплаты по СБП',
+  tinkoff_sbp_sum: 'Сумма оплат по СБП',
   total: 'Итого',
   total_amount: 'Общее количество',
+  total_bonus: 'Начислено бонусов',
+  total_bonus_with_refunds: 'Бонусы с учетом возвратов',
+  total_booked_revenue: 'Выручка по броням',
+  total_booked_sessions: 'Забронированные сессии',
   total_count: 'Общее количество',
+  total_goods_sold: 'Продано товаров',
+  total_load_percent: 'Загрузка клуба',
+  total_payments_count: 'Всего платежей',
+  total_payments_sum: 'Сумма всех платежей',
   total_revenue: 'Общая выручка',
+  total_sessions: 'Сессии',
   total_sum: 'Итого сумма',
+  unique_clients: 'Уникальные клиенты',
 };
 
 const UNIT_LABELS = {
@@ -171,6 +224,81 @@ const UNIT_LABELS = {
   percent: 'Процент',
   rub: 'Сумма',
 };
+
+const OVERVIEW_CARD_DEFINITIONS = [
+  {
+    id: 'totalRevenue',
+    source: 'overviewReport',
+    labelKey: 'total_revenue',
+    title: 'Общая выручка',
+    unit: 'rub',
+    description:
+      'Вся выручка за выбранный период по сводке Smartshell.',
+  },
+  {
+    id: 'tariffRevenue',
+    source: 'salesReport',
+    labelKey: 'tariff_sum',
+    title: 'Тарифы и ПК',
+    unit: 'rub',
+    description:
+      'Деньги от купленных тарифов и компьютерных сессий за выбранный период.',
+  },
+  {
+    id: 'goodsRevenue',
+    source: 'salesReport',
+    labelKey: 'good_sum',
+    title: 'Бар и товары',
+    unit: 'rub',
+    description:
+      'Выручка от проданных товаров и бара за выбранный период.',
+  },
+  {
+    id: 'serviceRevenue',
+    source: 'salesReport',
+    labelKey: 'service_sum',
+    title: 'Услуги',
+    unit: 'rub',
+    description:
+      'Выручка от дополнительных услуг за выбранный период.',
+  },
+  {
+    id: 'depositRevenue',
+    source: 'overviewReport',
+    labelKey: 'deposit_revenue',
+    title: 'Пополнения баланса',
+    unit: 'rub',
+    description:
+      'Сколько денег гости внесли на баланс за выбранный период.',
+  },
+  {
+    id: 'bonusTotal',
+    source: 'overviewReport',
+    labelKey: 'total_bonus',
+    title: 'Начислено бонусов',
+    unit: 'rub',
+    description:
+      'Сколько бонусов было начислено клиентам за выбранный период.',
+  },
+  {
+    id: 'uniqueClients',
+    source: 'overviewReport',
+    labelKey: 'unique_clients',
+    title: 'Уникальные клиенты',
+    unit: 'count',
+    description:
+      'Сколько разных клиентов посещали клуб или совершали операции в выбранный период.',
+  },
+  {
+    id: 'sessions',
+    source: 'overviewReport',
+    labelKey: 'total_sessions',
+    title: 'Сессии',
+    unit: 'count',
+    description:
+      'Количество игровых сессий за выбранный период.',
+  },
+];
 
 const saveBlob = (blob, fileName) => {
   const downloadUrl = window.URL.createObjectURL(blob);
@@ -363,7 +491,7 @@ const getMetricLabel = (label, { source, unit, fallback } = {}) => {
   }
 
   if (!hasRussianText(label) && unit) {
-    return fallback || UNIT_LABELS[unit] || getReportSourceLabel(source);
+    return fallback || getReportSourceLabel(source);
   }
 
   return String(label);
@@ -407,6 +535,65 @@ const getMetricDescription = ({ label, source, unit, kind }) => {
   }
 
   return `${sourceText} ${unitText}`;
+};
+
+const getTotalLabelKey = (total) => normalizeLookupKey(total?.label);
+
+const findTotalMetric = (totals, definition) =>
+  totals.find(
+    (total) =>
+      total.source === definition.source &&
+      getTotalLabelKey(total) === definition.labelKey,
+  );
+
+const getOverviewCards = (report = {}) => {
+  const totals = Array.isArray(report?.totals) ? report.totals : [];
+  const usedKeys = new Set();
+  const cards = OVERVIEW_CARD_DEFINITIONS.map((definition) => {
+    const metric = findTotalMetric(totals, definition);
+    if (!metric) return null;
+
+    usedKeys.add(`${metric.source}:${getTotalLabelKey(metric)}`);
+
+    return {
+      id: definition.id,
+      source: metric.source,
+      key: metric.key,
+      title: definition.title,
+      value: metric.value,
+      unit: definition.unit || metric.unit,
+      description: definition.description,
+    };
+  }).filter(Boolean);
+
+  if (cards.length >= 4) return cards.slice(0, 8);
+
+  const fallbackCards = totals
+    .filter((total) => {
+      const key = getTotalLabelKey(total);
+      if (!key || usedKeys.has(`${total.source}:${key}`)) return false;
+      if (total.source === 'topSoldOverviewItemsReport') return false;
+      return total.value !== null && total.value !== undefined;
+    })
+    .map((total, index) => ({
+      id: `fallback-${total.source}-${getTotalLabelKey(total)}-${index}`,
+      source: total.source,
+      key: total.key,
+      title: getMetricLabel(total.label, {
+        source: total.source,
+        unit: total.unit,
+        fallback: getReportSourceLabel(total.source),
+      }),
+      value: total.value,
+      unit: total.unit,
+      description: getMetricDescription({
+        label: total.label,
+        source: total.source,
+        unit: total.unit,
+      }),
+    }));
+
+  return [...cards, ...fallbackCards].slice(0, 8);
 };
 
 const formatReportAmount = (value) =>
@@ -460,9 +647,13 @@ const ExportStatisticsPage = () => {
     () => !isTrial || isRangeInsideWindow(dateRange, trialWindow),
     [dateRange, isTrial, trialWindow],
   );
+  const overviewCards = useMemo(
+    () => getOverviewCards(periodOverview),
+    [periodOverview],
+  );
   const hasPeriodOverviewData = Boolean(
     periodOverview &&
-      ((periodOverview.totals || []).length ||
+      (overviewCards.length ||
         (periodOverview.topItems || []).length ||
         (periodOverview.sections || []).some((section) => section.rows?.length)),
   );
@@ -806,36 +997,23 @@ const ExportStatisticsPage = () => {
               </div>
             ) : hasPeriodOverviewData ? (
               <>
-                {(periodOverview.totals || []).length > 0 && (
+                {overviewCards.length > 0 && (
                   <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-4">
-                    {periodOverview.totals.slice(0, 8).map((total) => {
-                      const totalLabel = getMetricLabel(total.label, {
-                        source: total.source,
-                        unit: total.unit,
-                      });
-
-                      return (
-                        <div
-                          key={`${total.source}-${total.key}`}
-                          className="min-w-0 rounded-md border border-border bg-muted/30 p-3"
-                        >
-                          <div className="text-xs text-muted-foreground">
-                            <MetricHeader
-                              description={getMetricDescription({
-                                label: total.label,
-                                source: total.source,
-                                unit: total.unit,
-                              })}
-                            >
-                              {totalLabel}
-                            </MetricHeader>
-                          </div>
-                          <div className="mt-1 break-words text-xl font-semibold">
-                            {formatMetricValue(total.value, total.unit)}
-                          </div>
+                    {overviewCards.map((total) => (
+                      <div
+                        key={total.id}
+                        className="min-w-0 rounded-md border border-border bg-muted/30 p-3"
+                      >
+                        <div className="text-xs text-muted-foreground">
+                          <MetricHeader description={total.description}>
+                            {total.title}
+                          </MetricHeader>
                         </div>
-                      );
-                    })}
+                        <div className="mt-1 break-words text-xl font-semibold">
+                          {formatMetricValue(total.value, total.unit)}
+                        </div>
+                      </div>
+                    ))}
                   </div>
                 )}
 
