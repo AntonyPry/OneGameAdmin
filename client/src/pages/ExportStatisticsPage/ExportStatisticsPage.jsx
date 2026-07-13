@@ -3,6 +3,7 @@ import api from '@/api';
 import { format } from 'date-fns';
 import {
   AlertCircle,
+  BarChart3,
   CheckCircle2,
   Clock3,
   Download,
@@ -238,6 +239,37 @@ const getDownloadErrorMessage = async (error, fallback) => {
 const getReportByHistoryType = (historyType) =>
   REPORTS_BY_HISTORY_TYPE.get(historyType) || null;
 
+const formatMetricValue = (value, unit) => {
+  if (value === null || value === undefined || value === '') return '—';
+
+  const numberValue = Number(value);
+  if (!Number.isFinite(numberValue)) return String(value);
+
+  if (unit === 'rub') {
+    return new Intl.NumberFormat('ru-RU', {
+      style: 'currency',
+      currency: 'RUB',
+      maximumFractionDigits: 0,
+    }).format(numberValue);
+  }
+
+  if (unit === 'percent') {
+    return `${new Intl.NumberFormat('ru-RU', {
+      maximumFractionDigits: 1,
+    }).format(numberValue)}%`;
+  }
+
+  return new Intl.NumberFormat('ru-RU', {
+    maximumFractionDigits: 2,
+  }).format(numberValue);
+};
+
+const formatReportAmount = (value) =>
+  value === null || value === undefined ? '—' : formatMetricValue(value, 'count');
+
+const formatReportMoney = (value) =>
+  value === null || value === undefined ? '—' : formatMetricValue(value, 'rub');
+
 const StatusBadge = ({ status }) => {
   const meta = STATUS_META[status] || STATUS_META.pending;
   const Icon = meta.icon;
@@ -261,6 +293,9 @@ const ExportStatisticsPage = () => {
   const [history, setHistory] = useState([]);
   const [historyError, setHistoryError] = useState('');
   const [isHistoryLoading, setIsHistoryLoading] = useState(false);
+  const [periodOverview, setPeriodOverview] = useState(null);
+  const [periodOverviewError, setPeriodOverviewError] = useState('');
+  const [isPeriodOverviewLoading, setIsPeriodOverviewLoading] = useState(false);
 
   const isTrial = Boolean(session.isFreeTrial ?? session.is_free_trial);
   const trialWindow = useMemo(() => getTrialWindow(), []);
@@ -272,6 +307,12 @@ const ExportStatisticsPage = () => {
   const isSelectedPeriodAllowed = useMemo(
     () => !isTrial || isRangeInsideWindow(dateRange, trialWindow),
     [dateRange, isTrial, trialWindow],
+  );
+  const hasPeriodOverviewData = Boolean(
+    periodOverview &&
+      ((periodOverview.totals || []).length ||
+        (periodOverview.topItems || []).length ||
+        (periodOverview.sections || []).some((section) => section.rows?.length)),
   );
 
   const loadHistory = useCallback(async () => {
@@ -298,9 +339,58 @@ const ExportStatisticsPage = () => {
     }
   }, [session.activeClubId]);
 
+  const loadPeriodOverview = useCallback(async () => {
+    if (!session.activeClubId) {
+      setPeriodOverview(null);
+      setPeriodOverviewError('');
+      return;
+    }
+
+    if (!dateRange?.from || !dateRange?.to) {
+      setPeriodOverview(null);
+      setPeriodOverviewError('Выберите период для обзора');
+      return;
+    }
+
+    if (!isSelectedPeriodAllowed) {
+      setPeriodOverview(null);
+      setPeriodOverviewError(
+        `В бесплатном периоде доступен период ${trialWindowLabel}`,
+      );
+      return;
+    }
+
+    try {
+      setIsPeriodOverviewLoading(true);
+      setPeriodOverviewError('');
+      const response = await api.post('/api/payments/periodOverview', {
+        startDate: `${format(dateRange.from, 'yyyy-MM-dd')} 00:00:00`,
+        endDate: `${format(dateRange.to, 'yyyy-MM-dd')} 23:59:59`,
+      });
+      setPeriodOverview(response.data?.report || null);
+    } catch (error) {
+      setPeriodOverview(null);
+      setPeriodOverviewError(
+        error.response?.data?.message ||
+          'Не удалось загрузить обзор периода из Smartshell',
+      );
+    } finally {
+      setIsPeriodOverviewLoading(false);
+    }
+  }, [
+    dateRange,
+    isSelectedPeriodAllowed,
+    session.activeClubId,
+    trialWindowLabel,
+  ]);
+
   useEffect(() => {
     loadHistory();
   }, [loadHistory]);
+
+  useEffect(() => {
+    loadPeriodOverview();
+  }, [loadPeriodOverview]);
 
   useEffect(() => {
     if (!isTrial || isSelectedPeriodAllowed) return;
@@ -482,6 +572,190 @@ const ExportStatisticsPage = () => {
             }
           />
         </div>
+      </section>
+
+      <section>
+        <Card className="border-border shadow-sm">
+          <CardHeader className="gap-3">
+            <div className="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
+              <div className="min-w-0">
+                <CardTitle className="flex items-center gap-2">
+                  <BarChart3 className="h-5 w-5 shrink-0" />
+                  Обзор периода
+                </CardTitle>
+                <CardDescription>
+                  {selectedPeriodLabel}
+                  {periodOverview?.generatedAt
+                    ? ` · обновлено ${formatDateTime(periodOverview.generatedAt)}`
+                    : ''}
+                </CardDescription>
+              </div>
+              <div className="flex flex-wrap items-center gap-2">
+                {periodOverview?.status === 'degraded' && (
+                  <Badge
+                    variant="outline"
+                    className="border-amber-300 bg-amber-50 text-amber-700"
+                  >
+                    Частичные данные
+                  </Badge>
+                )}
+                {periodOverview?.status === 'ok' && (
+                  <Badge variant="outline">Smartshell</Badge>
+                )}
+                <Button
+                  type="button"
+                  variant="outline"
+                  onClick={loadPeriodOverview}
+                  disabled={
+                    isPeriodOverviewLoading ||
+                    !dateRange?.from ||
+                    !dateRange?.to ||
+                    !isSelectedPeriodAllowed
+                  }
+                >
+                  <RotateCcw
+                    className={
+                      isPeriodOverviewLoading
+                        ? 'h-4 w-4 animate-spin'
+                        : 'h-4 w-4'
+                    }
+                  />
+                  Обновить
+                </Button>
+              </div>
+            </div>
+          </CardHeader>
+          <CardContent className="space-y-5">
+            {periodOverviewError && (
+              <div className="flex items-start gap-2 rounded-md border border-destructive/40 bg-destructive/10 p-3 text-sm text-destructive">
+                <AlertCircle className="mt-0.5 h-4 w-4 shrink-0" />
+                <span>{periodOverviewError}</span>
+              </div>
+            )}
+
+            {(periodOverview?.warnings || []).length > 0 && (
+              <div className="space-y-2">
+                {periodOverview.warnings.map((warning, index) => (
+                  <div
+                    key={`${warning.operationName || 'warning'}-${index}`}
+                    className="flex items-start gap-2 rounded-md border border-amber-300 bg-amber-50 p-3 text-sm text-amber-800"
+                  >
+                    <AlertCircle className="mt-0.5 h-4 w-4 shrink-0" />
+                    <span>{warning.message || 'Часть данных недоступна'}</span>
+                  </div>
+                ))}
+              </div>
+            )}
+
+            {isPeriodOverviewLoading ? (
+              <div className="flex min-h-40 items-center justify-center rounded-lg border border-dashed border-border p-6 text-sm text-muted-foreground">
+                <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                Загрузка обзора...
+              </div>
+            ) : hasPeriodOverviewData ? (
+              <>
+                {(periodOverview.totals || []).length > 0 && (
+                  <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-4">
+                    {periodOverview.totals.slice(0, 8).map((total) => (
+                      <div
+                        key={`${total.source}-${total.key}`}
+                        className="min-w-0 rounded-md border border-border bg-muted/30 p-3"
+                      >
+                        <div className="truncate text-xs text-muted-foreground">
+                          {total.label}
+                        </div>
+                        <div className="mt-1 break-words text-xl font-semibold">
+                          {formatMetricValue(total.value, total.unit)}
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                )}
+
+                {(periodOverview.topItems || []).length > 0 && (
+                  <div className="space-y-3">
+                    <div className="text-sm font-medium">Что принесло деньги</div>
+                    <div className="overflow-x-auto rounded-md border border-border">
+                      <Table>
+                        <TableHeader className="bg-muted/50">
+                          <TableRow>
+                            <TableHead>Позиция</TableHead>
+                            <TableHead>Раздел</TableHead>
+                            <TableHead className="text-right">Кол-во</TableHead>
+                            <TableHead className="text-right">Сумма</TableHead>
+                          </TableRow>
+                        </TableHeader>
+                        <TableBody>
+                          {periodOverview.topItems.map((item, index) => (
+                            <TableRow key={`${item.source}-${item.title}-${index}`}>
+                              <TableCell className="min-w-44 font-medium">
+                                {item.title}
+                              </TableCell>
+                              <TableCell className="min-w-36 text-muted-foreground">
+                                {item.category}
+                              </TableCell>
+                              <TableCell className="text-right">
+                                {formatReportAmount(item.amount)}
+                              </TableCell>
+                              <TableCell className="text-right font-medium">
+                                {formatReportMoney(item.sum)}
+                              </TableCell>
+                            </TableRow>
+                          ))}
+                        </TableBody>
+                      </Table>
+                    </div>
+                  </div>
+                )}
+
+                {(periodOverview.sections || []).length > 0 && (
+                  <div className="grid grid-cols-1 gap-4 lg:grid-cols-2">
+                    {periodOverview.sections.slice(0, 4).map((section) => (
+                      <div
+                        key={section.key}
+                        className="min-w-0 rounded-md border border-border"
+                      >
+                        <div className="border-b border-border bg-muted/40 px-3 py-2 text-sm font-medium">
+                          {section.title}
+                        </div>
+                        <div className="overflow-x-auto">
+                          <Table>
+                            <TableHeader>
+                              <TableRow>
+                                <TableHead>Показатель</TableHead>
+                                <TableHead className="text-right">Кол-во</TableHead>
+                                <TableHead className="text-right">Сумма</TableHead>
+                              </TableRow>
+                            </TableHeader>
+                            <TableBody>
+                              {(section.rows || []).slice(0, 6).map((row, index) => (
+                                <TableRow key={`${section.key}-${row.label}-${index}`}>
+                                  <TableCell className="min-w-40">
+                                    {row.label}
+                                  </TableCell>
+                                  <TableCell className="text-right">
+                                    {formatReportAmount(row.amount)}
+                                  </TableCell>
+                                  <TableCell className="text-right font-medium">
+                                    {formatReportMoney(row.sum ?? row.value)}
+                                  </TableCell>
+                                </TableRow>
+                              ))}
+                            </TableBody>
+                          </Table>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                )}
+              </>
+            ) : (
+              <div className="flex min-h-40 items-center justify-center rounded-lg border border-dashed border-border p-6 text-center text-sm text-muted-foreground">
+                Данные по выбранному периоду пока недоступны
+              </div>
+            )}
+          </CardContent>
+        </Card>
       </section>
 
       <section className="grid grid-cols-1 gap-6 md:grid-cols-2">

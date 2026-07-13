@@ -13,6 +13,7 @@ router.use(checkClubAccess);
 router.use(requireClubRole(...ROUTE_ROLES.paymentsExport));
 
 router.get('/export-history', paymentsController.listExportHistory);
+router.post('/periodOverview', paymentsController.periodOverview);
 router.post('/paymentsFromPeriod', paymentsController.paymentsFromPeriod);
 router.post('/sbpFromPeriod', paymentsController.sbpFromPeriod);
 router.post('/cashOrdersFromPeriod', paymentsController.cashOrdersFromPeriod);

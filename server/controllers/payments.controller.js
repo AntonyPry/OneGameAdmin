@@ -2,6 +2,7 @@
 const paymentsService = require('../services/payments.service');
 const excelService = require('../services/excel.service');
 const exportHistoryService = require('../services/exportHistory.service');
+const reportsService = require('../services/reports.service');
 const { getManagerToken } = require('../services/token.service');
 const {
   formatDateTime,
@@ -102,6 +103,41 @@ const listExportHistory = async (req, res) => {
     return res
       .status(500)
       .send({ error: true, message: 'Не удалось загрузить историю выгрузок' });
+  }
+};
+
+const periodOverview = async (req, res) => {
+  try {
+    const { startDate, endDate } = req.body;
+
+    if (
+      !validateExportTrialWindow(
+        req,
+        res,
+        { startDate, endDate },
+        'обзор периода',
+      )
+    ) {
+      return;
+    }
+
+    const result = await reportsService.getPeriodOverview({
+      startDate,
+      endDate,
+      club: req.currentClub,
+      dbClubId: req.dbClubId,
+    });
+
+    if (result.error) {
+      return sendServiceError(res, result, 502);
+    }
+
+    return res.status(200).send(result);
+  } catch (error) {
+    console.error('periodOverview ERROR ->', error.message);
+    return res
+      .status(500)
+      .send({ error: true, message: 'Не удалось сформировать обзор периода' });
   }
 };
 
@@ -350,6 +386,7 @@ const getFirstSessionsFromPeriod = async (req, res) => {
 
 module.exports = {
   listExportHistory,
+  periodOverview,
   paymentsFromPeriod,
   sbpFromPeriod,
   cashOrdersFromPeriod,
